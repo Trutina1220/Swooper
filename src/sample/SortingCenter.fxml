@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<?import javafx.scene.text.Font?>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.SortingCenter">
+   <children>
+       <Label layoutX="193.0" layoutY="-2.0" prefHeight="32.0" prefWidth="234.0" text="Sorting Center " textAlignment="CENTER">
+           <font>
+               <Font name="Calibri Bold" size="24.0" />
+           </font></Label>
+   </children>
+</AnchorPane>
