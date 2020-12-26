@@ -1,24 +1,35 @@
 package sample;
-
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class Controller {
+public class Controller implements Initializable {
     @FXML
-    public BorderPane mainPane;
-    public void transactionWindowButton(ActionEvent event) throws IOException {
-        System.out.println("transaction window");
-        Pane view = FXMLLoader.load(getClass().getResource("Transaction.fxml"));
-        mainPane.setCenter(view);
-    }
-    public void sortingCenterWindowButton(ActionEvent event) throws IOException {
-        System.out.println("clicking sorting center button");
-        Pane view = FXMLLoader.load(getClass().getResource("SortingCenter.fxml"));
-        mainPane.setCenter(view);
+    public Button goStorageButtonST,goShopButtonST,moveButtonST,goShopButtonTT, addButtonTT, saveButtonTT, goShopButtonBIT, addButtonBIT, saveButtonBIT;
+    @FXML
+    public TableView storageTableViewST, shopTableViewST,shopStockTableViewTT, currentTransactionTableViewTT, transactionHistoryTableViewTT, storageTableViewBIT, currentTransactionTableViewBIT, transactionHistoryTableViewBIT;
+    @FXML
+    public TextField itemIdTextField, itemQuantityTextField,customerNameTextField, customerAddressTextField, customerNumberTextField,
+            enterItemIdTextField, enterItemQtyTextField, supplierNameTextFieldBIT, supplierAddressTextFieldBIT, supplierPhoneTextFieldBIT,
+            itemIdTextFieldBIT, itemQuantityTextFieldBIT, sellPriceTextFieldBIT, buyPriceTextFieldBIT;
+    @FXML
+    public ComboBox storageComboBoxST, shopComboBoxST, fromComboBox, toComboBox, shopComboBoxTT, storageComboBoxBIT;
+
+
+
+
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
     }
 }
