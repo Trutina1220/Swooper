@@ -42,19 +42,48 @@
                                     <Insets top="7.0" />
                                  </HBox.margin>
                               </ComboBox>
-                              <Button fx:id="goStorageButtonST" mnemonicParsing="false" text="Go">
+                              <Button fx:id="goStorageButtonST" mnemonicParsing="false" onAction="#goStorageButtonSTClicked" text="Go">
                                  <HBox.margin>
                                     <Insets left="10.0" top="7.0" />
                                  </HBox.margin>
                               </Button>
+                              <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                              <Label text="Storage ID : " HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="7.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Text fx:id="storageIdTextST" strokeType="OUTSIDE" strokeWidth="0.0" text="None" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="7.0" />
+                                 </HBox.margin>
+                              </Text>
+                              <Label text="Storage Address :" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="7.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Text fx:id="storageAddressTextST" strokeType="OUTSIDE" strokeWidth="0.0" text="None" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="7.0" />
+                                 </HBox.margin>
+                              </Text>
+                              <Label text="Storage Phone Number :" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="7.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Text fx:id="storageNumberTextST" strokeType="OUTSIDE" strokeWidth="0.0" text="None" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="7.0" />
+                                 </HBox.margin>
+                              </Text>
                            </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
                         </HBox>
-                        <TableView fx:id="storageTableViewST" prefHeight="135.0" prefWidth="864.0" VBox.vgrow="ALWAYS">
-                          <columns>
-                            <TableColumn prefWidth="75.0" text="C1" />
-                            <TableColumn prefWidth="75.0" text="C2" />
-                          </columns>
-                        </TableView>
+                        <TableView fx:id="storageTableViewST" prefHeight="135.0" prefWidth="864.0" VBox.vgrow="ALWAYS" />
                         <HBox prefHeight="10.0" prefWidth="864.0">
                            <children>
                               <Text accessibleRoleDescription="n" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose the Shop(s) here :" textAlignment="CENTER" HBox.hgrow="ALWAYS">
@@ -70,22 +99,51 @@
                                     <Insets top="7.0" />
                                  </HBox.margin>
                               </ComboBox>
-                              <Button fx:id="goShopButtonST" mnemonicParsing="false" text="Go">
+                              <Button fx:id="goShopButtonST" mnemonicParsing="false" onAction="#goShopButtonSTClicked" text="Go">
                                  <HBox.margin>
                                     <Insets left="10.0" top="7.0" />
                                  </HBox.margin>
                               </Button>
+                              <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                              <Label text="Shop ID : " HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="7.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Text fx:id="shopIdTextST" strokeType="OUTSIDE" strokeWidth="0.0" text="None" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="7.0" />
+                                 </HBox.margin>
+                              </Text>
+                              <Label text="Shop Address : " HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="7.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Text fx:id="shopAddressTextST" strokeType="OUTSIDE" strokeWidth="0.0" text="None" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="7.0" />
+                                 </HBox.margin>
+                              </Text>
+                              <Label text="Shop Phone Number : " HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="7.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Text fx:id="shopNumberTextST" strokeType="OUTSIDE" strokeWidth="0.0" text="None" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="7.0" />
+                                 </HBox.margin>
+                              </Text>
                            </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
                         </HBox>
-                        <TableView fx:id="shopTableViewST" prefHeight="87.0" prefWidth="864.0" VBox.vgrow="ALWAYS">
-                          <columns>
-                            <TableColumn prefWidth="75.0" />
-                            <TableColumn prefWidth="75.0" text="C2" />
-                          </columns>
-                        </TableView>
+                        <TableView fx:id="shopTableViewST" prefHeight="87.0" prefWidth="864.0" VBox.vgrow="ALWAYS" />
                         <HBox prefHeight="38.0" prefWidth="864.0">
                            <children>
-                              <ComboBox fx:id="fromComboBox" prefWidth="150.0" promptText="none">
+                              <ComboBox fx:id="fromComboBox" onAction="#fromComboBoxPicked" prefWidth="150.0" promptText="none">
                                  <HBox.margin>
                                     <Insets left="10.0" top="10.0" />
                                  </HBox.margin>
@@ -108,7 +166,7 @@
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="15.0" />
                                  </HBox.margin>
                               </Text>
-                              <TextField fx:id="itemIdTextField">
+                              <TextField fx:id="itemIdTextFieldST">
                                  <HBox.margin>
                                     <Insets left="5.0" top="10.0" />
                                  </HBox.margin>
@@ -118,12 +176,12 @@
                                     <Insets left="10.0" top="15.0" />
                                  </HBox.margin>
                               </Text>
-                              <TextField fx:id="itemQuantityTextField">
+                              <TextField fx:id="itemQuantityTextFieldST">
                                  <HBox.margin>
                                     <Insets left="5.0" top="10.0" />
                                  </HBox.margin>
                               </TextField>
-                              <Button fx:id="moveButtonST" mnemonicParsing="false" text="Move">
+                              <Button fx:id="moveButtonST" mnemonicParsing="false" onAction="#MoveButtonSTClicked" text="Move">
                                  <HBox.margin>
                                     <Insets left="10.0" top="10.0" />
                                  </HBox.margin>
@@ -173,12 +231,7 @@
                               </Button>
                            </children>
                         </HBox>
-                        <TableView fx:id="shopStockTableViewTT" prefHeight="125.0" prefWidth="864.0">
-                          <columns>
-                            <TableColumn prefWidth="75.0" text="C1" />
-                            <TableColumn prefWidth="75.0" text="C2" />
-                          </columns>
-                        </TableView>
+                        <TableView fx:id="shopStockTableViewTT" prefHeight="125.0" prefWidth="864.0" />
                         <VBox prefHeight="200.0" prefWidth="100.0">
                            <children>
                               <HBox prefHeight="25.0" prefWidth="864.0">
@@ -277,31 +330,58 @@
                                           <Font size="16.0" />
                                        </font>
                                     </Text>
-                                    <Text fx:id="customerNameLabelTT" layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name">
+                                    <Label text=" Name:">
+                                       <HBox.margin>
+                                          <Insets left="10.0" top="4.0" />
+                                       </HBox.margin>
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Text fx:id="customerNameLabelTT" layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                        <HBox.margin>
-                                          <Insets left="10.0" top="5.0" />
+                                          <Insets left="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Text>
-                                    <Text fx:id="customerAddressLabelTT" layoutX="202.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Address">
+                                    <Label layoutX="209.0" layoutY="15.0" text="Address:">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                        <HBox.margin>
-                                          <Insets left="10.0" top="5.0" />
+                                          <Insets left="10.0" top="4.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Text fx:id="customerAddressLabelTT" layoutX="202.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Text>
-                                    <Text fx:id="customerPhoneLabelTT" layoutX="255.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone:">
+                                    <Label layoutX="359.0" layoutY="15.0" text="Phone :">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                        <HBox.margin>
-                                          <Insets left="10.0" top="5.0" />
+                                          <Insets left="10.0" top="4.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Text fx:id="customerPhoneLabelTT" layoutX="255.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Text>
                                  </children>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
                               </HBox>
                            </children>
                         </VBox>
@@ -325,12 +405,7 @@
                               </Text>
                            </children>
                         </HBox>
-                        <TableView fx:id="transactionHistoryTableViewTT" prefHeight="202.0" prefWidth="864.0">
-                          <columns>
-                            <TableColumn prefWidth="75.0" text="C1" />
-                            <TableColumn prefWidth="75.0" text="C2" />
-                          </columns>
-                        </TableView>
+                        <TableView fx:id="transactionHistoryTableViewTT" prefHeight="202.0" prefWidth="864.0" />
                      </children>
                   </VBox>
                </content></Tab>
@@ -374,12 +449,7 @@
                               </Button>
                            </children>
                         </HBox>
-                        <TableView fx:id="storageTableViewBIT" prefHeight="125.0" prefWidth="864.0">
-                           <columns>
-                              <TableColumn prefWidth="75.0" text="C1" />
-                              <TableColumn prefWidth="75.0" text="C2" />
-                           </columns>
-                        </TableView>
+                        <TableView fx:id="storageTableViewBIT" prefHeight="140.0" prefWidth="864.0" />
                         <VBox prefHeight="200.0" prefWidth="100.0">
                            <children>
                               <HBox prefHeight="25.0" prefWidth="864.0">
@@ -494,7 +564,7 @@
                                     <Button fx:id="saveButtonBIT" mnemonicParsing="false" text="Save" />
                                  </children>
                               </HBox>
-                              <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="NEVER">
+                              <HBox prefHeight="17.0" prefWidth="864.0" VBox.vgrow="NEVER">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Current Transaction Table">
                                        <HBox.margin>
@@ -504,28 +574,52 @@
                                           <Font size="16.0" />
                                        </font>
                                     </Text>
-                                    <Text fx:id="supplierNameLabelBIT" layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name">
+                                    <Label text="Name:">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                        <HBox.margin>
-                                          <Insets left="10.0" top="5.0" />
+                                          <Insets left="10.0" top="4.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Text fx:id="supplierNameLabelBIT" layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Text>
-                                    <Text fx:id="supplierAddressLabelBIT" layoutX="202.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Address">
+                                    <Label layoutX="381.0" layoutY="14.0" text="Address:">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                        <HBox.margin>
-                                          <Insets left="10.0" top="5.0" />
+                                          <Insets left="10.0" top="4.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Text fx:id="supplierAddressLabelBIT" layoutX="202.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Text>
-                                    <Text fx:id="supplierPhoneLabelBIT" layoutX="255.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone:">
+                                    <Label layoutX="419.0" layoutY="10.0" text="Phone:">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                        <HBox.margin>
-                                          <Insets left="10.0" top="5.0" />
+                                          <Insets left="10.0" top="4.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Text fx:id="supplierPhoneLabelBIT" layoutX="255.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Text>
                                  </children>
@@ -542,7 +636,7 @@
                               <TableColumn fx:id="transactionTotalColumnBIT" prefWidth="75.0" text="Total" />
                            </columns>
                         </TableView>
-                        <HBox prefHeight="100.0" prefWidth="200.0">
+                        <HBox prefHeight="29.0" prefWidth="864.0" VBox.vgrow="NEVER">
                            <children>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Transaction History Table">
                                  <HBox.margin>
@@ -554,12 +648,7 @@
                               </Text>
                            </children>
                         </HBox>
-                        <TableView fx:id="transactionHistoryTableViewBIT" prefHeight="140.0" prefWidth="864.0">
-                           <columns>
-                              <TableColumn prefWidth="75.0" text="C1" />
-                              <TableColumn prefWidth="75.0" text="C2" />
-                           </columns>
-                        </TableView>
+                        <TableView fx:id="transactionHistoryTableViewBIT" prefHeight="140.0" prefWidth="864.0" />
                      </children>
                   </VBox>
                </content>

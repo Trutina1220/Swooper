@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="864.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ControllerAdmin">
    <children>
@@ -340,31 +330,58 @@
                                           <Font size="16.0" />
                                        </font>
                                     </Text>
-                                    <Text fx:id="customerNameLabelTT" layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name">
+                                    <Label text=" Name:">
+                                       <HBox.margin>
+                                          <Insets left="10.0" top="4.0" />
+                                       </HBox.margin>
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Text fx:id="customerNameLabelTT" layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                        <HBox.margin>
-                                          <Insets left="10.0" top="5.0" />
+                                          <Insets left="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Text>
-                                    <Text fx:id="customerAddressLabelTT" layoutX="202.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Address">
+                                    <Label layoutX="209.0" layoutY="15.0" text="Address:">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                        <HBox.margin>
-                                          <Insets left="10.0" top="5.0" />
+                                          <Insets left="10.0" top="4.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Text fx:id="customerAddressLabelTT" layoutX="202.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Text>
-                                    <Text fx:id="customerPhoneLabelTT" layoutX="255.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone:">
+                                    <Label layoutX="359.0" layoutY="15.0" text="Phone :">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                        <HBox.margin>
-                                          <Insets left="10.0" top="5.0" />
+                                          <Insets left="10.0" top="4.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Text fx:id="customerPhoneLabelTT" layoutX="255.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Text>
                                  </children>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
                               </HBox>
                            </children>
                         </VBox>
@@ -557,28 +574,52 @@
                                           <Font size="16.0" />
                                        </font>
                                     </Text>
-                                    <Text fx:id="supplierNameLabelBIT" layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name">
+                                    <Label text="Name:">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                        <HBox.margin>
-                                          <Insets left="10.0" top="5.0" />
+                                          <Insets left="10.0" top="4.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Text fx:id="supplierNameLabelBIT" layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Text>
-                                    <Text fx:id="supplierAddressLabelBIT" layoutX="202.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Address">
+                                    <Label layoutX="381.0" layoutY="14.0" text="Address:">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                        <HBox.margin>
-                                          <Insets left="10.0" top="5.0" />
+                                          <Insets left="10.0" top="4.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Text fx:id="supplierAddressLabelBIT" layoutX="202.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Text>
-                                    <Text fx:id="supplierPhoneLabelBIT" layoutX="255.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone:">
+                                    <Label layoutX="419.0" layoutY="10.0" text="Phone:">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
                                        <HBox.margin>
-                                          <Insets left="10.0" top="5.0" />
+                                          <Insets left="10.0" top="4.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Text fx:id="supplierPhoneLabelBIT" layoutX="255.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="None">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Text>
                                  </children>
