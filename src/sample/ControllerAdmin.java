@@ -11,20 +11,34 @@ import javafx.scene.text.Text;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
+public class ControllerAdmin implements Initializable {
     @FXML
     public Button goStorageButtonST,goShopButtonST,moveButtonST,goShopButtonTT, addButtonTT, saveButtonTT, goShopButtonBIT, addButtonBIT, saveButtonBIT;
     @FXML
     public TableView storageTableViewST, shopTableViewST,shopStockTableViewTT, currentTransactionTableViewTT, transactionHistoryTableViewTT, storageTableViewBIT, currentTransactionTableViewBIT, transactionHistoryTableViewBIT;
     @FXML
-    public TextField itemIdTextField, itemQuantityTextField,customerNameTextField, customerAddressTextField, customerNumberTextField,
+    public TextField itemIdTextFieldST, itemQuantityTextFieldST,customerNameTextField, customerAddressTextField, customerNumberTextField,
             enterItemIdTextField, enterItemQtyTextField, supplierNameTextFieldBIT, supplierAddressTextFieldBIT, supplierPhoneTextFieldBIT,
             itemIdTextFieldBIT, itemQuantityTextFieldBIT, sellPriceTextFieldBIT, buyPriceTextFieldBIT,itemNameTextFieldBIT;
     @FXML
-    public ComboBox storageComboBoxST, shopComboBoxST, fromComboBox, toComboBox, shopComboBoxTT, storageComboBoxBIT;
+    public ComboBox storageComboBoxST, shopComboBoxST, fromComboBox, toComboBox, shopComboBoxTT, storageComboBoxBIT ;
 
     @FXML
-    public Text customerNameLabelTT,customerAddressLabelTT,customerPhoneLabelTT,supplierNameLabelBIT,supplierAddressLabelBIT,supplierPhoneLabelBIT;
+    public Text storageIdTextST, storageAddressTextST, storageNumberTextST, shopIdTextST, shopAddressTextST, shopNumberTextST,
+            customerNameLabelTT,customerAddressLabelTT,customerPhoneLabelTT,supplierNameLabelBIT,supplierAddressLabelBIT,supplierPhoneLabelBIT;
+
+
+    ObservableList<String> storageLists = FXCollections.observableArrayList(
+            "Storage 1", "Storage 2"
+    );
+    ObservableList<String> shopLists = FXCollections.observableArrayList(
+            "Shop 1", "Shop 2"
+    );
+    ObservableList<String> shopStorageLists = FXCollections.observableArrayList(
+            "Shop 1", "Shop 2", "Storage 1", "Storage 2"
+    );
+
+
 
     public TableColumn<CurrentTransactionTableTT,String>transactionIdColumnTT;
     public TableColumn<CurrentTransactionTableTT,Integer>transactionQtyColumnTT;
@@ -51,6 +65,49 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        storageComboBoxST.setItems(storageLists);
+        shopComboBoxST.setItems(shopLists);
+        storageComboBoxBIT.setItems(storageLists);
+        fromComboBox.setItems(shopStorageLists);
+
+
+
+        //Storage Tab
+        TableColumn itemIdStorage = new TableColumn("Item ID");
+        itemIdStorage.setMinWidth(100);
+        itemIdStorage.setCellValueFactory(
+                //sets from what class to take the data from and what is the type of data
+                new PropertyValueFactory<Item, String>("itemId"));
+
+        TableColumn itemQtyStorage = new TableColumn("Item ID");
+        itemQtyStorage.setMinWidth(100);
+        itemQtyStorage.setCellValueFactory(
+                //sets from what class to take the data from and what is the type of data
+                new PropertyValueFactory<Item, Integer>("itemQty"));
+
+        storageTableViewST.getItems().addAll(itemIdStorage, itemQtyStorage);
+
+        TableColumn itemIdShop = new TableColumn("Item ID");
+        itemIdShop.setMinWidth(100);
+        itemIdShop.setCellValueFactory(
+                //sets from what class to take the data from and what is the type of data
+                new PropertyValueFactory<Item, String>("itemId"));
+
+        TableColumn itemQtySshop = new TableColumn("Item ID");
+        itemQtySshop.setMinWidth(100);
+        itemQtySshop.setCellValueFactory(
+                //sets from what class to take the data from and what is the type of data
+                new PropertyValueFactory<Item, Integer>("itemQty"));
+
+        storageTableViewST.getItems().addAll(itemIdShop, itemQtySshop);
+
+
+
+
+
+
+
 //        setting the observable list for the current transaction Table TT;
         transactionIdColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,String>("itemId"));
         transactionQtyColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,Integer>("itemQty"));
@@ -67,6 +124,37 @@ public class Controller implements Initializable {
         transactionTotalColumnBIT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableBIT,Integer>("total"));
         currentTransactionTableViewBIT.setItems(currentTransactionTableDataBIT);
     }
+    public void fromComboBoxPicked(){
+        if(shopLists.contains(fromComboBox.getValue()))
+        {
+            toComboBox.setItems(storageLists);
+        }
+        else
+        {
+            toComboBox.setItems(shopStorageLists);
+        }
+    }
+    public void goStorageButtonSTClicked()
+    {
+//        storageComboBoxBIT.getValue()
+        storageIdTextST.setText("S-001");
+        storageAddressTextST.setText("jl.001");
+        storageNumberTextST.setText("0811212122");
+    }
+    public void goShopButtonSTClicked()
+    {
+//        shopComboBoxST.getValue()
+        shopIdTextST.setText("S-001");
+        shopAddressTextST.setText("jl.001");
+        shopNumberTextST.setText("0811212122");
+    }
+
+    public void MoveButtonSTClicked()
+    {
+        String inputId = itemIdTextFieldST.getText();
+        String inputQty = itemQuantityTextFieldST.getText();
+    }
+
 
 
     public void addButtonClickedTT(javafx.event.ActionEvent event) {

@@ -117,8 +117,6 @@ public class Main extends Application {
                     a.setContentText("Username and Password are invalid!");
                     // Get the Stage.
                     Stage stage = (Stage) a.getDialogPane().getScene().getWindow();
-                    // Add a custom icon.
-                    stage.getIcons().add(new Image(this.getClass().getResource("icon.png").toString()));
                     //Set the username Input and Password Input to empty, if the inputs are not correct.
                     userNameInput.clear();
                     passInput.clear();
@@ -132,7 +130,7 @@ public class Main extends Application {
                     Parent root = null;
                     try {
                         //Declare root from Parent Class (Node) and load the fxml as root.
-                        root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+                        root = FXMLLoader.load(getClass().getResource("admin.fxml"));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -148,11 +146,9 @@ public class Main extends Application {
                         event1.consume();
                         closeProgram();
                     });
-                    //Declare A new Scene and set the width along with height for the KevAndNic_Gui_App.fxml
+                    //Declare A new Scene and set the width along with height for the fxml
                     Scene inventoryScene = new Scene(root, 1800, 1200);
-                    //Set the Scene to the KevAndNic_Gui_App.fxml
                     window.setScene(inventoryScene);
-                    //Show the Inventory (KevAndNic_Gui_App.fxml) GUI.
                     window.show();
 
                 }
