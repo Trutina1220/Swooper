@@ -54,6 +54,9 @@ public class ControllerAdmin implements Initializable {
     public TableColumn<CurrentTransactionTableBIT,Integer>transactionTotalColumnBIT;
     ObservableList<CurrentTransactionTableBIT> currentTransactionTableDataBIT = FXCollections.observableArrayList();
 
+//    initialize database connection
+    public Database database = new Database();
+
 
 //static int for transactionTable
     static int transactionId;
@@ -158,6 +161,12 @@ public class ControllerAdmin implements Initializable {
 
 
     public void addButtonClickedTT(javafx.event.ActionEvent event) {
+
+        database.printAllEmployee();
+
+
+
+
         String customerName = customerNameTextField.getText();
         String customerAddress = customerAddressTextField.getText();
         String customerPhoneNumber = customerNumberTextField.getText();
