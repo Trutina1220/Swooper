@@ -1,5 +1,8 @@
 package sample;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.sql.*;
 
 public class Database {
@@ -8,6 +11,8 @@ public class Database {
     String host ="jdbc:mysql://remotemysql.com:3306/fvLuF0YWF7";
     String sql = "select * from ";
     String employeeTable ="fvLuF0YWF7.Employee";
+    String shopTable = "fvLuF0YWF7.Shop";
+    String storageTable = "fvLuF0YWF7.Storage";
     public Connection connection;
     public Connection getConnection(){
 
@@ -42,5 +47,47 @@ public class Database {
             System.out.println(err.getMessage());
         }
 
+    }
+
+    public ResultSet getShopStorageInfo(String choice)
+    {
+        ResultSet rsShop = null;
+        if (choice.contains("SH"))
+        {
+            try {
+                Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
+                PreparedStatement stat = con.prepareStatement(sql + this.shopTable + " where shop_id = ?");
+
+                stat.setString(1, choice);
+
+
+                rsShop = stat.executeQuery();
+                System.out.println(rsShop);
+
+
+            } catch(SQLException e)
+            {
+                System.out.println(e.getMessage());
+            }
+        }
+        else
+        {
+            try {
+                Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
+                PreparedStatement stat = con.prepareStatement(sql + this.storageTable + " where storage_id = ?");
+
+                stat.setString(1, choice);
+
+                rsShop = stat.executeQuery();
+                System.out.println(rsShop);
+
+
+            } catch(SQLException e)
+            {
+                System.out.println(e.getMessage());
+            }
+
+        }
+        return rsShop;
     }
 }

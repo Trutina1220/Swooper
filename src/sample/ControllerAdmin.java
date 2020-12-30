@@ -9,11 +9,13 @@ import javafx.scene.text.Text;
 
 
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class ControllerAdmin implements Initializable {
     @FXML
-    public Button goStorageButtonST,goShopButtonST,moveButtonST,goShopButtonTT, addButtonTT, saveButtonTT, goShopButtonBIT, addButtonBIT, saveButtonBIT;
+    public Button goStorageButtonST,goShopButtonST,moveButtonST,goShopButtonTT, addButtonTT, saveButtonTT, goStorageButtonBIT, addButtonBIT, saveButtonBIT;
     @FXML
     public TableView storageTableViewST, shopTableViewST,shopStockTableViewTT, currentTransactionTableViewTT, transactionHistoryTableViewTT, storageTableViewBIT, currentTransactionTableViewBIT, transactionHistoryTableViewBIT;
     @FXML
@@ -24,8 +26,9 @@ public class ControllerAdmin implements Initializable {
     public ComboBox storageComboBoxST, shopComboBoxST, fromComboBox, toComboBox, shopComboBoxTT, storageComboBoxBIT ;
 
     @FXML
-    public Text storageIdTextST, storageAddressTextST, storageNumberTextST, shopIdTextST, shopAddressTextST, shopNumberTextST,
-            customerNameLabelTT,customerAddressLabelTT,customerPhoneLabelTT,supplierNameLabelBIT,supplierAddressLabelBIT,supplierPhoneLabelBIT;
+    public Text storageIdTextST, storageAddressTextST, storageNumberTextST, shopIdTextST, shopAddressTextST, shopNumberTextST, shopIdTextTT,
+            shopAddressTextTT, shopNumberTextTT, customerNameLabelTT,customerAddressLabelTT,customerPhoneLabelTT,storageIdTextBIT, storageAddressTextBIT,
+            storageNumberTextBIT, supplierNameLabelBIT, supplierAddressLabelBIT,supplierPhoneLabelBIT;
 
 
     ObservableList<String> storageLists = FXCollections.observableArrayList(
@@ -71,6 +74,7 @@ public class ControllerAdmin implements Initializable {
 
         storageComboBoxST.setItems(storageLists);
         shopComboBoxST.setItems(shopLists);
+        shopComboBoxTT.setItems(shopLists);
         storageComboBoxBIT.setItems(storageLists);
         fromComboBox.setItems(shopStorageLists);
 
@@ -137,20 +141,86 @@ public class ControllerAdmin implements Initializable {
             toComboBox.setItems(shopStorageLists);
         }
     }
-    public void goStorageButtonSTClicked()
-    {
-//        storageComboBoxBIT.getValue()
-        storageIdTextST.setText("S-001");
-        storageAddressTextST.setText("jl.001");
-        storageNumberTextST.setText("0811212122");
+
+    public void goStorageButtonSTClicked() throws SQLException {
+        if(storageComboBoxST.getValue() == "Storage 1")
+        {
+            ResultSet storage1 = database.getShopStorageInfo("ST001");
+            while (storage1.next()) {
+                storageIdTextST.setText(storage1.getString("storage_id"));
+                storageAddressTextST.setText(storage1.getString("storage_address"));
+                storageNumberTextST.setText(storage1.getString("storage_telephone_number"));
+            }
+        }
+        else
+        {
+            ResultSet storage2 = database.getShopStorageInfo("ST002");
+            while (storage2.next()) {
+                storageIdTextST.setText(storage2.getString("storage_id"));
+                storageAddressTextST.setText(storage2.getString("storage_address"));
+                storageNumberTextST.setText(storage2.getString("storage_telephone_number"));
+            }
+        }
     }
-    public void goShopButtonSTClicked()
-    {
-//        shopComboBoxST.getValue()
-        shopIdTextST.setText("S-001");
-        shopAddressTextST.setText("jl.001");
-        shopNumberTextST.setText("0811212122");
+    public void goShopButtonSTClicked() throws SQLException {
+        if(shopComboBoxST.getValue() == "Shop 1")
+        {
+            ResultSet shop1 = database.getShopStorageInfo("SH001");
+            while (shop1.next()) {
+                shopIdTextST.setText(shop1.getString("shop_id"));
+                shopAddressTextST.setText(shop1.getString("shop_address"));
+                shopNumberTextST.setText(shop1.getString("shop_telephone_number"));
+            }
+        }
+        else
+        {
+            ResultSet shop2 = database.getShopStorageInfo("SH002");
+            while (shop2.next()) {
+                shopIdTextST.setText(shop2.getString("shop_id"));
+                shopAddressTextST.setText(shop2.getString("shop_address"));
+                shopNumberTextST.setText(shop2.getString("shop_telephone_number"));
+            }
+        }
     }
+
+    public void goShopButtonTTClicked() throws SQLException {
+        if (shopComboBoxTT.getValue() == "Shop 1") {
+            ResultSet shop1 = database.getShopStorageInfo("SH001");
+            while (shop1.next()) {
+                shopIdTextTT.setText(shop1.getString("shop_id"));
+                shopAddressTextTT.setText(shop1.getString("shop_address"));
+                shopNumberTextTT.setText(shop1.getString("shop_telephone_number"));
+            }
+        } else {
+            ResultSet shop2 = database.getShopStorageInfo("SH002");
+            while (shop2.next()) {
+                shopIdTextTT.setText(shop2.getString("shop_id"));
+                shopAddressTextTT.setText(shop2.getString("shop_address"));
+                shopNumberTextTT.setText(shop2.getString("shop_telephone_number"));
+            }
+        }
+    }
+
+        public void goStorageButtonBITClicked() throws SQLException{
+            if (storageComboBoxBIT.getValue() == "Storage 1") {
+                ResultSet shop1 = database.getShopStorageInfo("ST001");
+                while (shop1.next()) {
+                    storageIdTextBIT.setText(shop1.getString("storage_id"));
+                    storageAddressTextBIT.setText(shop1.getString("storage_address"));
+                    storageNumberTextBIT.setText(shop1.getString("storage_telephone_number"));
+                }
+            } else {
+                ResultSet shop2 = database.getShopStorageInfo("ST002");
+                while (shop2.next()) {
+                    storageIdTextBIT.setText(shop2.getString("storage_id"));
+                    storageAddressTextBIT.setText(shop2.getString("storage_address"));
+                    storageNumberTextBIT.setText(shop2.getString("storage_telephone_number"));
+                }
+            }
+        }
+
+
+
 
     public void MoveButtonSTClicked()
     {

@@ -17,8 +17,8 @@ import java.sql.Connection;
 
 public class Main extends Application {
     Stage window;
-    String userName = "Kevin";
-    String password = "1234";
+    String userName = "1";
+    String password = "1";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -100,8 +100,6 @@ public class Main extends Application {
                 a.setContentText("All Field must be Filled !");
                 // Get the Stage.
                 Stage stage = (Stage) a.getDialogPane().getScene().getWindow();
-                // Add a custom icon.
-                stage.getIcons().add(new Image(this.getClass().getResource("icon.png").toString()));
                 //Show the alert box
                 a.show();
             }
