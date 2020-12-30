@@ -40,6 +40,10 @@ public class ControllerAdmin implements Initializable {
     ObservableList<String> shopStorageLists = FXCollections.observableArrayList(
             "Shop 1", "Shop 2", "Storage 1", "Storage 2"
     );
+    ObservableList<Item> shopItems = FXCollections.observableArrayList();
+    ObservableList<Item> storageItems = FXCollections.observableArrayList();
+
+
 
 
 
@@ -82,32 +86,50 @@ public class ControllerAdmin implements Initializable {
 
         //Storage Tab
         TableColumn itemIdStorage = new TableColumn("Item ID");
-        itemIdStorage.setMinWidth(100);
+        itemIdStorage.setMinWidth(300);
         itemIdStorage.setCellValueFactory(
                 //sets from what class to take the data from and what is the type of data
                 new PropertyValueFactory<Item, String>("itemId"));
 
-        TableColumn itemQtyStorage = new TableColumn("Item ID");
-        itemQtyStorage.setMinWidth(100);
+        TableColumn itemQtyStorage = new TableColumn("Item Quantity");
+        itemQtyStorage.setMinWidth(300);
         itemQtyStorage.setCellValueFactory(
                 //sets from what class to take the data from and what is the type of data
                 new PropertyValueFactory<Item, Integer>("itemQty"));
 
-        storageTableViewST.getItems().addAll(itemIdStorage, itemQtyStorage);
+        TableColumn itemDescStorage = new TableColumn("Item Desc");
+        itemDescStorage.setMinWidth(300);
+        itemDescStorage.setCellValueFactory(
+                //sets from what class to take the data from and what is the type of data
+                new PropertyValueFactory<Item, Integer>("itemDesc"));
+        storageTableViewST.setItems(storageItems);
+
+        storageTableViewST.getColumns().addAll(itemIdStorage, itemQtyStorage, itemDescStorage);
+
+
+
 
         TableColumn itemIdShop = new TableColumn("Item ID");
-        itemIdShop.setMinWidth(100);
+        itemIdShop.setMinWidth(300);
         itemIdShop.setCellValueFactory(
                 //sets from what class to take the data from and what is the type of data
                 new PropertyValueFactory<Item, String>("itemId"));
 
-        TableColumn itemQtySshop = new TableColumn("Item ID");
-        itemQtySshop.setMinWidth(100);
-        itemQtySshop.setCellValueFactory(
+        TableColumn itemQtyShop = new TableColumn("Item Quantity");
+        itemQtyShop.setMinWidth(300);
+        itemQtyShop.setCellValueFactory(
                 //sets from what class to take the data from and what is the type of data
                 new PropertyValueFactory<Item, Integer>("itemQty"));
 
-        storageTableViewST.getItems().addAll(itemIdShop, itemQtySshop);
+        TableColumn itemDescShop = new TableColumn("Item Desc");
+        itemDescShop.setMinWidth(300);
+        itemDescShop.setCellValueFactory(
+                //sets from what class to take the data from and what is the type of data
+                new PropertyValueFactory<Item, String>("itemDesc"));
+
+        shopTableViewST.setItems(shopItems);
+
+        shopTableViewST.getColumns().addAll(itemIdShop, itemQtyShop, itemDescShop);
 
 
 
@@ -145,40 +167,67 @@ public class ControllerAdmin implements Initializable {
     public void goStorageButtonSTClicked() throws SQLException {
         if(storageComboBoxST.getValue() == "Storage 1")
         {
+            storageItems.clear();
             ResultSet storage1 = database.getShopStorageInfo("ST001");
+            ResultSet storage1Items = database.getShopStorageItems("ST001");
             while (storage1.next()) {
                 storageIdTextST.setText(storage1.getString("storage_id"));
                 storageAddressTextST.setText(storage1.getString("storage_address"));
                 storageNumberTextST.setText(storage1.getString("storage_telephone_number"));
             }
+            while (storage1Items.next())
+            {
+                storageItems.add(new Item(storage1Items.getString("item_id"), Integer.parseInt(storage1Items.getString("storage_stock_quantity")), storage1Items.getString("item_description")));
+            }
+
         }
         else
         {
+            storageItems.clear();
             ResultSet storage2 = database.getShopStorageInfo("ST002");
+            ResultSet storage2Items = database.getShopStorageItems("ST002");
             while (storage2.next()) {
                 storageIdTextST.setText(storage2.getString("storage_id"));
                 storageAddressTextST.setText(storage2.getString("storage_address"));
                 storageNumberTextST.setText(storage2.getString("storage_telephone_number"));
             }
+            while (storage2Items.next())
+            {
+                storageItems.add(new Item(storage2Items.getString("item_id"), Integer.parseInt(storage2Items.getString("storage_stock_quantity")),storage2Items.getString("item_description")));
+            }
+
         }
     }
     public void goShopButtonSTClicked() throws SQLException {
         if(shopComboBoxST.getValue() == "Shop 1")
         {
+            shopItems.clear();
             ResultSet shop1 = database.getShopStorageInfo("SH001");
+            ResultSet shop1Item = database.getShopStorageItems("SH001");
             while (shop1.next()) {
                 shopIdTextST.setText(shop1.getString("shop_id"));
                 shopAddressTextST.setText(shop1.getString("shop_address"));
                 shopNumberTextST.setText(shop1.getString("shop_telephone_number"));
             }
+            while(shop1Item.next())
+            {
+                shopItems.add(new Item(shop1Item.getString("item_id"), Integer.parseInt(shop1Item.getString("shop_stock_quantity")), shop1Item.getString("item_description")));
+            }
+
         }
         else
         {
+            shopItems.clear();
             ResultSet shop2 = database.getShopStorageInfo("SH002");
+            ResultSet shop2Item = database.getShopStorageItems("SH002");
             while (shop2.next()) {
                 shopIdTextST.setText(shop2.getString("shop_id"));
                 shopAddressTextST.setText(shop2.getString("shop_address"));
                 shopNumberTextST.setText(shop2.getString("shop_telephone_number"));
+            }
+            while (shop2Item.next())
+            {
+                shopItems.add(new Item(shop2Item.getString("item_id"), Integer.parseInt(shop2Item.getString("shop_stock_quantity")), shop2Item.getString("item_description")));
             }
         }
     }

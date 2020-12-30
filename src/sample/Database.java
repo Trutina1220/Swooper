@@ -13,12 +13,16 @@ public class Database {
     String employeeTable ="fvLuF0YWF7.Employee";
     String shopTable = "fvLuF0YWF7.Shop";
     String storageTable = "fvLuF0YWF7.Storage";
+    String itemTable = "fvLuF0YWF7.Item";
+    String shopStockTable = "fvLuF0YWF7.`Shop Stock`";
+    String storageStockTable = "fvLuF0YWF7.`Storage Stock`";
     public Connection connection;
     public Connection getConnection(){
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection(host,userName,password);
+            return connection;
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -51,7 +55,7 @@ public class Database {
 
     public ResultSet getShopStorageInfo(String choice)
     {
-        ResultSet rsShop = null;
+        ResultSet rsShopStorage = null;
         if (choice.contains("SH"))
         {
             try {
@@ -61,8 +65,7 @@ public class Database {
                 stat.setString(1, choice);
 
 
-                rsShop = stat.executeQuery();
-                System.out.println(rsShop);
+                rsShopStorage = stat.executeQuery();
 
 
             } catch(SQLException e)
@@ -78,8 +81,7 @@ public class Database {
 
                 stat.setString(1, choice);
 
-                rsShop = stat.executeQuery();
-                System.out.println(rsShop);
+                rsShopStorage = stat.executeQuery();
 
 
             } catch(SQLException e)
@@ -88,6 +90,54 @@ public class Database {
             }
 
         }
-        return rsShop;
+        return rsShopStorage;
+    }
+
+    public ResultSet getShopStorageItems(String choice)
+    {
+        ResultSet rsShopStorageItem = null;
+
+        if(choice.contains("SH"))
+        {
+            try {
+                Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
+                PreparedStatement stat = con.prepareStatement("select `Shop Stock`.*, Items.item_description \n" +
+                        "from `Shop Stock`\n" +
+                        "inner join Items\n" +
+                        "on `Shop Stock`.item_id = Items.item_id where shop_id = ?");
+
+                stat.setString(1, choice);
+
+                rsShopStorageItem = stat.executeQuery();
+
+
+
+            }catch(SQLException e)
+            {
+                System.out.println(e);
+            }
+        }
+        else
+        {
+            try {
+                Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
+                PreparedStatement stat = con.prepareStatement("select `Storage Stock`.*, Items.item_description \n" +
+                        "from `Storage Stock`\n" +
+                        "inner join Items\n" +
+                        "on `Storage Stock`.item_id = Items.item_id where storage_id = ?");
+
+                stat.setString(1, choice);
+
+                rsShopStorageItem = stat.executeQuery();
+
+
+            }catch(SQLException e)
+            {
+                System.out.println(e);
+            }
+
+        }
+        return rsShopStorageItem;
+
     }
 }
