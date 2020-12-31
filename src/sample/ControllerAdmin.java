@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import org.omg.CORBA.INTERNAL;
 
 
 import java.net.URL;
@@ -164,12 +165,17 @@ public class ControllerAdmin implements Initializable {
         }
     }
 
+
+
+
+
     public void goStorageButtonSTClicked() throws SQLException {
         if(storageComboBoxST.getValue() == "Storage 1")
         {
             storageItems.clear();
             ResultSet storage1 = database.getShopStorageInfo("ST001");
             ResultSet storage1Items = database.getShopStorageItems("ST001");
+
             while (storage1.next()) {
                 storageIdTextST.setText(storage1.getString("storage_id"));
                 storageAddressTextST.setText(storage1.getString("storage_address"));
@@ -179,6 +185,8 @@ public class ControllerAdmin implements Initializable {
             {
                 storageItems.add(new Item(storage1Items.getString("item_id"), Integer.parseInt(storage1Items.getString("storage_stock_quantity")), storage1Items.getString("item_description")));
             }
+            storage1.close();
+            storage1Items.close();
 
         }
         else
@@ -186,6 +194,7 @@ public class ControllerAdmin implements Initializable {
             storageItems.clear();
             ResultSet storage2 = database.getShopStorageInfo("ST002");
             ResultSet storage2Items = database.getShopStorageItems("ST002");
+
             while (storage2.next()) {
                 storageIdTextST.setText(storage2.getString("storage_id"));
                 storageAddressTextST.setText(storage2.getString("storage_address"));
@@ -195,6 +204,8 @@ public class ControllerAdmin implements Initializable {
             {
                 storageItems.add(new Item(storage2Items.getString("item_id"), Integer.parseInt(storage2Items.getString("storage_stock_quantity")),storage2Items.getString("item_description")));
             }
+            storage2.close();
+            storage2Items.close();
 
         }
     }
@@ -203,33 +214,85 @@ public class ControllerAdmin implements Initializable {
         {
             shopItems.clear();
             ResultSet shop1 = database.getShopStorageInfo("SH001");
-            ResultSet shop1Item = database.getShopStorageItems("SH001");
+            ResultSet shop1Items = database.getShopStorageItems("SH001");
+
+
             while (shop1.next()) {
                 shopIdTextST.setText(shop1.getString("shop_id"));
                 shopAddressTextST.setText(shop1.getString("shop_address"));
                 shopNumberTextST.setText(shop1.getString("shop_telephone_number"));
             }
-            while(shop1Item.next())
+            while(shop1Items.next())
             {
-                shopItems.add(new Item(shop1Item.getString("item_id"), Integer.parseInt(shop1Item.getString("shop_stock_quantity")), shop1Item.getString("item_description")));
+                shopItems.add(new Item(shop1Items.getString("item_id"), Integer.parseInt(shop1Items.getString("shop_stock_quantity")), shop1Items.getString("item_description")));
             }
+            shop1.close();
+            shop1Items.close();
 
         }
         else
         {
             shopItems.clear();
             ResultSet shop2 = database.getShopStorageInfo("SH002");
-            ResultSet shop2Item = database.getShopStorageItems("SH002");
+            ResultSet shop2Items = database.getShopStorageItems("SH002");
+
             while (shop2.next()) {
                 shopIdTextST.setText(shop2.getString("shop_id"));
                 shopAddressTextST.setText(shop2.getString("shop_address"));
                 shopNumberTextST.setText(shop2.getString("shop_telephone_number"));
             }
-            while (shop2Item.next())
+            while (shop2Items.next())
             {
-                shopItems.add(new Item(shop2Item.getString("item_id"), Integer.parseInt(shop2Item.getString("shop_stock_quantity")), shop2Item.getString("item_description")));
+                shopItems.add(new Item(shop2Items.getString("item_id"), Integer.parseInt(shop2Items.getString("shop_stock_quantity")), shop2Items.getString("item_description")));
+            }
+            shop2.close();
+            shop2Items.close();
+        }
+    }
+
+    public void MoveButtonSTClicked() throws SQLException {
+//        String inputId = itemIdTextFieldST.getText();
+//        String inputQty = itemQuantityTextFieldST.getText();
+//        if(shopLists.contains(toComboBox.getValue()))
+//        {
+//            if(toComboBox.getValue() == "Shop 1"){
+//                ResultSet rsInsertTo = database.insertItem("SH001",inputId, Integer.parseInt(inputQty));
+//
+//                while (rsInsertTo.next())
+//                {
+//                    if(isUnique(itemIdTextFieldST))
+//                    {
+//                        shopItems.add(new Item(shop1Items.getString("item_id"), Integer.parseInt(shop1Items.getString("shop_stock_quantity")), shop1Items.getString("item_description")));
+//                    }
+//                    else
+//                    {
+//                        shopItems
+//                    }
+//
+//                }
+//            }
+//
+//        }else{
+//            if(toComboBox.getValue() == "Storage 1"){
+//
+//            }
+//
+//        }
+
+    }
+    public boolean isUnique(TextField itemIdTextField)
+    {
+        //For each loop to check every product inside products observable array list.
+        for(Item item:shopItems)
+        {
+            //if the part number inputted by the user exist in the observable list the function returns false
+            if(item.getItemId().equals(itemIdTextFieldST.getText()))
+            {
+                return false;
             }
         }
+        //returns true by default
+        return true;
     }
 
     public void goShopButtonTTClicked() throws SQLException {
@@ -240,6 +303,7 @@ public class ControllerAdmin implements Initializable {
                 shopAddressTextTT.setText(shop1.getString("shop_address"));
                 shopNumberTextTT.setText(shop1.getString("shop_telephone_number"));
             }
+            shop1.close();
         } else {
             ResultSet shop2 = database.getShopStorageInfo("SH002");
             while (shop2.next()) {
@@ -247,44 +311,33 @@ public class ControllerAdmin implements Initializable {
                 shopAddressTextTT.setText(shop2.getString("shop_address"));
                 shopNumberTextTT.setText(shop2.getString("shop_telephone_number"));
             }
+            shop2.close();
         }
     }
 
-        public void goStorageButtonBITClicked() throws SQLException{
-            if (storageComboBoxBIT.getValue() == "Storage 1") {
-                ResultSet shop1 = database.getShopStorageInfo("ST001");
-                while (shop1.next()) {
-                    storageIdTextBIT.setText(shop1.getString("storage_id"));
-                    storageAddressTextBIT.setText(shop1.getString("storage_address"));
-                    storageNumberTextBIT.setText(shop1.getString("storage_telephone_number"));
-                }
-            } else {
-                ResultSet shop2 = database.getShopStorageInfo("ST002");
-                while (shop2.next()) {
-                    storageIdTextBIT.setText(shop2.getString("storage_id"));
-                    storageAddressTextBIT.setText(shop2.getString("storage_address"));
-                    storageNumberTextBIT.setText(shop2.getString("storage_telephone_number"));
-                }
+    public void goStorageButtonBITClicked() throws SQLException{
+        if (storageComboBoxBIT.getValue() == "Storage 1") {
+            ResultSet storage1 = database.getShopStorageInfo("ST001");
+            while (storage1.next()) {
+                storageIdTextBIT.setText(storage1.getString("storage_id"));
+                storageAddressTextBIT.setText(storage1.getString("storage_address"));
+                storageNumberTextBIT.setText(storage1.getString("storage_telephone_number"));
             }
+            storage1.close();
+        } else {
+            ResultSet storage2 = database.getShopStorageInfo("ST002");
+            while (storage2.next()) {
+                storageIdTextBIT.setText(storage2.getString("storage_id"));
+                storageAddressTextBIT.setText(storage2.getString("storage_address"));
+                storageNumberTextBIT.setText(storage2.getString("storage_telephone_number"));
+            }
+            storage2.close();
         }
-
-
-
-
-    public void MoveButtonSTClicked()
-    {
-        String inputId = itemIdTextFieldST.getText();
-        String inputQty = itemQuantityTextFieldST.getText();
     }
-
-
 
     public void addButtonClickedTT(javafx.event.ActionEvent event) {
 
         database.printAllEmployee();
-
-
-
 
         String customerName = customerNameTextField.getText();
         String customerAddress = customerAddressTextField.getText();

@@ -323,7 +323,7 @@
                                     <Font size="16.0" />
                                  </font>
                               </Label>
-                              <Text fx:id="ShopNumberTextTT" strokeType="OUTSIDE" strokeWidth="0.0" text="None">
+                              <Text fx:id="shopNumberTextTT" strokeType="OUTSIDE" strokeWidth="0.0" text="None">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="7.0" />
                                  </HBox.margin>

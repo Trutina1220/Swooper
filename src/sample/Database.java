@@ -52,7 +52,7 @@ public class Database {
         }
 
     }
-
+//function in untuk inforrmation shop and storage
     public ResultSet getShopStorageInfo(String choice)
     {
         ResultSet rsShopStorage = null;
@@ -66,6 +66,7 @@ public class Database {
 
 
                 rsShopStorage = stat.executeQuery();
+
 
 
             } catch(SQLException e)
@@ -84,6 +85,7 @@ public class Database {
                 rsShopStorage = stat.executeQuery();
 
 
+
             } catch(SQLException e)
             {
                 System.out.println(e.getMessage());
@@ -93,6 +95,7 @@ public class Database {
         return rsShopStorage;
     }
 
+//function untuk populate table
     public ResultSet getShopStorageItems(String choice)
     {
         ResultSet rsShopStorageItem = null;
@@ -109,6 +112,7 @@ public class Database {
                 stat.setString(1, choice);
 
                 rsShopStorageItem = stat.executeQuery();
+
 
 
 
@@ -131,6 +135,7 @@ public class Database {
                 rsShopStorageItem = stat.executeQuery();
 
 
+
             }catch(SQLException e)
             {
                 System.out.println(e);
@@ -140,4 +145,147 @@ public class Database {
         return rsShopStorageItem;
 
     }
+
+    public ResultSet insertItem(String toChoice, String itemID, Integer itemQuantity)
+    {
+        ResultSet rsInsertItem = null;
+        ResultSet rsTemp = null;
+        Statement statTemp = null;
+        String stockIdLast = "adakah1104";
+        String stockIdString;
+        Integer stockIdNums;
+
+        if(toChoice.contains("SH")) {
+            try {
+                Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
+                PreparedStatement stat = con.prepareStatement("Insert into " + shopStockTable + " values (?,?,?,?)");
+
+                statTemp = con.createStatement();
+                rsTemp = statTemp.executeQuery("select storage_stock_id from `Storage Stock`");
+
+                rsTemp.afterLast();
+
+                while(rsTemp.previous()) {
+                    stockIdLast = rsTemp.getString("storage_stock_id");
+                }
+                stockIdString = stockIdLast.replaceAll("[^0-9]", "");
+                stockIdNums = Integer.parseInt(stockIdString);
+
+                stat.setString(1, "SHS" + stockIdNums++);
+                stat.setString(2, toChoice);
+                stat.setString(3, itemID);
+                stat.setString(4, itemQuantity.toString());
+
+                rsInsertItem = stat.executeQuery();
+
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+        }
+        else
+        {
+            try {
+                Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
+                PreparedStatement stat = con.prepareStatement("Insert into " + storageStockTable + " values (?,?,?,?)");
+
+                statTemp = con.createStatement();
+                rsTemp = statTemp.executeQuery("select storage_stock_id from `Storage Stock`");
+                rsTemp.afterLast();
+
+                while(rsTemp.previous()) {
+                    stockIdLast = rsTemp.getString("storage_stock_id");
+                }
+                stockIdString = stockIdLast.replaceAll("[^0-9]", "");
+                stockIdNums = Integer.parseInt(stockIdString);
+
+                stat.setString(1, "STS" + stockIdNums++);
+                stat.setString(2, toChoice);
+                stat.setString(3, itemID);
+                stat.setString(4, itemQuantity.toString());
+
+                rsInsertItem = stat.executeQuery();
+
+
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+
+        }
+
+        return rsInsertItem;
+    }
+    public ResultSet updateItem(String toChoice, String itemID, Integer itemQuantity)
+    {
+        ResultSet rsInsertItem = null;
+        ResultSet rsTemp = null;
+        Statement statTemp = null;
+        String stockIdLast = "adakah1104";
+        String stockIdString;
+        Integer stockIdNums;
+
+        if(toChoice.contains("SH")) {
+            try {
+                Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
+                PreparedStatement stat = con.prepareStatement("Insert into " + shopStockTable + " values (?,?,?,?)");
+
+                statTemp = con.createStatement();
+                rsTemp = statTemp.executeQuery("select storage_stock_id from `Storage Stock`");
+
+                rsTemp.afterLast();
+
+                while(rsTemp.previous()) {
+                    stockIdLast = rsTemp.getString("storage_stock_id");
+                }
+                stockIdString = stockIdLast.replaceAll("[^0-9]", "");
+                stockIdNums = Integer.parseInt(stockIdString);
+
+                stat.setString(1, "SHS" + stockIdNums++);
+                stat.setString(2, toChoice);
+                stat.setString(3, itemID);
+                stat.setString(4, itemQuantity.toString());
+
+                rsInsertItem = stat.executeQuery();
+
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+        }
+        else
+        {
+            try {
+                Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
+                PreparedStatement stat = con.prepareStatement("Insert into " + storageStockTable + " values (?,?,?,?)");
+
+                statTemp = con.createStatement();
+                rsTemp = statTemp.executeQuery("select storage_stock_id from `Storage Stock`");
+                rsTemp.afterLast();
+
+                while(rsTemp.previous()) {
+                    stockIdLast = rsTemp.getString("storage_stock_id");
+                }
+                stockIdString = stockIdLast.replaceAll("[^0-9]", "");
+                stockIdNums = Integer.parseInt(stockIdString);
+
+                stat.setString(1, "STS" + stockIdNums++);
+                stat.setString(2, toChoice);
+                stat.setString(3, itemID);
+                stat.setString(4, itemQuantity.toString());
+
+                rsInsertItem = stat.executeQuery();
+
+
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+
+        }
+
+        return rsInsertItem;
+    }
+
+//    public  ResultSet deleteItem(String from, String ID, Integer quantity)
+//    {
+//
+//    }
+
 }
