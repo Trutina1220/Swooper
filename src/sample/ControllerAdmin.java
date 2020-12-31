@@ -1,4 +1,5 @@
 package sample;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -6,8 +7,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
-import org.omg.CORBA.INTERNAL;
-
 
 import java.net.URL;
 import java.sql.ResultSet;
@@ -336,8 +335,6 @@ public class ControllerAdmin implements Initializable {
     }
 
     public void addButtonClickedTT(javafx.event.ActionEvent event) {
-
-        database.printAllEmployee();
 
         String customerName = customerNameTextField.getText();
         String customerAddress = customerAddressTextField.getText();

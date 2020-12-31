@@ -29,29 +29,7 @@ public class Database {
 
         return connection;
     }
-    public void printAllEmployee() {
-        try {
-            Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
-            Statement stat = con.createStatement();
 
-            ResultSet rs = stat.executeQuery(sql + this.employeeTable);
-
-            while (rs.next()) {
-                String id = rs.getString("employee_id");
-                String name = rs.getString("employee_name");
-                String position = rs.getString("employee_position");
-                String phone = rs.getString("employee_phone_number");
-                String email = rs.getString("employee_email");
-                String t = id + " " + name + " " + position + "  " + phone + "  " + email;
-                System.out.println(t);
-
-            }
-
-        } catch (SQLException err) {
-            System.out.println(err.getMessage());
-        }
-
-    }
 //function in untuk inforrmation shop and storage
     public ResultSet getShopStorageInfo(String choice)
     {
@@ -149,29 +127,15 @@ public class Database {
     public ResultSet insertItem(String toChoice, String itemID, Integer itemQuantity)
     {
         ResultSet rsInsertItem = null;
-        ResultSet rsTemp = null;
-        Statement statTemp = null;
-        String stockIdLast = "adakah1104";
-        String stockIdString;
-        Integer stockIdNums;
 
         if(toChoice.contains("SH")) {
             try {
                 Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
                 PreparedStatement stat = con.prepareStatement("Insert into " + shopStockTable + " values (?,?,?,?)");
 
-                statTemp = con.createStatement();
-                rsTemp = statTemp.executeQuery("select storage_stock_id from `Storage Stock`");
 
-                rsTemp.afterLast();
 
-                while(rsTemp.previous()) {
-                    stockIdLast = rsTemp.getString("storage_stock_id");
-                }
-                stockIdString = stockIdLast.replaceAll("[^0-9]", "");
-                stockIdNums = Integer.parseInt(stockIdString);
-
-                stat.setString(1, "SHS" + stockIdNums++);
+                stat.setString(1, "SHS" );
                 stat.setString(2, toChoice);
                 stat.setString(3, itemID);
                 stat.setString(4, itemQuantity.toString());
@@ -188,17 +152,9 @@ public class Database {
                 Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
                 PreparedStatement stat = con.prepareStatement("Insert into " + storageStockTable + " values (?,?,?,?)");
 
-                statTemp = con.createStatement();
-                rsTemp = statTemp.executeQuery("select storage_stock_id from `Storage Stock`");
-                rsTemp.afterLast();
 
-                while(rsTemp.previous()) {
-                    stockIdLast = rsTemp.getString("storage_stock_id");
-                }
-                stockIdString = stockIdLast.replaceAll("[^0-9]", "");
-                stockIdNums = Integer.parseInt(stockIdString);
 
-                stat.setString(1, "STS" + stockIdNums++);
+                stat.setString(1, "STS" );
                 stat.setString(2, toChoice);
                 stat.setString(3, itemID);
                 stat.setString(4, itemQuantity.toString());
