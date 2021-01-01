@@ -19,11 +19,11 @@ public class ControllerAdmin implements Initializable {
     @FXML
     public TableView storageTableViewST, shopTableViewST,shopStockTableViewTT, currentTransactionTableViewTT, transactionHistoryTableViewTT, storageTableViewBIT, currentTransactionTableViewBIT, transactionHistoryTableViewBIT;
     @FXML
-    public TextField itemIdTextFieldST, itemQuantityTextFieldST,customerNameTextField, customerAddressTextField, customerNumberTextField,
+    public TextField itemQuantityTextFieldST,customerNameTextField, customerAddressTextField, customerNumberTextField,
             enterItemIdTextField, enterItemQtyTextField, supplierNameTextFieldBIT, supplierAddressTextFieldBIT, supplierPhoneTextFieldBIT,
             itemIdTextFieldBIT, itemQuantityTextFieldBIT, sellPriceTextFieldBIT, buyPriceTextFieldBIT,itemNameTextFieldBIT;
     @FXML
-    public ComboBox storageComboBoxST, shopComboBoxST, fromComboBox, toComboBox, shopComboBoxTT, storageComboBoxBIT ;
+    public ComboBox itemIDComboBoxST, storageComboBoxST, shopComboBoxST, fromComboBox, toComboBox, shopComboBoxTT, storageComboBoxBIT ;
 
     @FXML
     public Text storageIdTextST, storageAddressTextST, storageNumberTextST, shopIdTextST, shopAddressTextST, shopNumberTextST, shopIdTextTT,
@@ -42,6 +42,12 @@ public class ControllerAdmin implements Initializable {
     );
     ObservableList<Item> shopItems = FXCollections.observableArrayList();
     ObservableList<Item> storageItems = FXCollections.observableArrayList();
+    ObservableList<String> shop1ItemIDs = FXCollections.observableArrayList();
+    ObservableList<String> shop2ItemIDs = FXCollections.observableArrayList();
+    ObservableList<String> storage1ItemIDs= FXCollections.observableArrayList();
+    ObservableList<String> storage2ItemIDs = FXCollections.observableArrayList();
+
+
 
 
 
@@ -108,7 +114,6 @@ public class ControllerAdmin implements Initializable {
 
 
 
-
         TableColumn itemIdShop = new TableColumn("Item ID");
         itemIdShop.setMinWidth(300);
         itemIdShop.setCellValueFactory(
@@ -153,145 +158,300 @@ public class ControllerAdmin implements Initializable {
         transactionTotalColumnBIT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableBIT,Integer>("total"));
         currentTransactionTableViewBIT.setItems(currentTransactionTableDataBIT);
     }
-    public void fromComboBoxPicked(){
-        if(shopLists.contains(fromComboBox.getValue()))
-        {
-            toComboBox.setItems(storageLists);
-        }
-        else
-        {
-            toComboBox.setItems(shopStorageLists);
-        }
-    }
+
+
+
 
 
 
 
 
     public void goStorageButtonSTClicked() throws SQLException {
-        if(storageComboBoxST.getValue() == "Storage 1")
+        if(storageComboBoxST.getSelectionModel().isEmpty())
         {
-            storageItems.clear();
-            ResultSet storage1 = database.getShopStorageInfo("ST001");
-            ResultSet storage1Items = database.getShopStorageItems("ST001");
-
-            while (storage1.next()) {
-                storageIdTextST.setText(storage1.getString("storage_id"));
-                storageAddressTextST.setText(storage1.getString("storage_address"));
-                storageNumberTextST.setText(storage1.getString("storage_telephone_number"));
-            }
-            while (storage1Items.next())
-            {
-                storageItems.add(new Item(storage1Items.getString("item_id"), Integer.parseInt(storage1Items.getString("storage_stock_quantity")), storage1Items.getString("item_description")));
-            }
-            storage1.close();
-            storage1Items.close();
-
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("Please select storage first to load info!");
+            a.show();
         }
         else
         {
-            storageItems.clear();
-            ResultSet storage2 = database.getShopStorageInfo("ST002");
-            ResultSet storage2Items = database.getShopStorageItems("ST002");
-
-            while (storage2.next()) {
-                storageIdTextST.setText(storage2.getString("storage_id"));
-                storageAddressTextST.setText(storage2.getString("storage_address"));
-                storageNumberTextST.setText(storage2.getString("storage_telephone_number"));
-            }
-            while (storage2Items.next())
+            if(storageComboBoxST.getValue() == "Storage 1")
             {
-                storageItems.add(new Item(storage2Items.getString("item_id"), Integer.parseInt(storage2Items.getString("storage_stock_quantity")),storage2Items.getString("item_description")));
-            }
-            storage2.close();
-            storage2Items.close();
+                storageItems.clear();
+                ResultSet storage1 = database.getShopStorageInfo("ST001");
+                ResultSet storage1Items = database.getShopStorageItems("ST001");
 
+                while (storage1.next()) {
+                    storageIdTextST.setText(storage1.getString("storage_id"));
+                    storageAddressTextST.setText(storage1.getString("storage_address"));
+                    storageNumberTextST.setText(storage1.getString("storage_telephone_number"));
+                }
+                while (storage1Items.next())
+                {
+                    storageItems.add(new Item(storage1Items.getString("item_id"), Integer.parseInt(storage1Items.getString("storage_stock_quantity")), storage1Items.getString("item_description")));
+                }
+                storage1.close();
+                storage1Items.close();
+
+            }
+            else
+            {
+                storageItems.clear();
+                ResultSet storage2 = database.getShopStorageInfo("ST002");
+                ResultSet storage2Items = database.getShopStorageItems("ST002");
+
+                while (storage2.next()) {
+                    storageIdTextST.setText(storage2.getString("storage_id"));
+                    storageAddressTextST.setText(storage2.getString("storage_address"));
+                    storageNumberTextST.setText(storage2.getString("storage_telephone_number"));
+                }
+                while (storage2Items.next())
+                {
+                    storageItems.add(new Item(storage2Items.getString("item_id"), Integer.parseInt(storage2Items.getString("storage_stock_quantity")),storage2Items.getString("item_description")));
+                }
+                storage2.close();
+                storage2Items.close();
+            }
         }
     }
     public void goShopButtonSTClicked() throws SQLException {
-        if(shopComboBoxST.getValue() == "Shop 1")
+        if(shopComboBoxST.getSelectionModel().isEmpty())
         {
-            shopItems.clear();
-            ResultSet shop1 = database.getShopStorageInfo("SH001");
-            ResultSet shop1Items = database.getShopStorageItems("SH001");
-
-
-            while (shop1.next()) {
-                shopIdTextST.setText(shop1.getString("shop_id"));
-                shopAddressTextST.setText(shop1.getString("shop_address"));
-                shopNumberTextST.setText(shop1.getString("shop_telephone_number"));
-            }
-            while(shop1Items.next())
-            {
-                shopItems.add(new Item(shop1Items.getString("item_id"), Integer.parseInt(shop1Items.getString("shop_stock_quantity")), shop1Items.getString("item_description")));
-            }
-            shop1.close();
-            shop1Items.close();
-
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("Please select shop first to load info!");
+            a.show();
         }
         else
         {
-            shopItems.clear();
-            ResultSet shop2 = database.getShopStorageInfo("SH002");
-            ResultSet shop2Items = database.getShopStorageItems("SH002");
-
-            while (shop2.next()) {
-                shopIdTextST.setText(shop2.getString("shop_id"));
-                shopAddressTextST.setText(shop2.getString("shop_address"));
-                shopNumberTextST.setText(shop2.getString("shop_telephone_number"));
-            }
-            while (shop2Items.next())
+            if(shopComboBoxST.getValue() == "Shop 1")
             {
-                shopItems.add(new Item(shop2Items.getString("item_id"), Integer.parseInt(shop2Items.getString("shop_stock_quantity")), shop2Items.getString("item_description")));
+                shopItems.clear();
+                ResultSet shop1 = database.getShopStorageInfo("SH001");
+                ResultSet shop1Items = database.getShopStorageItems("SH001");
+
+
+                while (shop1.next()) {
+                    shopIdTextST.setText(shop1.getString("shop_id"));
+                    shopAddressTextST.setText(shop1.getString("shop_address"));
+                    shopNumberTextST.setText(shop1.getString("shop_telephone_number"));
+                }
+                while(shop1Items.next())
+                {
+                    shopItems.add(new Item(shop1Items.getString("item_id"), Integer.parseInt(shop1Items.getString("shop_stock_quantity")), shop1Items.getString("item_description")));
+                }
+                shop1.close();
+                shop1Items.close();
+
             }
-            shop2.close();
-            shop2Items.close();
+            else
+            {
+                shopItems.clear();
+                ResultSet shop2 = database.getShopStorageInfo("SH002");
+                ResultSet shop2Items = database.getShopStorageItems("SH002");
+
+                while (shop2.next()) {
+                    shopIdTextST.setText(shop2.getString("shop_id"));
+                    shopAddressTextST.setText(shop2.getString("shop_address"));
+                    shopNumberTextST.setText(shop2.getString("shop_telephone_number"));
+                }
+                while (shop2Items.next())
+                {
+                    shopItems.add(new Item(shop2Items.getString("item_id"), Integer.parseInt(shop2Items.getString("shop_stock_quantity")), shop2Items.getString("item_description")));
+                }
+                shop2.close();
+                shop2Items.close();
+            }
+
+        }
+
+    }
+
+
+    public void fromComboBoxPicked() throws SQLException {
+        if (shopLists.contains(fromComboBox.getValue())) {
+            toComboBox.setItems(storageLists);
+        } else {
+            toComboBox.setItems(shopStorageLists);
+        }
+
+        if (fromComboBox.getValue().toString() == "Shop 1") {
+            ResultSet rsShopItems = database.getShopStorageItems("SH001");
+            while (rsShopItems.next()) {
+                String shop1ItemID = rsShopItems.getString("item_id");
+                shop1ItemIDs.add(shop1ItemID);
+            }
+            itemIDComboBoxST.setItems(shop1ItemIDs);
+        }
+        else if (fromComboBox.getValue().toString() == "Shop 2") {
+            ResultSet rsShopItems = database.getShopStorageItems("SH002");
+            while (rsShopItems.next()) {
+                String shop2ItemID = rsShopItems.getString("item_id");
+                shop2ItemIDs.add(shop2ItemID);
+            }
+            itemIDComboBoxST.setItems(shop2ItemIDs);
+        }
+        else if (fromComboBox.getValue().toString() == "Storage 1") {
+            ResultSet rsStorageItems = database.getShopStorageItems("ST001");
+            while (rsStorageItems.next()) {
+                String storage1ItemID = rsStorageItems.getString("item_id");
+                storage1ItemIDs.add(storage1ItemID);
+            }
+            itemIDComboBoxST.setItems(storage1ItemIDs);
+        }
+        else {
+            ResultSet rsStorageItems = database.getShopStorageItems("ST002");
+            while (rsStorageItems.next()) {
+                String storage2ItemID = rsStorageItems.getString("item_id");
+                storage2ItemIDs.add(storage2ItemID);
+            }
+            itemIDComboBoxST.setItems(storage2ItemIDs);
         }
     }
+
 
     public void MoveButtonSTClicked() throws SQLException {
-//        String inputId = itemIdTextFieldST.getText();
-//        String inputQty = itemQuantityTextFieldST.getText();
-//        if(shopLists.contains(toComboBox.getValue()))
-//        {
-//            if(toComboBox.getValue() == "Shop 1"){
-//                ResultSet rsInsertTo = database.insertItem("SH001",inputId, Integer.parseInt(inputQty));
-//
-//                while (rsInsertTo.next())
-//                {
-//                    if(isUnique(itemIdTextFieldST))
-//                    {
-//                        shopItems.add(new Item(shop1Items.getString("item_id"), Integer.parseInt(shop1Items.getString("shop_stock_quantity")), shop1Items.getString("item_description")));
-//                    }
-//                    else
-//                    {
-//                        shopItems
-//                    }
-//
-//                }
-//            }
-//
-//        }else{
-//            if(toComboBox.getValue() == "Storage 1"){
-//
-//            }
-//
-//        }
+        boolean failMove = false;
 
-    }
-    public boolean isUnique(TextField itemIdTextField)
-    {
-        //For each loop to check every product inside products observable array list.
-        for(Item item:shopItems)
+        if(fromComboBox.getSelectionModel().isEmpty() || toComboBox.getSelectionModel().isEmpty())
         {
-            //if the part number inputted by the user exist in the observable list the function returns false
-            if(item.getItemId().equals(itemIdTextFieldST.getText()))
+            Alert a = new Alert(Alert.AlertType.WARNING);
+
+            a.setTitle("Warning");
+            a.setContentText("Please Pick the from and to box!");
+            a.show();
+            failMove = true;
+
+        }
+        else if(itemIDComboBoxST.getSelectionModel().isEmpty())
+        {
+            Alert a = new Alert(Alert.AlertType.WARNING);
+
+            a.setTitle("Warning");
+            a.setContentText("Please Pick the item ID in the combo box!");
+            a.show();
+            failMove = true;
+        }
+        else
+        {
+            if (itemQuantityTextFieldST.getText().isEmpty())
             {
-                return false;
+                Alert a = new Alert(Alert.AlertType.WARNING);
+
+                a.setTitle("Warning");
+                a.setContentText("Quantity Field is Empty!");
+                a.show();
+                failMove = true;
+            }
+            else if(!itemQuantityTextFieldST.getText().isEmpty()){
+                if(!isInt(itemQuantityTextFieldST)) {
+                    Alert a = new Alert(Alert.AlertType.WARNING);
+
+                    a.setTitle("Warning");
+                    a.setContentText("Quantity Field Must be Numbers!");
+                    a.show();
+                    failMove = true;
+                }
+
+            }
+            else
+            {
+                String inputId = (String) itemIDComboBoxST.getSelectionModel().getSelectedItem();
+                Integer inputQty = Integer.parseInt(itemQuantityTextFieldST.getText());
+                if(fromComboBox.getValue() == "Shop 1" && toComboBox.getValue() == "Storage 1")
+                {
+                    database.deleteItem("SH001", inputId, inputQty);
+                    database.insertItem("ST001", inputId, inputQty);
+                }
+                else if(fromComboBox.getValue() == "Shop 2" && toComboBox.getValue() == "Storage 1")
+                {
+                    database.deleteItem("SH002", inputId, inputQty);
+                    database.insertItem("ST001", inputId, inputQty);
+                }
+                else if(fromComboBox.getValue() == "Shop 1" && toComboBox.getValue() == "Storage 2")
+                {
+                    database.deleteItem("SH001", inputId, inputQty);
+                    database.insertItem("ST002", inputId, inputQty);
+                }
+                else if(fromComboBox.getValue() == "Shop 2" && toComboBox.getValue() == "Storage 2")
+                {
+                    database.deleteItem("SH002", inputId, inputQty);
+                    database.insertItem("ST002", inputId, inputQty);
+                }
+                else if(fromComboBox.getValue() == "Storage 1" && toComboBox.getValue() == "Storage 2")
+                {
+                    database.deleteItem("ST001", inputId, inputQty);
+                    database.insertItem("ST002", inputId, inputQty);
+                }
+                else if(fromComboBox.getValue() == "Storage 2" && toComboBox.getValue() == "Storage 1")
+                {
+                    database.deleteItem("ST002", inputId, inputQty);
+                    database.insertItem("ST001", inputId, inputQty);
+                }
+                else if(fromComboBox.getValue() == "Storage 1" && toComboBox.getValue() == "Shop 1")
+                {
+                    database.deleteItem("ST002", inputId, inputQty);
+                    database.insertItem("SH001", inputId, inputQty);
+                }
+                else if(fromComboBox.getValue() == "Storage 1" && toComboBox.getValue() == "Shop 2")
+                {
+                    database.deleteItem("ST001", inputId, inputQty);
+                    database.insertItem("SH002", inputId, inputQty);
+                }
+                else if(fromComboBox.getValue() == "Storage 2" && toComboBox.getValue() == "Shop 1")
+                {
+                    database.deleteItem("ST002", inputId, inputQty);
+                    database.insertItem("SH001", inputId, inputQty);
+                }
+                else if(fromComboBox.getValue() == "Storage 2" && toComboBox.getValue() == "Shop 2")
+                {
+                    database.deleteItem("ST002", inputId, inputQty);
+                    database.insertItem("SH002", inputId, inputQty);
+                }
+
+
+
+
+
             }
         }
-        //returns true by default
-        return true;
+
+
+
+
+        if(failMove) {
+            return;
+        }
+    }
+
+
+//    public boolean isUnique(TextField itemIdTextField)
+//    {
+//        //For each loop to check every product inside products observable array list.
+//        for(Item item:shopItems)
+//        {
+//            //if the part number inputted by the user exist in the observable list the function returns false
+//            if(item.getItemId().equals(itemIdTextFieldST.getText()))
+//            {
+//                return false;
+//            }
+//        }
+//        //returns true by default
+//        return true;
+//    }
+
+    public boolean isInt(TextField input) {
+        //Using Exception handling try catch to validate the input of a text field
+        try {
+            Integer.parseInt(input.getText());
+            //return true if the parse process is success
+            return true;
+
+        } catch (NumberFormatException exception) {
+            //return false if there is an error while parsing
+            return false;
+        }
     }
 
     public void goShopButtonTTClicked() throws SQLException {

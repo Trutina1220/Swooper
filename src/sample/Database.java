@@ -2,21 +2,22 @@ package sample;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 
 public class Database {
     String userName ="fvLuF0YWF7";
     String password ="FH81vMRjVU";
     String host ="jdbc:mysql://remotemysql.com:3306/fvLuF0YWF7";
-    String sql = "select * from ";
-    String employeeTable ="fvLuF0YWF7.Employee";
+    String selectAllQuery = "select * from ";
     String shopTable = "fvLuF0YWF7.Shop";
     String storageTable = "fvLuF0YWF7.Storage";
-    String itemTable = "fvLuF0YWF7.Item";
     String shopStockTable = "fvLuF0YWF7.`Shop Stock`";
     String storageStockTable = "fvLuF0YWF7.`Storage Stock`";
     public Connection connection;
+
     public Connection getConnection(){
 
         try {
@@ -26,11 +27,9 @@ public class Database {
         }catch (Exception e){
             e.printStackTrace();
         }
-
         return connection;
     }
 
-//function in untuk inforrmation shop and storage
     public ResultSet getShopStorageInfo(String choice)
     {
         ResultSet rsShopStorage = null;
@@ -38,31 +37,25 @@ public class Database {
         {
             try {
                 Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
-                PreparedStatement stat = con.prepareStatement(sql + this.shopTable + " where shop_id = ?");
+                PreparedStatement stat = con.prepareStatement(selectAllQuery + this.shopTable + " where shop_id = ?");
 
                 stat.setString(1, choice);
 
 
                 rsShopStorage = stat.executeQuery();
-
-
 
             } catch(SQLException e)
             {
                 System.out.println(e.getMessage());
             }
-        }
-        else
-        {
+        } else {
             try {
                 Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
-                PreparedStatement stat = con.prepareStatement(sql + this.storageTable + " where storage_id = ?");
+                PreparedStatement stat = con.prepareStatement(selectAllQuery + this.storageTable + " where storage_id = ?");
 
                 stat.setString(1, choice);
 
                 rsShopStorage = stat.executeQuery();
-
-
 
             } catch(SQLException e)
             {
@@ -73,7 +66,7 @@ public class Database {
         return rsShopStorage;
     }
 
-//function untuk populate table
+
     public ResultSet getShopStorageItems(String choice)
     {
         ResultSet rsShopStorageItem = null;
@@ -91,16 +84,11 @@ public class Database {
 
                 rsShopStorageItem = stat.executeQuery();
 
-
-
-
             }catch(SQLException e)
             {
                 System.out.println(e);
             }
-        }
-        else
-        {
+        } else {
             try {
                 Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
                 PreparedStatement stat = con.prepareStatement("select `Storage Stock`.*, Items.item_description \n" +
@@ -112,136 +100,180 @@ public class Database {
 
                 rsShopStorageItem = stat.executeQuery();
 
-
-
             }catch(SQLException e)
             {
                 System.out.println(e);
             }
-
         }
         return rsShopStorageItem;
-
     }
 
-    public ResultSet insertItem(String toChoice, String itemID, Integer itemQuantity)
-    {
-        ResultSet rsInsertItem = null;
 
+
+
+    public void insertItem(String toChoice, String itemID, Integer itemQuantity)
+    {
         if(toChoice.contains("SH")) {
             try {
                 Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
-                PreparedStatement stat = con.prepareStatement("Insert into " + shopStockTable + " values (?,?,?,?)");
+                Statement selectStat = con.createStatement();
+                ResultSet rsSelect = selectStat.executeQuery("Select * from " + shopStockTable);
+                while (rsSelect.next())
+                {
+                    if(rsSelect.getString("item_id") == itemID && rsSelect.getString("shop_id") == toChoice)
+                    {
+                        PreparedStatement updateStat = con.prepareStatement("Update " + shopStockTable + " set shop_stock_quantity = shop_stock_quantity + " +
+                                itemQuantity + " where item_id =? and shop_id = ?");
 
+                        updateStat.setString(1, itemID);
+                        updateStat.setString(2, toChoice);
 
+                        Integer statusUpdate = updateStat.executeUpdate();
+                        if(statusUpdate > 0)
+                        {
+                            Alert a = new Alert(Alert.AlertType.INFORMATION);
+                            a.setTitle("Success Moving!");
+                            a.setContentText("Reload the table to check!");
+                            a.show();
+                        }
+                    } else {
+                        PreparedStatement insertStat = con.prepareStatement("Insert into " + shopStockTable + " values (?,?,?)");
 
-                stat.setString(1, "SHS" );
-                stat.setString(2, toChoice);
-                stat.setString(3, itemID);
-                stat.setString(4, itemQuantity.toString());
+                        insertStat.setString(1, toChoice);
+                        insertStat.setString(2, itemID);
+                        insertStat.setString(3, itemQuantity.toString());
 
-                rsInsertItem = stat.executeQuery();
-
-            } catch (SQLException e) {
-                System.out.println(e);
-            }
-        }
-        else
-        {
-            try {
-                Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
-                PreparedStatement stat = con.prepareStatement("Insert into " + storageStockTable + " values (?,?,?,?)");
-
-
-
-                stat.setString(1, "STS" );
-                stat.setString(2, toChoice);
-                stat.setString(3, itemID);
-                stat.setString(4, itemQuantity.toString());
-
-                rsInsertItem = stat.executeQuery();
-
-
-            } catch (SQLException e) {
-                System.out.println(e);
-            }
-
-        }
-
-        return rsInsertItem;
-    }
-    public ResultSet updateItem(String toChoice, String itemID, Integer itemQuantity)
-    {
-        ResultSet rsInsertItem = null;
-        ResultSet rsTemp = null;
-        Statement statTemp = null;
-        String stockIdLast = "adakah1104";
-        String stockIdString;
-        Integer stockIdNums;
-
-        if(toChoice.contains("SH")) {
-            try {
-                Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
-                PreparedStatement stat = con.prepareStatement("Insert into " + shopStockTable + " values (?,?,?,?)");
-
-                statTemp = con.createStatement();
-                rsTemp = statTemp.executeQuery("select storage_stock_id from `Storage Stock`");
-
-                rsTemp.afterLast();
-
-                while(rsTemp.previous()) {
-                    stockIdLast = rsTemp.getString("storage_stock_id");
+                        Integer statusInsert = insertStat.executeUpdate();
+                        if(statusInsert > 0)
+                        {
+                            Alert a = new Alert(Alert.AlertType.INFORMATION);
+                            a.setTitle("Success Insert!");
+                            a.setContentText("Reload the table to check!");
+                            a.show();
+                        }
+                    }
                 }
-                stockIdString = stockIdLast.replaceAll("[^0-9]", "");
-                stockIdNums = Integer.parseInt(stockIdString);
-
-                stat.setString(1, "SHS" + stockIdNums++);
-                stat.setString(2, toChoice);
-                stat.setString(3, itemID);
-                stat.setString(4, itemQuantity.toString());
-
-                rsInsertItem = stat.executeQuery();
 
             } catch (SQLException e) {
                 System.out.println(e);
             }
-        }
-        else
-        {
+        } else {
             try {
                 Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
-                PreparedStatement stat = con.prepareStatement("Insert into " + storageStockTable + " values (?,?,?,?)");
+                Statement selectStat = con.createStatement();
+                ResultSet rsSelect = selectStat.executeQuery("Select * from " + shopStockTable);
 
-                statTemp = con.createStatement();
-                rsTemp = statTemp.executeQuery("select storage_stock_id from `Storage Stock`");
-                rsTemp.afterLast();
+                while(rsSelect.next())
+                {
+                    if(rsSelect.getString("item_id") == itemID && rsSelect.getString("storage_id") == toChoice){
+                        PreparedStatement updateStat = con.prepareStatement("Update " + storageStockTable + " set storage_stock_quantity = storage_stock_quantity + "
+                                + itemQuantity + " where item_id = ? and storage_id = ?");
+                        updateStat.setString(1, itemID);
+                        updateStat.setString(2,toChoice);
 
-                while(rsTemp.previous()) {
-                    stockIdLast = rsTemp.getString("storage_stock_id");
+                        Integer statusUpdate = updateStat.executeUpdate();
+                        if(statusUpdate > 0)
+                        {
+                            Alert a = new Alert(Alert.AlertType.INFORMATION);
+                            a.setTitle("Success Moving!");
+                            a.setContentText("Reload the table to check!");
+                            a.show();
+                        }
+
+                    } else {
+                        PreparedStatement insertStat = con.prepareStatement("Insert into " + storageStockTable + " values (?,?,?)");
+                        insertStat.setString(1, toChoice);
+                        insertStat.setString(2, itemID);
+                        insertStat.setString(3, itemQuantity.toString());
+
+                        Integer statusInsert = insertStat.executeUpdate();
+                        if(statusInsert > 0)
+                        {
+                            Alert a = new Alert(Alert.AlertType.INFORMATION);
+                            a.setTitle("Success Insert!");
+                            a.setContentText("Reload the table to check!");
+                            a.show();
+                        }
+                    }
                 }
-                stockIdString = stockIdLast.replaceAll("[^0-9]", "");
-                stockIdNums = Integer.parseInt(stockIdString);
-
-                stat.setString(1, "STS" + stockIdNums++);
-                stat.setString(2, toChoice);
-                stat.setString(3, itemID);
-                stat.setString(4, itemQuantity.toString());
-
-                rsInsertItem = stat.executeQuery();
-
-
             } catch (SQLException e) {
                 System.out.println(e);
             }
-
         }
-
-        return rsInsertItem;
     }
 
-//    public  ResultSet deleteItem(String from, String ID, Integer quantity)
-//    {
-//
-//    }
+    public void deleteItem(String fromChoice, String itemID, Integer deleteItemQuantity) {
 
+        if (fromChoice.contains("SH")) {
+            try {
+                Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
+
+                PreparedStatement stat = con.prepareStatement("Update " + shopStockTable + " set shop_stock_quantity = shop_stock_quantity - "
+                        + deleteItemQuantity + " where item_id = ? and shop_id = ?");
+                stat.setString(1, itemID);
+                stat.setString(2, fromChoice);
+
+                Integer statusDelete = stat.executeUpdate();
+                if(statusDelete == 0)
+                {
+                    Alert a = new Alert(Alert.AlertType.WARNING);
+                    a.setTitle("Warning!");
+                    a.setContentText("Quantity Inputted is larger than the stock!");
+                    a.show();
+                }
+
+
+                Statement selectStat = con.createStatement();
+                ResultSet rsSelect = selectStat.executeQuery("Select * from " + shopStockTable);
+                while (rsSelect.next())
+                {
+                    if(rsSelect.getInt("shop_stock_quantity") == 0)
+                    {
+                        PreparedStatement delAllStat = con.prepareStatement("Delete from " + shopStockTable + " where item_id = ? and shop_id = ?");
+                        delAllStat.setString(1, itemID);
+                        delAllStat.setString(2,fromChoice);
+
+                        delAllStat.executeUpdate();
+                    }
+                }
+
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+
+        } else {
+            try {
+                Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
+                PreparedStatement stat = con.prepareStatement("Update " + storageStockTable + " set storage_stock_quantity = storage_stock_quantity - "
+                        + deleteItemQuantity + " where item_id = ? and storage_id = ?");
+                stat.setString(1, itemID);
+                stat.setString(2, fromChoice);
+
+               Integer statusDelete = stat.executeUpdate();
+               if(statusDelete == 0)
+               {
+                   Alert a = new Alert(Alert.AlertType.WARNING);
+                   a.setTitle("Warning!");
+                   a.setContentText("Quantity Inputted is larger than the stock!");
+                   a.show();
+               }
+
+                Statement selectStat = con.createStatement();
+                ResultSet rsSelect = selectStat.executeQuery("Select * from " + storageStockTable);
+                while (rsSelect.next())
+                {
+                    if(rsSelect.getInt("storage_stock_quantity") == 0)
+                    {
+                        PreparedStatement delAllStat = con.prepareStatement("Delete from " + storageStockTable + " where item_id = ? and storage_id = ?");
+                        delAllStat.setString(1, itemID);
+                        delAllStat.setString(2,fromChoice);
+
+                        delAllStat.executeUpdate();
+                    }
+                }
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+        }
+    }
 }
