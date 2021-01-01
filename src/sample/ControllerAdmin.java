@@ -251,6 +251,7 @@ public class ControllerAdmin implements Initializable {
 
 
     public void saveButtonBITClicked() throws SQLException{
+        currentTransactionTableDataBIT.clear();
         ResultSet sqlData = database.getTransactionHistoryBIT();
         transactionHistoryObservableListBIT.clear();
         while(sqlData.next()){
@@ -326,6 +327,10 @@ public class ControllerAdmin implements Initializable {
             }
         }
     }
+
+
+
+
     public void goShopButtonSTClicked() throws SQLException {
         if(shopComboBoxST.getSelectionModel().isEmpty())
         {
@@ -638,21 +643,31 @@ public class ControllerAdmin implements Initializable {
 
     }
 
-    public void addButtonClickedBIT(javafx.event.ActionEvent event){
+    public void addButtonClickedBIT(javafx.event.ActionEvent event) throws SQLException {
         String supplierName = supplierNameTextFieldBIT.getText();
         String supplierAddress = supplierAddressTextFieldBIT.getText();
         String supplierPhoneNumber = supplierPhoneTextFieldBIT.getText();
         String itemId = itemIdTextFieldBIT.getText();
         String itemName = itemNameTextFieldBIT.getText();
-        int itemQty = Integer.parseInt(itemIdTextFieldBIT.getText());
+        int itemQty = Integer.parseInt(itemQuantityTextFieldBIT.getText());
         int itemSellPrice = Integer.parseInt(sellPriceTextFieldBIT.getText());
         int itemBuyPrice = Integer.parseInt(buyPriceTextFieldBIT.getText());
         int itemTotal = itemBuyPrice*itemQty;
 
+
         supplierNameLabelBIT.setText(supplierName);
         supplierAddressLabelBIT.setText(supplierAddress);
         supplierPhoneLabelBIT.setText(supplierPhoneNumber);
+        int storageQty = database.getQtyFromStorage(Integer.parseInt(itemId),storageIdTextBIT.getText())+itemQty;
+        System.out.println(storageQty);
+        database.insertTransactor(supplierName,supplierAddress,supplierPhoneNumber);
+        int transactorId = database.getTransactorId(supplierName);
 
+        database.registerItem(Integer.parseInt(itemId),itemName,itemSellPrice);
+//
+        database.insertTransaction(Integer.parseInt(itemId),itemQty,itemTotal,transactorId);
+        database.supplierToStorage(storageIdTextBIT.getText(),Integer.parseInt(itemId),storageQty);
+//
         currentTransactionTableDataBIT.add(new CurrentTransactionTableBIT(itemId,itemName,itemQty,itemBuyPrice,itemSellPrice,itemTotal));
 
 

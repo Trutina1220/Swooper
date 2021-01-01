@@ -243,6 +243,163 @@ public class Database {
         }
     }
 
+    public void insertTransaction(Integer itemId,Integer itemQty,Integer totalPrice,Integer transactorId){
+        long today = System.currentTimeMillis();
+        java.sql.Date date = new java.sql.Date(today);
+        try {
+            Connection con = DriverManager.getConnection(host,userName,password);
+            PreparedStatement preparedStatement = con.prepareStatement(
+                    "insert into Transaction (transaction_date, item_id, transaction_item_quantity, `transaction_buy/sell`, transaction_price, transactor_id)\n" +
+                    "values (?,?,?,?,?,?)");
+            preparedStatement.setDate(1,date);
+            preparedStatement.setInt(2,itemId);
+            preparedStatement.setInt(3,itemQty);
+            preparedStatement.setString(4,"Buy");
+            preparedStatement.setInt(5,totalPrice);
+            preparedStatement.setInt(6,transactorId);
+            preparedStatement.execute();
+            con.close();
+        }catch (SQLException err){
+            System.out.println(err.getMessage());
+        }
+
+    }
+
+    public void insertTransactor(String name, String address,String phoneNumber){
+        try {
+            Connection con = DriverManager.getConnection(host,userName,password);
+            PreparedStatement preparedStatement = con.prepareStatement("\n" +
+                    "insert into Transactor (transactor_name, transactor_address, transactor_phone_number,transactor_email) values (?,?,?,?)");
+            preparedStatement.setString(1,name);
+            preparedStatement.setString(2,address);
+            preparedStatement.setString(3,phoneNumber);
+            preparedStatement.setString(4,"-");
+            preparedStatement.execute();
+            con.close();
+        }catch (SQLException err){
+            System.out.println(err.getMessage());
+        }
+    }
+
+
+
+
+    public void registerItem(Integer itemId,String itemDesc,Integer itemSellPrice){
+        try {
+            Connection con = DriverManager.getConnection(host,userName,password);
+            PreparedStatement preparedStatement = con.prepareStatement("insert into Items (item_id,item_description, item_sell_price)\n" +
+                    "values (?,?,?)");
+            preparedStatement.setInt(1,itemId);
+            preparedStatement.setString(2,itemDesc);
+            preparedStatement.setInt(3,itemSellPrice);
+            preparedStatement.execute();
+            con.close();
+
+        }catch (SQLException err){
+            System.out.println(err.getMessage());
+        }
+    }
+
+    public void supplierToStorage(String storage_id, Integer item_id,Integer itemQty) throws SQLException {
+
+        Integer storageStockId =0;
+        try {
+            ResultSet rs = null;
+
+            Connection con = DriverManager.getConnection(host,userName,password);
+            PreparedStatement preparedStatement = con.prepareStatement("select storage_stock_id from `Storage Stock` where item_id=? and storage_id=?");
+            preparedStatement.setInt(1,item_id);
+            preparedStatement.setString(2,storage_id);
+            rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                storageStockId = rs.getInt("storage_stock_id");
+            }
+            con.close();
+
+
+        }catch (SQLException err){
+            System.out.println(err.getMessage());
+
+        }
+
+        if (storageStockId!=0){
+
+            try {
+                Connection con = DriverManager.getConnection(host,userName,password);
+                PreparedStatement preparedStatement = con.prepareStatement("update `Storage Stock`\n" +
+                        "set  storage_stock_quantity =?\n" +
+                        "where item_id = ? and storage_id=?");
+                preparedStatement.setInt(1,itemQty);
+                preparedStatement.setInt(2,item_id);
+                preparedStatement.setString(3,storage_id);
+                preparedStatement.execute();
+                con.close();
+
+            }catch (SQLException err){
+                System.out.println("error"+err.getMessage());
+
+            }
+        }
+        else {
+            try {
+                Connection con = DriverManager.getConnection(host,userName,password);
+                PreparedStatement preparedStatement = con.prepareStatement("insert into `Storage Stock` (storage_id, item_id, storage_stock_quantity)\n" +
+                        "values (?,?,?);");
+                preparedStatement.setString(1,storage_id);
+                preparedStatement.setInt(2,item_id);
+                preparedStatement.setInt(3,itemQty);
+                preparedStatement.execute();
+                con.close();
+            }
+            catch (SQLException err){
+                System.out.println(err.getMessage());
+            }
+
+        }
+
+    }
+
+    public Integer getTransactorId(String supplierName){
+        try {
+            Integer transactorId  =0;
+            Connection con = DriverManager.getConnection(host,userName,password);
+            PreparedStatement preparedStatement = con.prepareStatement("select transactor_id from `Transactor` where transactor_name = ?;");
+            preparedStatement.setString(1,supplierName);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                transactorId = rs.getInt("transactor_id");
+            }
+            con.close();
+            return transactorId;
+
+        }catch (SQLException err){
+            System.out.println(err.getMessage());
+            return 0;
+        }
+    }
+
+    public Integer getQtyFromStorage(Integer itemId,String storadeId){
+        try {
+            ResultSet rs = null;
+            Integer qty =0;
+            Connection con = DriverManager.getConnection(host,userName,password);
+            PreparedStatement preparedStatement = con.prepareStatement("select storage_stock_quantity from `Storage Stock` where item_id =? and storage_id =?");
+            preparedStatement.setInt(1,itemId);
+            preparedStatement.setString(2,storadeId);
+            rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                 qty = rs.getInt("storage_stock_quantity");
+            }
+            con.close();
+            return qty;
+
+        }catch (SQLException err){
+            System.out.println(err.getMessage());
+            return 0;
+        }
+    }
+
+
     public void deleteItem(String fromChoice, String itemID, Integer deleteItemQuantity) {
 
         if (fromChoice.contains("SH")) {
