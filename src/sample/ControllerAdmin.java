@@ -410,6 +410,21 @@ public class ControllerAdmin implements Initializable {
                     database.insertItem("SH002", inputId, inputQty);
                 }
 
+                else if(fromComboBox.getValue() == "Storage 1" && toComboBox.getValue() == "Storage 1")
+                {
+                    Alert a = new Alert(Alert.AlertType.WARNING);
+                    a.setTitle("Warning!");
+                    a.setContentText("Can't move item to the same place!");
+                }
+                else if(fromComboBox.getValue() == "Storage 2" && toComboBox.getValue() == "Storage 2")
+                {
+                    Alert a = new Alert(Alert.AlertType.WARNING);
+                    a.setTitle("Warning!");
+                    a.setContentText("Can't move item to the same place!");
+                }
+
+
+
 
 
 
