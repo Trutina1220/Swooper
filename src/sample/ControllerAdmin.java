@@ -46,6 +46,8 @@ public class ControllerAdmin implements Initializable {
     ObservableList<String> shop2ItemIDs = FXCollections.observableArrayList();
     ObservableList<String> storage1ItemIDs= FXCollections.observableArrayList();
     ObservableList<String> storage2ItemIDs = FXCollections.observableArrayList();
+    ObservableList<TransactionHistory>transactionHistoryObservableList = FXCollections.observableArrayList();
+    ObservableList<TransactionHistory>transactionHistoryObservableListBIT = FXCollections.observableArrayList();
 
 
 
@@ -137,6 +139,93 @@ public class ControllerAdmin implements Initializable {
         shopTableViewST.getColumns().addAll(itemIdShop, itemQtyShop, itemDescShop);
 
 
+        TableColumn transactionId = new TableColumn("Transaction ID");
+        transactionId.setMinWidth(300);
+        transactionId.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("transactionId"));
+
+        TableColumn date = new TableColumn("Date");
+        date.setMinWidth(300);
+        date.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("date"));
+
+        TableColumn itemId = new TableColumn("Item ID");
+        itemId.setMinWidth(300);
+        itemId.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("itemId"));
+
+        TableColumn itemQty = new TableColumn("Item Qty");
+        itemQty.setMinWidth(300);
+        itemQty.setCellValueFactory(new PropertyValueFactory<TransactionHistory,Integer>("itemQty"));
+
+        TableColumn itemDesc = new TableColumn("Item Desc");
+        itemDesc.setMinWidth(300);
+        itemDesc.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("itemDesc"));
+
+        TableColumn  totalPrice = new TableColumn("Total Price");
+        totalPrice.setMinWidth(300);
+        totalPrice.setCellValueFactory(new PropertyValueFactory<TransactionHistory,Integer>("price"));
+
+        TableColumn customerName = new TableColumn("Customer Name");
+        customerName.setMinWidth(300);
+        customerName.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("name"));
+
+        TableColumn customerAddress = new TableColumn("Address");
+        customerAddress.setMinWidth(300);
+        customerAddress.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("address"));
+
+        TableColumn customerPhoneNumber = new TableColumn("Phone Number");
+        customerPhoneNumber.setMinWidth(300);
+        customerPhoneNumber.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("phoneNumber"));
+
+        transactionHistoryTableViewTT.setItems(transactionHistoryObservableList);
+        transactionHistoryTableViewTT.getColumns().addAll(transactionId,date,itemId,itemQty,itemDesc,totalPrice,customerName
+                ,customerAddress,customerPhoneNumber);
+
+
+
+        TableColumn transactionIdBIT = new TableColumn("Transaction ID");
+        transactionIdBIT.setMinWidth(300);
+        transactionIdBIT.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("transactionId"));
+
+        TableColumn dateBIT = new TableColumn("Date");
+        dateBIT.setMinWidth(300);
+        dateBIT.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("date"));
+
+        TableColumn itemIdBIT = new TableColumn("Item ID");
+        itemIdBIT.setMinWidth(300);
+        itemIdBIT.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("itemId"));
+
+        TableColumn itemQtyBIT = new TableColumn("Item Qty");
+        itemQtyBIT.setMinWidth(300);
+        itemQtyBIT.setCellValueFactory(new PropertyValueFactory<TransactionHistory,Integer>("itemQty"));
+
+        TableColumn itemDescBIT = new TableColumn("Item Desc");
+        itemDescBIT.setMinWidth(300);
+        itemDescBIT.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("itemDesc"));
+
+        TableColumn  totalPriceBIT = new TableColumn("Total Price");
+        totalPriceBIT.setMinWidth(300);
+        totalPriceBIT.setCellValueFactory(new PropertyValueFactory<TransactionHistory,Integer>("price"));
+
+        TableColumn customerNameBIT = new TableColumn("Supplier Name");
+        customerNameBIT.setMinWidth(300);
+        customerNameBIT.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("name"));
+
+        TableColumn customerAddressBIT = new TableColumn("Address");
+        customerAddressBIT.setMinWidth(300);
+        customerAddressBIT.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("address"));
+
+        TableColumn customerPhoneNumberBIT = new TableColumn("Phone Number");
+        customerPhoneNumberBIT.setMinWidth(300);
+        customerPhoneNumberBIT.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("phoneNumber"));
+
+        transactionHistoryTableViewBIT.setItems(transactionHistoryObservableListBIT);
+        transactionHistoryTableViewBIT.getColumns().addAll(transactionIdBIT,dateBIT,itemIdBIT,itemQtyBIT,itemDescBIT,totalPriceBIT,customerNameBIT
+                ,customerAddressBIT,customerPhoneNumberBIT);
+
+
+
+
+
+
 
 
 
@@ -161,6 +250,28 @@ public class ControllerAdmin implements Initializable {
 
 
 
+    public void saveButtonBITClicked() throws SQLException{
+        ResultSet sqlData = database.getTransactionHistoryBIT();
+        transactionHistoryObservableListBIT.clear();
+        while(sqlData.next()){
+            transactionHistoryObservableListBIT.add(new TransactionHistory(sqlData.getString("transaction_id"),sqlData.getDate("transaction_date").toString(),sqlData.getString("item_id")
+                    ,sqlData.getInt("transaction_item_quantity"),sqlData.getString("item_description"),sqlData.getString("transactor_name"),sqlData.getString("transactor_address"),
+                    sqlData.getString("transactor_phone_number"),sqlData.getInt("transaction_price")));
+        }
+        sqlData.close();
+        System.out.println("run");
+    }
+
+    public void saveButtonTTClicked() throws SQLException{
+        ResultSet sqlData = database.getTransactionHistoryTT();
+        transactionHistoryObservableList.clear();
+        while(sqlData.next()){
+            transactionHistoryObservableList.add(new TransactionHistory(sqlData.getString("transaction_id"),sqlData.getDate("transaction_date").toString(),sqlData.getString("item_id")
+                    ,sqlData.getInt("transaction_item_quantity"),sqlData.getString("item_description"),sqlData.getString("transactor_name"),sqlData.getString("transactor_address"),
+                    sqlData.getString("transactor_phone_number"),sqlData.getInt("transaction_price")));
+        }
+        sqlData.close();
+    }
 
 
 

@@ -67,6 +67,47 @@ public class Database {
     }
 
 
+    public ResultSet getTransactionHistoryBIT(){
+        ResultSet rsTransactionHistory = null;
+        try {
+            Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
+            PreparedStatement stat = con.prepareStatement("select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\n" +
+                    "from Transaction tn\n" +
+                    "    inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
+                    "    inner join Items i on tn.item_id  = i.item_id\n" +
+                    "    where tn.`transaction_buy/sell` = \"Buy\";");
+
+
+            rsTransactionHistory = stat.executeQuery();
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }
+        return rsTransactionHistory;
+    }
+
+    public ResultSet getTransactionHistoryTT(){
+        ResultSet rsTransactionHistory = null;
+        try {
+            Connection con = DriverManager.getConnection(this.host, this.userName, this.password);
+            PreparedStatement stat = con.prepareStatement("select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\n" +
+                    "from Transaction tn\n" +
+                    "    inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
+                    "    inner join Items i on tn.item_id  = i.item_id\n" +
+                    "    where tn.`transaction_buy/sell` = \"Sell\";");
+
+
+            rsTransactionHistory = stat.executeQuery();
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }
+        return rsTransactionHistory;
+    }
+
+
     public ResultSet getShopStorageItems(String choice)
     {
         ResultSet rsShopStorageItem = null;
