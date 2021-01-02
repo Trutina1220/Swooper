@@ -7,8 +7,8 @@ public class CurrentTransactionTableTT extends Item {
     private SimpleIntegerProperty itemPrice;
     private SimpleIntegerProperty total;
 
-    public CurrentTransactionTableTT(String id, Integer itemQty, Integer itemPrice, Integer total){
-        super(id, itemQty);
+    public CurrentTransactionTableTT(String id,String itemDesc, Integer itemQty, Integer itemPrice, Integer total){
+        super(id, itemQty,itemDesc);
         this.itemPrice = new SimpleIntegerProperty(itemPrice);
         this.total = new SimpleIntegerProperty(total);
     }

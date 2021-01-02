@@ -487,6 +487,7 @@
                         <TableView fx:id="currentTransactionTableViewTT" prefHeight="123.0" prefWidth="864.0">
                           <columns>
                             <TableColumn fx:id="transactionIdColumnTT" prefWidth="108.0" text="Item ID" />
+                              <TableColumn fx:id="transactionItemDescColumnTT" prefWidth="108.0" text="Item Desc" />
                             <TableColumn fx:id="transactionQtyColumnTT" prefWidth="112.0" text="Qty" />
                               <TableColumn fx:id="transactionPriceColumnTT" prefWidth="112.0" text="Price" />
                               <TableColumn fx:id="transactionTotalColumnTT" prefWidth="112.0" text="Total" />
@@ -501,6 +502,22 @@
                                  <font>
                                     <Font size="16.0" />
                                  </font>
+                              </Text>
+                              <Label layoutX="10.0" layoutY="32.0" text="Total Sales Today:">
+                                 <HBox.margin>
+                                    <Insets left="10.0" top="4.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <Text fx:id="totalSalesTodayTT" layoutX="10.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="5.0" top="5.0" />
+                                 </HBox.margin>
                               </Text>
                            </children>
                         </HBox>
