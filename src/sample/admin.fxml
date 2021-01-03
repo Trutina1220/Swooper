@@ -817,6 +817,7 @@
                         </VBox>
                         <TableView fx:id="currentTransactionTableViewBIT" prefHeight="123.0" prefWidth="864.0">
                            <columns>
+                              <TableColumn fx:id="ttransactionIdColumnBIT" prefWidth="75.0" text="Transaction ID" />
                               <TableColumn fx:id="transactionIdColumnBIT" prefWidth="75.0" text="Item ID" />
                               <TableColumn fx:id="transactionItemNameColumnBIT" prefWidth="75.0" text="Item Name" />
                               <TableColumn fx:id="transactionQtyColumnBIT" prefWidth="75.0" text="Qty" />

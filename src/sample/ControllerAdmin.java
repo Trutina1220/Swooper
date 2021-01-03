@@ -63,6 +63,7 @@ public class ControllerAdmin implements Initializable {
     public TableColumn<CurrentTransactionTableTT,Integer>transactionTotalColumnTT;
     ObservableList<CurrentTransactionTableTT> currentTransactionTableDataTT = FXCollections.observableArrayList();
 
+    public TableColumn<CurrentTransactionTableBIT,Integer>ttransactionIdColumnBIT;
     public TableColumn<CurrentTransactionTableBIT,String>transactionIdColumnBIT;
     public TableColumn<CurrentTransactionTableBIT,String>transactionItemNameColumnBIT;
     public TableColumn<CurrentTransactionTableBIT,Integer>transactionQtyColumnBIT;
@@ -273,6 +274,7 @@ public class ControllerAdmin implements Initializable {
         currentTransactionTableViewTT.setItems(currentTransactionTableDataTT);
 
 //        Setting the observable list for the current transaction table BIT
+        ttransactionIdColumnBIT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableBIT,Integer>("transactionId"));
         transactionIdColumnBIT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableBIT,String>("itemId"));
         transactionItemNameColumnBIT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableBIT,String>("itemName"));
         transactionQtyColumnBIT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableBIT,Integer>("itemQty"));
@@ -820,6 +822,7 @@ public class ControllerAdmin implements Initializable {
             String supplierPhoneNumber = supplierPhoneTextFieldBIT.getText();
             String itemId = itemIdTextFieldBIT.getText();
             String itemName = itemNameTextFieldBIT.getText();
+            int transactionId = database.getNextTransactionId();
             int itemQty = Integer.parseInt(itemQuantityTextFieldBIT.getText());
             int itemSellPrice = Integer.parseInt(sellPriceTextFieldBIT.getText());
             int itemBuyPrice = Integer.parseInt(buyPriceTextFieldBIT.getText());
@@ -841,7 +844,7 @@ public class ControllerAdmin implements Initializable {
             database.insertTransaction(Integer.parseInt(itemId), itemQty, itemTotal, transactorId, "Buy");
             database.supplierToStorage(storageIdTextBIT.getText(), Integer.parseInt(itemId), storageQty);
 //
-            currentTransactionTableDataBIT.add(new CurrentTransactionTableBIT(itemId, itemName, itemQty, itemBuyPrice, itemSellPrice, itemTotal));
+            currentTransactionTableDataBIT.add(new CurrentTransactionTableBIT(itemId, itemName, itemQty, itemBuyPrice, itemSellPrice, itemTotal,transactionId));
             storageItemsObservableListBIT.clear();
             fillStorageTable(storageIdTextBIT.getText());
         }
