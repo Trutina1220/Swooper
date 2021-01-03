@@ -519,6 +519,22 @@
                                     <Insets left="5.0" top="5.0" />
                                  </HBox.margin>
                               </Text>
+                              <Label layoutX="199.0" layoutY="14.0" text="Grand Total">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="10.0" top="4.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Text fx:id="grandTotalTT" layoutX="331.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </Text>
                            </children>
                         </HBox>
                         <TableView fx:id="transactionHistoryTableViewTT" prefHeight="202.0" prefWidth="864.0" />
