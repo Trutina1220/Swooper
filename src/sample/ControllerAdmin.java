@@ -57,6 +57,7 @@ public class ControllerAdmin implements Initializable {
 
 
 
+
     public TableColumn<CurrentTransactionTableTT,String>transactionIdColumnTT;
     public TableColumn<CurrentTransactionTableTT,String>transactionItemDescColumnTT;
     public TableColumn<CurrentTransactionTableTT,Integer>transactionQtyColumnTT;
@@ -92,6 +93,7 @@ public class ControllerAdmin implements Initializable {
         shopComboBoxTT.setItems(shopLists);
         storageComboBoxBIT.setItems(storageLists);
         fromComboBox.setItems(shopStorageLists);
+        
 
 
 

@@ -6,6 +6,7 @@ import javafx.scene.control.Alert;
 
 import javax.swing.plaf.nimbus.State;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Database {
@@ -33,6 +34,7 @@ public class Database {
 
     public ResultSet getShopStorageInfo(String choice)
     {
+
         ResultSet rsShopStorage = null;
         if (choice.contains("SH"))
         {
@@ -111,6 +113,7 @@ public class Database {
 
     public ResultSet getShopStorageItems(String choice)
     {
+        
         ResultSet rsShopStorageItem = null;
 
         if(choice.contains("SH"))
@@ -125,6 +128,7 @@ public class Database {
                 stat.setString(1, choice);
 
                 rsShopStorageItem = stat.executeQuery();
+
 
             }catch(SQLException e)
             {
