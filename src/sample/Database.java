@@ -247,6 +247,30 @@ public class Database {
     }
 
 
+    public void deleteTransaction(int transactionId){
+        PreparedStatement preparedStatement = null;
+        Connection con = null;
+
+        try {
+
+            con = DriverManager.getConnection(host,userName,password);
+            preparedStatement = con.prepareStatement("delete from Transaction where transaction_id = ?");
+            preparedStatement.setInt(1,transactionId);
+            preparedStatement.execute();
+
+            con.close();
+
+
+        }catch (SQLException err){
+            System.out.println(err.getMessage());
+
+        }finally {
+            try { preparedStatement.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+    }
+
+
 
 
 

@@ -14,13 +14,13 @@ import java.util.ResourceBundle;
 
 public class ControllerAdmin implements Initializable {
     @FXML
-    public Button goStorageButtonST,goShopButtonST,moveButtonST,goShopButtonTT, addButtonTT, saveButtonTT, goStorageButtonBIT, addButtonBIT, saveButtonBIT;
+    public Button goStorageButtonST,goShopButtonST,moveButtonST,goShopButtonTT, addButtonTT, saveButtonTT, goStorageButtonBIT, addButtonBIT, saveButtonBIT,deleteButtonTT;
     @FXML
     public TableView storageTableViewST, shopTableViewST,shopStockTableViewTT, currentTransactionTableViewTT, transactionHistoryTableViewTT, storageTableViewBIT, currentTransactionTableViewBIT, transactionHistoryTableViewBIT;
     @FXML
     public TextField itemQuantityTextFieldST,customerNameTextField, customerAddressTextField, customerNumberTextField,
             enterItemIdTextField, enterItemQtyTextField, supplierNameTextFieldBIT, supplierAddressTextFieldBIT, supplierPhoneTextFieldBIT,
-            itemIdTextFieldBIT, itemQuantityTextFieldBIT, sellPriceTextFieldBIT, buyPriceTextFieldBIT,itemNameTextFieldBIT;
+            itemIdTextFieldBIT, itemQuantityTextFieldBIT, sellPriceTextFieldBIT, buyPriceTextFieldBIT,itemNameTextFieldBIT,enterTransactionIdTT,enterColumnTT;
     @FXML
     public ComboBox itemIDComboBoxST, storageComboBoxST, shopComboBoxST, fromComboBox, toComboBox, shopComboBoxTT, storageComboBoxBIT ;
 
@@ -265,6 +265,7 @@ public class ControllerAdmin implements Initializable {
 //        setting the observable list for the current transaction Table TT;
 //        The real transaction Id column is the first one
 
+        ttransactionIdColumnTT.setMinWidth(300);
         transactionIdColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,String>("itemId"));
         transactionItemDescColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,String>("itemDesc"));
         transactionQtyColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,Integer>("itemQty"));
@@ -274,8 +275,10 @@ public class ControllerAdmin implements Initializable {
         currentTransactionTableViewTT.setItems(currentTransactionTableDataTT);
 
 //        Setting the observable list for the current transaction table BIT
+        ttransactionIdColumnBIT.setMinWidth(300);
         ttransactionIdColumnBIT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableBIT,Integer>("transactionId"));
         transactionIdColumnBIT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableBIT,String>("itemId"));
+        transactionItemNameColumnBIT.setMinWidth(300);
         transactionItemNameColumnBIT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableBIT,String>("itemName"));
         transactionQtyColumnBIT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableBIT,Integer>("itemQty"));
         transactionBuyPriceColumnBIT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableBIT,Integer>("itemBuyPrice"));
@@ -748,9 +751,28 @@ public class ControllerAdmin implements Initializable {
         System.out.println("done");
     }
 
+    public void deleteButtonClickedTT(){
+        int column = Integer.parseInt(enterColumnTT.getText())-1;
+        int transactionId = currentTransactionTableDataTT.get(column).getTransactionId();
+        int itemId = Integer.parseInt(currentTransactionTableDataTT.get(column).getItemId());
+        String shopId = shopIdTextTT.getText();
+        int shopQty = database.getQtyFromShop(itemId,shopId);
+        int total = currentTransactionTableDataTT.get(column).getTotal();
+        grandTotalGlobal -= total;
+        grandTotalTT.setText("Rp"+String.valueOf(grandTotalGlobal));
+        int qty = currentTransactionTableDataTT.get(column).getItemQty()+shopQty;
+        database.updateShopStorage(qty,itemId,shopId);
+        database.deleteTransaction(transactionId);
+        currentTransactionTableDataTT.remove(column);
+        transactionHistoryObservableList.clear();
+        shopItemsObservableListTT.clear();
+        fillShopTable(shopId);
+        fillTableTransactionHistoryTT(1);
+        totalSalesTodayTT.setText("Rp"+String.valueOf(database.getTotalSales("Sell")));
+    }
+
     static String customerNameGlobal ="";
     static int grandTotalGlobal= 0;
-
     public void addButtonClickedTT(javafx.event.ActionEvent event) throws SQLException {
 
         if (shopIdTextTT.getText().equals("None")){

@@ -411,7 +411,26 @@
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </Button>
-                                    <Button fx:id="saveButtonTT" mnemonicParsing="false" onAction="#saveButtonTTClicked" text="Save">
+                                    <Button fx:id="saveButtonTT" mnemonicParsing="false" onAction="#saveButtonTTClicked" text="Save" HBox.hgrow="ALWAYS">
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <HBox layoutX="10.0" layoutY="76.0">
+                                 <children>
+                                    <Text layoutX="15.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Column:">
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="7.0" />
+                                       </HBox.margin>
+                                    </Text>
+                                    <TextField fx:id="enterColumnTT" layoutX="145.0" layoutY="15.0">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="2.0" right="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </TextField>
+                                    <Button fx:id="deleteButtonTT" layoutX="845.0" layoutY="15.0" mnemonicParsing="false" onAction="#deleteButtonClickedTT" text="Delete">
                                        <HBox.margin>
                                           <Insets left="5.0" top="5.0" />
                                        </HBox.margin>
@@ -817,8 +836,8 @@
                         </VBox>
                         <TableView fx:id="currentTransactionTableViewBIT" prefHeight="123.0" prefWidth="864.0">
                            <columns>
-                              <TableColumn fx:id="ttransactionIdColumnBIT" prefWidth="75.0" text="Transaction ID" />
-                              <TableColumn fx:id="transactionIdColumnBIT" prefWidth="75.0" text="Item ID" />
+                              <TableColumn fx:id="ttransactionIdColumnBIT" prefWidth="71.0" text="Transaction ID" />
+                              <TableColumn fx:id="transactionIdColumnBIT" prefWidth="79.0" text="Item ID" />
                               <TableColumn fx:id="transactionItemNameColumnBIT" prefWidth="75.0" text="Item Name" />
                               <TableColumn fx:id="transactionQtyColumnBIT" prefWidth="75.0" text="Qty" />
                               <TableColumn fx:id="transactionBuyPriceColumnBIT" prefWidth="75.0" text="Buy Price" />
