@@ -450,7 +450,7 @@ public class Database {
 
     }
 
-    public void updateShopStorage(int itemQty, int itemId, String shop_id){
+    public void updateShopStock(int itemQty, int itemId, String shop_id){
         Connection con = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -459,6 +459,25 @@ public class Database {
             preparedStatement.setInt(1,itemQty);
             preparedStatement.setInt(2,itemId);
             preparedStatement.setString(3,shop_id);
+            preparedStatement.execute();
+            con.close();
+        }catch (SQLException err){
+            System.out.println(err.getMessage());
+        }finally {
+            try { preparedStatement.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+    }
+
+    public void updateStorageStock(int itemQty, int itemId, String storageId){
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            con = DriverManager.getConnection(host,userName,password);
+            preparedStatement = con.prepareStatement("update `Storage Stock` set  storage_stock_quantity = ? where item_id = ? and storage_id =?");
+            preparedStatement.setInt(1,itemQty);
+            preparedStatement.setInt(2,itemId);
+            preparedStatement.setString(3,storageId);
             preparedStatement.execute();
             con.close();
         }catch (SQLException err){
@@ -496,7 +515,6 @@ public class Database {
     public void registerItem(Integer itemId,String itemDesc,Integer itemSellPrice){
         Connection con =null;
         PreparedStatement preparedStatement=null;
-
         try {
             con = DriverManager.getConnection(host,userName,password);
             preparedStatement = con.prepareStatement("insert into Items (item_id,item_description, item_sell_price)\n" +
@@ -784,6 +802,33 @@ public class Database {
             try { con.close(); } catch (Exception e) { /* ignored */ }
         }
         return qty;
+    }
+
+    public int checkItemExist(int itemId){
+        int exist = 0;
+        ResultSet rs = null;
+        PreparedStatement preparedStatement = null;
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(host,userName,password);
+            preparedStatement = con.prepareStatement("SELECT EXISTS(SELECT * FROM Items WHERE item_id = ?) AS myCheck;");
+            preparedStatement.setInt(1,itemId);
+            rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                exist = rs.getInt("myCheck");
+            }
+            con.close();
+
+
+        }catch (SQLException err){
+            System.out.println(err.getMessage());
+
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return exist;
     }
 
 

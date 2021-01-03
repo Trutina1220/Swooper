@@ -14,13 +14,13 @@ import java.util.ResourceBundle;
 
 public class ControllerAdmin implements Initializable {
     @FXML
-    public Button goStorageButtonST,goShopButtonST,moveButtonST,goShopButtonTT, addButtonTT, saveButtonTT, goStorageButtonBIT, addButtonBIT, saveButtonBIT,deleteButtonTT;
+    public Button goStorageButtonST,goShopButtonST,moveButtonST,goShopButtonTT, addButtonTT, saveButtonTT, goStorageButtonBIT, addButtonBIT, saveButtonBIT,deleteButtonTT,deleteButtonBIT;
     @FXML
     public TableView storageTableViewST, shopTableViewST,shopStockTableViewTT, currentTransactionTableViewTT, transactionHistoryTableViewTT, storageTableViewBIT, currentTransactionTableViewBIT, transactionHistoryTableViewBIT;
     @FXML
     public TextField itemQuantityTextFieldST,customerNameTextField, customerAddressTextField, customerNumberTextField,
             enterItemIdTextField, enterItemQtyTextField, supplierNameTextFieldBIT, supplierAddressTextFieldBIT, supplierPhoneTextFieldBIT,
-            itemIdTextFieldBIT, itemQuantityTextFieldBIT, sellPriceTextFieldBIT, buyPriceTextFieldBIT,itemNameTextFieldBIT,enterTransactionIdTT,enterColumnTT;
+            itemIdTextFieldBIT, itemQuantityTextFieldBIT, sellPriceTextFieldBIT, buyPriceTextFieldBIT,itemNameTextFieldBIT,enterColumnBIT,enterColumnTT;
     @FXML
     public ComboBox itemIDComboBoxST, storageComboBoxST, shopComboBoxST, fromComboBox, toComboBox, shopComboBoxTT, storageComboBoxBIT ;
 
@@ -292,34 +292,7 @@ public class ControllerAdmin implements Initializable {
     public void saveButtonBITClicked() throws SQLException{
         currentTransactionTableDataBIT.clear();
         transactionHistoryObservableListBIT.clear();
-        ResultSet rsTransactionHistory = null;
-        Connection con = null;
-        PreparedStatement stat = null;
-        try {
-            con = DriverManager.getConnection(database.host, database.userName, database.password);
-             stat = con.prepareStatement("select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\n" +
-                    "from Transaction tn\n" +
-                    "    inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
-                    "    inner join Items i on tn.item_id  = i.item_id\n" +
-                    "    where tn.`transaction_buy/sell` = \"Buy\";");
 
-
-            rsTransactionHistory = stat.executeQuery();
-            while (rsTransactionHistory.next()){
-                transactionHistoryObservableListBIT.add(new TransactionHistory(rsTransactionHistory.getString("transaction_id"),rsTransactionHistory.getDate("transaction_date").toString(),rsTransactionHistory.getString("item_id")
-                        ,rsTransactionHistory.getInt("transaction_item_quantity"),rsTransactionHistory.getString("item_description"),rsTransactionHistory.getString("transactor_name"),rsTransactionHistory.getString("transactor_address"),
-                        rsTransactionHistory.getString("transactor_phone_number"),rsTransactionHistory.getInt("transaction_price")));
-            }
-
-        }catch(SQLException e)
-        {
-            System.out.println(e);
-        }finally {
-            rsTransactionHistory.close();
-            stat.close();
-            con.close();
-
-        }
         System.out.println("run");
     }
 
@@ -746,7 +719,6 @@ public class ControllerAdmin implements Initializable {
             storageId = "ST001";
         }
         fillStorageTable(storageId);
-        System.out.println(storageItemsObservableListBIT.get(0));
 
         System.out.println("done");
     }
@@ -761,7 +733,7 @@ public class ControllerAdmin implements Initializable {
         grandTotalGlobal -= total;
         grandTotalTT.setText("Rp"+String.valueOf(grandTotalGlobal));
         int qty = currentTransactionTableDataTT.get(column).getItemQty()+shopQty;
-        database.updateShopStorage(qty,itemId,shopId);
+        database.updateShopStock(qty,itemId,shopId);
         database.deleteTransaction(transactionId);
         currentTransactionTableDataTT.remove(column);
         transactionHistoryObservableList.clear();
@@ -769,6 +741,21 @@ public class ControllerAdmin implements Initializable {
         fillShopTable(shopId);
         fillTableTransactionHistoryTT(1);
         totalSalesTodayTT.setText("Rp"+String.valueOf(database.getTotalSales("Sell")));
+    }
+    public void deleteButtonClickedBIT() throws SQLException {
+        int column = Integer.parseInt(enterColumnBIT.getText())-1;
+        int transactionId = currentTransactionTableDataBIT.get(column).getTransactionId();
+        int itemId = Integer.parseInt(currentTransactionTableDataBIT.get(column).getItemId());
+        String storageId = storageIdTextBIT.getText();
+        int storageQty = database.getQtyFromStorage(itemId,storageId);
+        int qty = storageQty-currentTransactionTableDataBIT.get(column).getItemQty();
+        database.supplierToStorage(storageId,itemId,qty);
+        database.deleteTransaction(transactionId);
+        currentTransactionTableDataBIT.remove(column);
+        transactionHistoryObservableListBIT.clear();
+        storageItemsObservableListBIT.clear();
+        fillStorageTable(storageId);
+        fillTableTransactionHistoryBIT();
     }
 
     static String customerNameGlobal ="";
@@ -814,7 +801,7 @@ public class ControllerAdmin implements Initializable {
                 customerNameGlobal = customerName;
                 int transactorId = database.getTransactorId(customerName);
                 database.insertTransaction(Integer.parseInt(itemId), itemQty, itemTotal, transactorId, "Sell");
-                database.updateShopStorage(shopItemQty, Integer.parseInt(itemId), shopIdTextTT.getText());
+                database.updateShopStock(shopItemQty, Integer.parseInt(itemId), shopIdTextTT.getText());
                 totalSalesTodayTT.setText("Rp"+String.valueOf(database.getTotalSales("Sell")));
                 currentTransactionTableDataTT.add(new CurrentTransactionTableTT(itemId, itemDesc, itemQty, itemPrice, itemTotal,transactionId));
 
@@ -971,6 +958,36 @@ public class ControllerAdmin implements Initializable {
             try {storage1Items.close();}catch (Exception e){}
             try { stat.close(); } catch (Exception e) { /* ignored */ }
             try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+    }
+    public void fillTableTransactionHistoryBIT() throws SQLException {
+        ResultSet rsTransactionHistory = null;
+        Connection con = null;
+        PreparedStatement stat = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat = con.prepareStatement("select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\n" +
+                    "from Transaction tn\n" +
+                    "    inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
+                    "    inner join Items i on tn.item_id  = i.item_id\n" +
+                    "    where tn.`transaction_buy/sell` = \"Buy\";");
+
+
+            rsTransactionHistory = stat.executeQuery();
+            while (rsTransactionHistory.next()){
+                transactionHistoryObservableListBIT.add(new TransactionHistory(rsTransactionHistory.getString("transaction_id"),rsTransactionHistory.getDate("transaction_date").toString(),rsTransactionHistory.getString("item_id")
+                        ,rsTransactionHistory.getInt("transaction_item_quantity"),rsTransactionHistory.getString("item_description"),rsTransactionHistory.getString("transactor_name"),rsTransactionHistory.getString("transactor_address"),
+                        rsTransactionHistory.getString("transactor_phone_number"),rsTransactionHistory.getInt("transaction_price")));
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            rsTransactionHistory.close();
+            stat.close();
+            con.close();
+
         }
     }
 

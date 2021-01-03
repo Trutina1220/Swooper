@@ -425,7 +425,7 @@
                                           <Insets left="5.0" top="7.0" />
                                        </HBox.margin>
                                     </Text>
-                                    <TextField fx:id="enterColumnTT" layoutX="145.0" layoutY="15.0">
+                                    <TextField fx:id="enterColumnButtonTT" layoutX="145.0" layoutY="15.0">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="2.0" right="5.0" top="5.0" />
                                        </HBox.margin>
@@ -769,6 +769,25 @@
                                     </TextField>
                                     <Button fx:id="addButtonBIT" mnemonicParsing="false" onAction="#addButtonClickedBIT" text="Add" />
                                     <Button fx:id="saveButtonBIT" mnemonicParsing="false" onAction="#saveButtonBITClicked" text="Save" />
+                                 </children>
+                              </HBox>
+                              <HBox>
+                                 <children>
+                                    <Text layoutX="15.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Column:">
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="7.0" />
+                                       </HBox.margin>
+                                    </Text>
+                                    <TextField fx:id="enterColumnBIT" layoutX="145.0" layoutY="15.0">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="2.0" right="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </TextField>
+                                    <Button fx:id="deleteButtonBIT" layoutX="845.0" layoutY="15.0" mnemonicParsing="false" onAction="#deleteButtonClickedBIT" text="Delete">
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </Button>
                                  </children>
                               </HBox>
                               <HBox prefHeight="17.0" prefWidth="864.0" VBox.vgrow="NEVER">
