@@ -589,6 +589,31 @@ public class Database {
         }
     }
 
+    public Integer getNextTransactionId(){
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        Connection con = null;
+        try {
+            Integer transactionId  =0;
+            con = DriverManager.getConnection(host,userName,password);
+            preparedStatement = con.prepareStatement("select max(transaction_id) as max from Transaction;");
+            rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                transactionId = rs.getInt("max")+1;
+            }
+            con.close();
+            return transactionId;
+
+        }catch (SQLException err){
+            System.out.println(err.getMessage());
+            return 0;
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+    }
+
     public Integer getTotalSales(String buyOrSell){
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="864.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ControllerAdmin">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="864.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ControllerAdmin">
    <children>
       <TabPane prefHeight="423.0" prefWidth="864.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
         <tabs>
@@ -486,7 +486,8 @@
                         </VBox>
                         <TableView fx:id="currentTransactionTableViewTT" prefHeight="123.0" prefWidth="864.0">
                           <columns>
-                            <TableColumn fx:id="transactionIdColumnTT" prefWidth="108.0" text="Item ID" />
+                            <TableColumn fx:id="ttransactionIdColumnTT" prefWidth="108.0" text="Transaction ID" />
+                              <TableColumn fx:id="transactionIdColumnTT" prefWidth="108.0" text="Item ID" />
                               <TableColumn fx:id="transactionItemDescColumnTT" prefWidth="108.0" text="Item Desc" />
                             <TableColumn fx:id="transactionQtyColumnTT" prefWidth="112.0" text="Qty" />
                               <TableColumn fx:id="transactionPriceColumnTT" prefWidth="112.0" text="Price" />

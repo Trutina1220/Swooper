@@ -55,7 +55,7 @@ public class ControllerAdmin implements Initializable {
 
 
 
-
+    public TableColumn<CurrentTransactionTableTT,Integer>ttransactionIdColumnTT;
     public TableColumn<CurrentTransactionTableTT,String>transactionIdColumnTT;
     public TableColumn<CurrentTransactionTableTT,String>transactionItemDescColumnTT;
     public TableColumn<CurrentTransactionTableTT,Integer>transactionQtyColumnTT;
@@ -262,11 +262,14 @@ public class ControllerAdmin implements Initializable {
 
 
 //        setting the observable list for the current transaction Table TT;
+//        The real transaction Id column is the first one
+
         transactionIdColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,String>("itemId"));
         transactionItemDescColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,String>("itemDesc"));
         transactionQtyColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,Integer>("itemQty"));
         transactionPriceColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,Integer>("itemPrice"));
         transactionTotalColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,Integer>("total"));
+        ttransactionIdColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,Integer>("transactionId"));
         currentTransactionTableViewTT.setItems(currentTransactionTableDataTT);
 
 //        Setting the observable list for the current transaction table BIT
@@ -722,71 +725,181 @@ public class ControllerAdmin implements Initializable {
 
     public void goShopButtonTTClicked() throws SQLException {
         shopItemsObservableListTT.clear();
-        Connection con = null;
-        PreparedStatement stat = null;
-        ResultSet shop1 = null;
-        ResultSet shop1Items = null;
         String shopId = "SH002";
         if (shopComboBoxTT.getValue() == "Shop 1") {
             shopId = "SH001";
         }
+        fillShopTable(shopId);
+    }
+
+
+    public void goStorageButtonBITClicked() throws SQLException{
+        storageItemsObservableListBIT.clear();
+        String storageId = "ST002";
+        if (storageComboBoxBIT.getValue() == "Storage 1") {
+
+            storageId = "ST001";
+        }
+        fillStorageTable(storageId);
+        System.out.println(storageItemsObservableListBIT.get(0));
+
+        System.out.println("done");
+    }
+
+    static String customerNameGlobal ="";
+    static int grandTotalGlobal= 0;
+
+    public void addButtonClickedTT(javafx.event.ActionEvent event) throws SQLException {
+
+        if (shopIdTextTT.getText().equals("None")){
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("Please select Shop first to load info!");
+            a.show();
+        }
+        else {
+            System.out.println(shopIdTextTT.getText());
+            String customerName = customerNameTextField.getText();
+            String customerAddress = customerAddressTextField.getText();
+            String customerPhoneNumber = customerNumberTextField.getText();
+            String itemId = enterItemIdTextField.getText();
+            String itemDesc = database.getItemDescription(Integer.parseInt(itemId));
+            int transactionId = database.getNextTransactionId();
+            int itemQty = Integer.parseInt(enterItemQtyTextField.getText());
+            int itemPrice = database.getItemSellPrice(Integer.parseInt(itemId));
+            int itemTotal = itemPrice * itemQty;
+            int shopItemQty = database.getQtyFromShop(Integer.parseInt(itemId), shopIdTextTT.getText());
+            grandTotalGlobal += itemTotal;
+
+            customerNameLabelTT.setText(customerName);
+            customerAddressLabelTT.setText(customerAddress);
+            customerPhoneLabelTT.setText(String.valueOf(customerPhoneNumber));
+
+            if (itemQty > shopItemQty) {
+                Alert a = new Alert(Alert.AlertType.WARNING);
+
+                a.setTitle("Warning");
+                a.setContentText("Quantity Not Enough!");
+                a.show();
+            } else {
+                shopItemQty = shopItemQty - itemQty;
+
+                if (!customerNameGlobal.equals(customerName)) {
+                    database.insertTransactor(customerName, customerAddress, customerPhoneNumber);
+                }
+                customerNameGlobal = customerName;
+                int transactorId = database.getTransactorId(customerName);
+                database.insertTransaction(Integer.parseInt(itemId), itemQty, itemTotal, transactorId, "Sell");
+                database.updateShopStorage(shopItemQty, Integer.parseInt(itemId), shopIdTextTT.getText());
+                totalSalesTodayTT.setText("Rp"+String.valueOf(database.getTotalSales("Sell")));
+                currentTransactionTableDataTT.add(new CurrentTransactionTableTT(itemId, itemDesc, itemQty, itemPrice, itemTotal,transactionId));
+
+            }
+
+
+            grandTotalTT.setText("Rp"+String.valueOf(grandTotalGlobal));
+            fillTableTransactionHistoryTT(1);
+            shopItemsObservableListTT.clear();
+            fillShopTable(shopIdTextTT.getText());
+            System.out.println("done");
+
+        }
+
+    }
+
+    static String supplierNameGlobal = "";
+    public void addButtonClickedBIT(javafx.event.ActionEvent event) throws SQLException {
+        if (storageIdTextBIT.getText().equals("None")) {
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("Please select storage first to load info!");
+            a.show();
+        } else {
+            String supplierName = supplierNameTextFieldBIT.getText();
+            String supplierAddress = supplierAddressTextFieldBIT.getText();
+            String supplierPhoneNumber = supplierPhoneTextFieldBIT.getText();
+            String itemId = itemIdTextFieldBIT.getText();
+            String itemName = itemNameTextFieldBIT.getText();
+            int itemQty = Integer.parseInt(itemQuantityTextFieldBIT.getText());
+            int itemSellPrice = Integer.parseInt(sellPriceTextFieldBIT.getText());
+            int itemBuyPrice = Integer.parseInt(buyPriceTextFieldBIT.getText());
+            int itemTotal = itemBuyPrice * itemQty;
+
+
+            supplierNameLabelBIT.setText(supplierName);
+            supplierAddressLabelBIT.setText(supplierAddress);
+            supplierPhoneLabelBIT.setText(supplierPhoneNumber);
+            int storageQty = database.getQtyFromStorage(Integer.parseInt(itemId), storageIdTextBIT.getText())+ itemQty;
+            System.out.println(storageQty);
+            if (!supplierNameGlobal.equals(supplierName)) {
+                database.insertTransactor(supplierName, supplierAddress, supplierPhoneNumber);
+            }
+            int transactorId = database.getTransactorId(supplierName);
+
+            database.registerItem(Integer.parseInt(itemId), itemName, itemSellPrice);
+//
+            database.insertTransaction(Integer.parseInt(itemId), itemQty, itemTotal, transactorId, "Buy");
+            database.supplierToStorage(storageIdTextBIT.getText(), Integer.parseInt(itemId), storageQty);
+//
+            currentTransactionTableDataBIT.add(new CurrentTransactionTableBIT(itemId, itemName, itemQty, itemBuyPrice, itemSellPrice, itemTotal));
+            storageItemsObservableListBIT.clear();
+            fillStorageTable(storageIdTextBIT.getText());
+        }
+    }
+    public void fillShopTable(String shopId){
+        Connection con = null;
+        PreparedStatement stat = null;
+        ResultSet shop1 = null;
+        ResultSet shop1Items = null;
         try {
-                con = DriverManager.getConnection(database.host, database.userName, database.password);
-                stat = con.prepareStatement(database.selectAllQuery + database.shopTable + " where shop_id = ?");
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat = con.prepareStatement(database.selectAllQuery + database.shopTable + " where shop_id = ?");
 
-                stat.setString(1, shopId);
+            stat.setString(1, shopId);
 
-                shop1 = stat.executeQuery();
+            shop1 = stat.executeQuery();
             while (shop1.next()) {
                 shopIdTextTT.setText(shop1.getString("shop_id"));
                 shopAddressTextTT.setText(shop1.getString("shop_address"));
                 shopNumberTextTT.setText(shop1.getString("shop_telephone_number"));
             }
 
-            } catch(SQLException e)
-            {
-                System.out.println(e.getMessage());
-            }finally {
+        } catch(SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }finally {
             try {shop1.close();}catch (Exception e){}
             try { stat.close(); } catch (Exception e) { /* ignored */ }
             try { con.close(); } catch (Exception e) { /* ignored */ }
         }
 
         try {
-                 con = DriverManager.getConnection(database.host, database.userName, database.password);
-                 stat  = con.prepareStatement("select `Shop Stock`.*, Items.item_description \n" +
-                        "from `Shop Stock`\n" +
-                        "inner join Items\n" +
-                        "on `Shop Stock`.item_id = Items.item_id where shop_id = ?");
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat  = con.prepareStatement("select `Shop Stock`.*, Items.item_description \n" +
+                    "from `Shop Stock`\n" +
+                    "inner join Items\n" +
+                    "on `Shop Stock`.item_id = Items.item_id where shop_id = ?");
 
-                stat.setString(1, shopId);
+            stat.setString(1, shopId);
 
-                shop1Items = stat.executeQuery();
+            shop1Items = stat.executeQuery();
             while (shop1Items.next()){
                 shopItemsObservableListTT.add(new Item(shop1Items.getString("item_id"),Integer.parseInt(shop1Items.getString("shop_stock_quantity")),shop1Items.getString("item_description")));
             }
 
-            }catch(SQLException e)
-            {
-                System.out.println(e);
-            }finally {
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
             try {shop1Items.close();}catch (Exception e){}
             try { stat.close(); } catch (Exception e) { /* ignored */ }
             try { con.close(); } catch (Exception e) { /* ignored */ }
         }
+
     }
-
-
-    public void goStorageButtonBITClicked() throws SQLException{
-        storageItemsObservableListBIT.clear();
+    public void fillStorageTable(String storageId){
         Connection con = null;
         PreparedStatement stat = null;
-        String storageId = "ST002";
-        if (storageComboBoxBIT.getValue() == "Storage 1") {
-
-           storageId = "ST001";
-        }
-
         ResultSet storage1 = null;
         ResultSet storage1Items = null;
         try {
@@ -833,105 +946,6 @@ public class ControllerAdmin implements Initializable {
             try {storage1Items.close();}catch (Exception e){}
             try { stat.close(); } catch (Exception e) { /* ignored */ }
             try { con.close(); } catch (Exception e) { /* ignored */ }
-        }
-        System.out.println("done");
-    }
-
-    static String customerNameGlobal ="";
-    static int grandTotalGlobal= 0;
-
-    public void addButtonClickedTT(javafx.event.ActionEvent event) throws SQLException {
-
-        if (shopIdTextTT.getText().equals("None")){
-            Alert a = new Alert(Alert.AlertType.WARNING);
-            a.setTitle("Warning !");
-            a.setContentText("Please select Shop first to load info!");
-            a.show();
-        }
-        else {
-            System.out.println(shopIdTextTT.getText());
-            String customerName = customerNameTextField.getText();
-            String customerAddress = customerAddressTextField.getText();
-            String customerPhoneNumber = customerNumberTextField.getText();
-            String itemId = enterItemIdTextField.getText();
-            String itemDesc = database.getItemDescription(Integer.parseInt(itemId));
-            int itemQty = Integer.parseInt(enterItemQtyTextField.getText());
-            int itemPrice = database.getItemSellPrice(Integer.parseInt(itemId));
-            int itemTotal = itemPrice * itemQty;
-            int shopItemQty = database.getQtyFromShop(Integer.parseInt(itemId), shopIdTextTT.getText());
-            grandTotalGlobal += itemTotal;
-
-            customerNameLabelTT.setText(customerName);
-            customerAddressLabelTT.setText(customerAddress);
-            customerPhoneLabelTT.setText(String.valueOf(customerPhoneNumber));
-
-            if (itemQty > shopItemQty) {
-                Alert a = new Alert(Alert.AlertType.WARNING);
-
-                a.setTitle("Warning");
-                a.setContentText("Quantity Not Enough!");
-                a.show();
-            } else {
-                shopItemQty = shopItemQty - itemQty;
-
-                if (!customerNameGlobal.equals(customerName)) {
-                    database.insertTransactor(customerName, customerAddress, customerPhoneNumber);
-                }
-                customerNameGlobal = customerName;
-                int transactorId = database.getTransactorId(customerName);
-                database.insertTransaction(Integer.parseInt(itemId), itemQty, itemTotal, transactorId, "Sell");
-                database.updateShopStorage(shopItemQty, Integer.parseInt(itemId), shopIdTextTT.getText());
-                totalSalesTodayTT.setText("Rp"+String.valueOf(database.getTotalSales("Sell")));
-                currentTransactionTableDataTT.add(new CurrentTransactionTableTT(itemId, itemDesc, itemQty, itemPrice, itemTotal));
-
-            }
-
-
-            grandTotalTT.setText("Rp"+String.valueOf(grandTotalGlobal));
-            fillTableTransactionHistoryTT(1);
-            System.out.println("done");
-
-
-        }
-
-    }
-
-    static String supplierNameGlobal = "";
-    public void addButtonClickedBIT(javafx.event.ActionEvent event) throws SQLException {
-        if (storageIdTextBIT.getText().equals("None")) {
-            Alert a = new Alert(Alert.AlertType.WARNING);
-            a.setTitle("Warning !");
-            a.setContentText("Please select storage first to load info!");
-            a.show();
-        } else {
-            String supplierName = supplierNameTextFieldBIT.getText();
-            String supplierAddress = supplierAddressTextFieldBIT.getText();
-            String supplierPhoneNumber = supplierPhoneTextFieldBIT.getText();
-            String itemId = itemIdTextFieldBIT.getText();
-            String itemName = itemNameTextFieldBIT.getText();
-            int itemQty = Integer.parseInt(itemQuantityTextFieldBIT.getText());
-            int itemSellPrice = Integer.parseInt(sellPriceTextFieldBIT.getText());
-            int itemBuyPrice = Integer.parseInt(buyPriceTextFieldBIT.getText());
-            int itemTotal = itemBuyPrice * itemQty;
-
-
-            supplierNameLabelBIT.setText(supplierName);
-            supplierAddressLabelBIT.setText(supplierAddress);
-            supplierPhoneLabelBIT.setText(supplierPhoneNumber);
-            int storageQty = database.getQtyFromStorage(Integer.parseInt(itemId), storageIdTextBIT.getText())+ itemQty;
-            System.out.println(storageQty);
-            if (!supplierNameGlobal.equals(supplierName)) {
-                database.insertTransactor(supplierName, supplierAddress, supplierPhoneNumber);
-            }
-            int transactorId = database.getTransactorId(supplierName);
-
-            database.registerItem(Integer.parseInt(itemId), itemName, itemSellPrice);
-//
-            database.insertTransaction(Integer.parseInt(itemId), itemQty, itemTotal, transactorId, "Buy");
-            database.supplierToStorage(storageIdTextBIT.getText(), Integer.parseInt(itemId), storageQty);
-//
-            currentTransactionTableDataBIT.add(new CurrentTransactionTableBIT(itemId, itemName, itemQty, itemBuyPrice, itemSellPrice, itemTotal));
-
         }
     }
 

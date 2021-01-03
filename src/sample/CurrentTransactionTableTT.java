@@ -6,13 +6,26 @@ import javafx.beans.property.SimpleStringProperty;
 public class CurrentTransactionTableTT extends Item {
     private SimpleIntegerProperty itemPrice;
     private SimpleIntegerProperty total;
+    private SimpleIntegerProperty transactionId;
 
-    public CurrentTransactionTableTT(String id,String itemDesc, Integer itemQty, Integer itemPrice, Integer total){
+    public CurrentTransactionTableTT(String id,String itemDesc, Integer itemQty, Integer itemPrice, Integer total,Integer transactionId){
         super(id, itemQty,itemDesc);
         this.itemPrice = new SimpleIntegerProperty(itemPrice);
         this.total = new SimpleIntegerProperty(total);
+        this.transactionId = new SimpleIntegerProperty(transactionId);
     }
 
+    public int getTransactionId() {
+        return transactionId.get();
+    }
+
+    public SimpleIntegerProperty transactionIdProperty() {
+        return transactionId;
+    }
+
+    public void setTransactionId(int transactionId) {
+        this.transactionId.set(transactionId);
+    }
 
     public int getItemPrice() {
         return itemPrice.get();
