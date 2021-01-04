@@ -13,14 +13,16 @@ import java.sql.*;
 import java.util.ResourceBundle;
 
 public class ControllerAdmin implements Initializable {
+
     @FXML
-    public Button goStorageButtonST,goShopButtonST,moveButtonST,goShopButtonTT, addButtonTT, saveButtonTT, goStorageButtonBIT, addButtonBIT, saveButtonBIT,deleteButtonTT,deleteButtonBIT;
+    public Button goStorageButtonST,goShopButtonST,moveButtonST,goShopButtonTT, addButtonTT, saveButtonTT, goStorageButtonBIT, addButtonBIT, saveButtonBIT,deleteButtonTT,deleteButtonBIT,searchButtonCB,refreshButtonCB,searchButtonMD,refreshButtonMD,updateButtonMD,updateButtonCB;
     @FXML
-    public TableView storageTableViewST, shopTableViewST,shopStockTableViewTT, currentTransactionTableViewTT, transactionHistoryTableViewTT, storageTableViewBIT, currentTransactionTableViewBIT, transactionHistoryTableViewBIT;
+    public TableView storageTableViewST, shopTableViewST,shopStockTableViewTT, currentTransactionTableViewTT, transactionHistoryTableViewTT, storageTableViewBIT, currentTransactionTableViewBIT, transactionHistoryTableViewBIT, contactBookTableView,itemTableViewMD;
     @FXML
     public TextField itemQuantityTextFieldST,customerNameTextField, customerAddressTextField, customerNumberTextField,
             enterItemIdTextField, enterItemQtyTextField, supplierNameTextFieldBIT, supplierAddressTextFieldBIT, supplierPhoneTextFieldBIT,
-            itemIdTextFieldBIT, itemQuantityTextFieldBIT, sellPriceTextFieldBIT, buyPriceTextFieldBIT,itemNameTextFieldBIT,enterColumnBIT,enterColumnTT;
+            itemIdTextFieldBIT, itemQuantityTextFieldBIT, sellPriceTextFieldBIT, buyPriceTextFieldBIT,itemNameTextFieldBIT,enterColumnBIT,enterColumnTT,
+            enterTransactorIdCB, enterItemIdMD, enterItemNameMD,enterItemSellPriceMD,enterTransactorNameCB,enterTransactorAddressCB,enterTransactorPhoneNumberCB;
     @FXML
     public ComboBox itemIDComboBoxST, storageComboBoxST, shopComboBoxST, fromComboBox, toComboBox, shopComboBoxTT, storageComboBoxBIT ;
 
@@ -49,6 +51,8 @@ public class ControllerAdmin implements Initializable {
     ObservableList<TransactionHistory>transactionHistoryObservableListBIT = FXCollections.observableArrayList();
     ObservableList<Item> storageItemsObservableListBIT = FXCollections.observableArrayList();
     ObservableList<Item> shopItemsObservableListTT = FXCollections.observableArrayList();
+    ObservableList<Transactor> transactorsObservableListCB = FXCollections.observableArrayList();
+    ObservableList<Item> itemsObservableListMD = FXCollections.observableArrayList();
 
 
 
@@ -94,6 +98,23 @@ public class ControllerAdmin implements Initializable {
         fromComboBox.setItems(shopStorageLists);
 
 
+        try {
+            fillTransactor();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        try {
+            fillItem();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        fillTableTransactionHistoryTT(1);
+        try {
+            fillTableTransactionHistoryBIT();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
         //Storage Tab
         TableColumn itemIdStorage = new TableColumn("Item ID");
@@ -251,6 +272,43 @@ public class ControllerAdmin implements Initializable {
         transactionHistoryTableViewBIT.setItems(transactionHistoryObservableListBIT);
         transactionHistoryTableViewBIT.getColumns().addAll(transactionIdBIT,dateBIT,itemIdBIT,itemQtyBIT,itemDescBIT,totalPriceBIT,customerNameBIT
                 ,customerAddressBIT,customerPhoneNumberBIT);
+
+        TableColumn transactorId = new TableColumn("Transactor ID");
+        transactorId.setMinWidth(300);
+        transactorId.setCellValueFactory(new PropertyValueFactory<Transactor,Integer>("transactorId"));
+
+        TableColumn transactorName = new TableColumn("Name");
+        transactorName.setMinWidth(300);
+        transactorName.setCellValueFactory(new PropertyValueFactory<Transactor,String>("name"));
+
+        TableColumn transactorAddress = new TableColumn("Transactor Address");
+        transactorAddress.setMinWidth(300);
+        transactorAddress.setCellValueFactory(new PropertyValueFactory<Transactor,String>("address"));
+
+        TableColumn transactorPhoneNumber = new TableColumn("Phone Number");
+        transactorPhoneNumber.setMinWidth(300);
+        transactorPhoneNumber.setCellValueFactory(new PropertyValueFactory<Transactor,String >("phoneNumber"));
+        contactBookTableView.setItems(transactorsObservableListCB);
+        contactBookTableView.getColumns().addAll(transactorId,transactorName,transactorAddress,transactorPhoneNumber);
+
+        TableColumn itemIdMD = new TableColumn("Item ID");
+        itemIdMD.setMinWidth(300);
+        itemIdMD.setCellValueFactory(new PropertyValueFactory<Item,String>("itemId"));
+
+        TableColumn itemNameMD = new TableColumn("Item Name");
+        itemNameMD.setMinWidth(300);
+        itemNameMD.setCellValueFactory(new PropertyValueFactory<Item,String>("itemDesc"));
+
+//        for the sell price , use the Item class on itemQty parameter
+        TableColumn itemSellPriceMD = new TableColumn("Item Sell Price");
+        itemSellPriceMD.setMinWidth(300);
+        itemSellPriceMD.setCellValueFactory(new PropertyValueFactory<Item,Integer>("itemQty"));
+
+        itemTableViewMD.setItems(itemsObservableListMD);
+        itemTableViewMD.getColumns().addAll(itemIdMD,itemNameMD,itemSellPriceMD);
+
+
+
 
 
 
@@ -762,6 +820,7 @@ public class ControllerAdmin implements Initializable {
     static int grandTotalGlobal= 0;
     public void addButtonClickedTT(javafx.event.ActionEvent event) throws SQLException {
 
+        currentTransactionTableDataTT.clear();
         if (shopIdTextTT.getText().equals("None")){
             Alert a = new Alert(Alert.AlertType.WARNING);
             a.setTitle("Warning !");
@@ -820,6 +879,7 @@ public class ControllerAdmin implements Initializable {
 
     static String supplierNameGlobal = "";
     public void addButtonClickedBIT(javafx.event.ActionEvent event) throws SQLException {
+        currentTransactionTableDataBIT.clear();
         if (storageIdTextBIT.getText().equals("None")) {
             Alert a = new Alert(Alert.AlertType.WARNING);
             a.setTitle("Warning !");
@@ -909,6 +969,72 @@ public class ControllerAdmin implements Initializable {
         }
 
     }
+
+    public void searchButtonClickedCB () throws SQLException {
+        int transactorID = Integer.parseInt(enterTransactorIdCB.getText());
+        if(enterTransactorIdCB.getText().equals("")){
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("Please input Transactor ID!");
+            a.show();
+        }
+        else{
+            transactorsObservableListCB.clear();
+            searchTransactorId(transactorID);
+        }
+    }
+
+    public void updateTransactorCB() throws SQLException {
+        if (enterTransactorNameCB.getText().equals("") || enterTransactorAddressCB.getText().equals("")||enterTransactorPhoneNumberCB.getText().equals("")||enterTransactorIdCB.getText().equals("")){
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("Please input Transactor Name , Transactor Address , and Transactor Phone Number!");
+            a.show();
+        }
+        else{
+            int transactorId = Integer.parseInt(enterTransactorIdCB.getText());
+            String name = enterTransactorNameCB.getText();
+            String phoneNumber = enterTransactorPhoneNumberCB.getText();
+            String address = enterTransactorAddressCB.getText();
+            transactorsObservableListCB.clear();
+            updateTransactorSql(transactorId,name,address,phoneNumber);
+            searchTransactorId(transactorId);
+        }
+    }
+
+    public void searchButtonClickedMD() throws SQLException {
+        int itemId = Integer.parseInt(enterItemIdMD.getText());
+        itemsObservableListMD.clear();
+        searchItem(itemId);
+    }
+    public void refreshButtonClickMD() throws SQLException {
+        itemsObservableListMD.clear();
+        fillItem();
+    }
+    public void updateButtonClickMD() throws SQLException {
+        int itemId = Integer.parseInt(enterItemIdMD.getText());
+        int itemSellPrice = Integer.parseInt(enterItemSellPriceMD.getText());
+        String itemName = enterItemNameMD.getText();
+        if (enterItemNameMD.getText().equals("") || enterItemSellPriceMD.getText().equals("")||enterItemIdMD.getText().equals("")){
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("Please input Item ID and Item Sell Price");
+            a.show();
+        }
+        else{
+            itemsObservableListMD.clear();
+            updateItemSql(itemId,itemName,itemSellPrice);
+            searchItem(itemId);
+        }
+    }
+
+    public void refreshButtonClickedCB() throws SQLException {
+        transactorsObservableListCB.clear();
+        fillTransactor();
+    }
+
+
+//    Database queries Function
     public void fillStorageTable(String storageId){
         Connection con = null;
         PreparedStatement stat = null;
@@ -991,4 +1117,148 @@ public class ControllerAdmin implements Initializable {
         }
     }
 
+    public void searchTransactorId(int transactorId) throws SQLException {
+        ResultSet rs = null;
+        Connection con = null;
+        PreparedStatement stat = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat = con.prepareStatement("select * from Transactor where transactor_id =?");
+            stat.setInt(1,transactorId);
+            rs = stat.executeQuery();
+            while (rs.next()){
+                transactorsObservableListCB.add(new Transactor(rs.getInt("transactor_id"),rs.getString("transactor_name"),rs.getString("transactor_address"),rs.getString("transactor_name")));
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            rs.close();
+            stat.close();
+            con.close();
+
+        }
 }
+
+    public void fillTransactor() throws SQLException {
+        ResultSet rs = null;
+        Connection con = null;
+        PreparedStatement stat = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat = con.prepareStatement("select * from Transactor ");
+            rs = stat.executeQuery();
+            while (rs.next()){
+                transactorsObservableListCB.add(new Transactor(rs.getInt("transactor_id"),rs.getString("transactor_name"),rs.getString("transactor_address"),rs.getString("transactor_phone_number")));
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            rs.close();
+            stat.close();
+            con.close();
+
+        }
+    }
+
+    public void fillItem() throws SQLException {
+        ResultSet rs = null;
+        Connection con = null;
+        PreparedStatement stat = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat = con.prepareStatement("select * from Items ");
+            rs = stat.executeQuery();
+            while (rs.next()){
+                itemsObservableListMD.add(new Item(String.valueOf(rs.getInt("item_id")),rs.getInt("item_sell_price"),rs.getString("item_description")));
+
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            rs.close();
+            stat.close();
+            con.close();
+
+        }
+    }
+
+    public void updateItemSql(int itemId,String itemName , Integer itemSellPrice) throws SQLException {
+        ResultSet rs = null;
+        Connection con = null;
+        PreparedStatement stat = null;
+
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat = con.prepareStatement("update Items set item_description = ? , item_sell_price=? where item_id =?");
+            stat.setString(1,itemName);
+            stat.setInt(2,itemSellPrice);
+            stat.setInt(3,itemId);
+            stat.execute();
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            stat.close();
+            con.close();
+
+        }
+    }
+
+    public void updateTransactorSql(int transactorId,String name,String address,String phoneNumber) throws SQLException {
+        ResultSet rs = null;
+        Connection con = null;
+        PreparedStatement stat = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat = con.prepareStatement("update Transactor set transactor_name = ? , transactor_address=?, transactor_phone_number=? where transactor_id =?");
+            stat.setString(1,name);
+            stat.setString(2,address);
+            stat.setString(3,phoneNumber);
+            stat.setInt(4,transactorId);
+            stat.execute();
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            stat.close();
+            con.close();
+
+        }
+    }
+
+    public void searchItem(int itemId) throws SQLException {
+        ResultSet rs = null;
+        Connection con = null;
+        PreparedStatement stat = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat = con.prepareStatement("select * from Items where item_id =?");
+            stat.setInt(1,itemId);
+            rs = stat.executeQuery();
+            while (rs.next()){
+                itemsObservableListMD.add(new Item(String.valueOf(rs.getInt("item_id")),rs.getInt("item_sell_price"),rs.getString("item_description")));
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            rs.close();
+            stat.close();
+            con.close();
+
+        }
+    }
+
+}
+
+
+
