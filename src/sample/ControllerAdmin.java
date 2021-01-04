@@ -98,6 +98,8 @@ public class ControllerAdmin implements Initializable {
         fromComboBox.setItems(shopStorageLists);
 
 
+
+
         try {
             fillTransactor();
         } catch (SQLException throwables) {
@@ -350,6 +352,7 @@ public class ControllerAdmin implements Initializable {
     public void saveButtonBITClicked() throws SQLException{
         currentTransactionTableDataBIT.clear();
         transactionHistoryObservableListBIT.clear();
+        fillTableTransactionHistoryBIT();
 
         System.out.println("run");
     }
@@ -364,6 +367,8 @@ public class ControllerAdmin implements Initializable {
     }
 
     public void fillTableTransactionHistoryTT(int num){
+        long today = System.currentTimeMillis();
+        java.sql.Date currentDay = new java.sql.Date(today);
         if (num ==0){
             currentTransactionTableDataTT.clear();
         }
@@ -379,9 +384,9 @@ public class ControllerAdmin implements Initializable {
                     "from Transaction tn\n" +
                     "    inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
                     "    inner join Items i on tn.item_id  = i.item_id\n" +
-                    "    where tn.`transaction_buy/sell` = \"Sell\";");
+                    "    where tn.`transaction_buy/sell` = \"Sell\" and tn.transaction_date=?;");
 
-
+            stat.setDate(1,currentDay);
             sqlData= stat.executeQuery();
             while(sqlData.next()){
                 transactionHistoryObservableList.add(new TransactionHistory(sqlData.getString("transaction_id"),sqlData.getDate("transaction_date").toString(),sqlData.getString("item_id")
@@ -1090,15 +1095,18 @@ public class ControllerAdmin implements Initializable {
         ResultSet rsTransactionHistory = null;
         Connection con = null;
         PreparedStatement stat = null;
+        long today = System.currentTimeMillis();
+        java.sql.Date currentDay = new java.sql.Date(today);
         try {
             con = DriverManager.getConnection(database.host, database.userName, database.password);
             stat = con.prepareStatement("select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\n" +
                     "from Transaction tn\n" +
                     "    inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
                     "    inner join Items i on tn.item_id  = i.item_id\n" +
-                    "    where tn.`transaction_buy/sell` = \"Buy\";");
+                    "    where tn.`transaction_buy/sell` = \"Buy\" and tn.transaction_date=? ");
 
 
+            stat.setDate(1,currentDay);
             rsTransactionHistory = stat.executeQuery();
             while (rsTransactionHistory.next()){
                 transactionHistoryObservableListBIT.add(new TransactionHistory(rsTransactionHistory.getString("transaction_id"),rsTransactionHistory.getDate("transaction_date").toString(),rsTransactionHistory.getString("item_id")

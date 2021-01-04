@@ -881,7 +881,7 @@
                   </VBox>
                </content>
             </Tab>
-            <Tab text="Contact Book">
+            <Tab text="Contact Book and Trouble Center">
                <content>
                   <VBox prefHeight="476.0" prefWidth="831.0">
                      <children>
