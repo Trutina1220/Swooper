@@ -931,8 +931,15 @@ public class ControllerAdmin implements Initializable {
         }
 
         else{
-            int transactionId = Integer.parseInt(enterTransactionIdCB.getText());
+            int itemId = Integer.parseInt(transactionHistoryObservableListCB.get(0).getItemId());
+            int itemTransactionQty = transactionHistoryObservableList.get(0).getItemQty();
+            int pricePcs = transactionHistoryObservableListCB.get(0).getPrice() / itemTransactionQty;
             Integer quantityReturned = Integer.parseInt(enterTransactionQtyCB.getText());
+            int totalPriceNew =  (itemTransactionQty-quantityReturned)*quantityReturned;
+            int transactionId = Integer.parseInt(enterTransactionIdCB.getText());
+            String shopId = null ;
+            ;
+//            int shopStock  = database.getQtyFromShop();
             transactorsObservableListCB.clear();
 //            updateQuantitySql(quantityReturned);
             searchTransactorId(transactionId);
