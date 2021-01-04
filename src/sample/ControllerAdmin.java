@@ -1303,7 +1303,6 @@ public class ControllerAdmin implements Initializable {
                     "                    \"from Transaction tn\\n\" +\n" +
                     "                    \"    inner join Transactor tr on tn.transactor_id = tr.transactor_id\\n\" +\n" +
                     "                    \"    inner join Items i on tn.item_id  = i.item_id");
-            stat.setInt(1,transactionId);
             rs = stat.executeQuery();
             while (rs.next()){
 //                put the content
