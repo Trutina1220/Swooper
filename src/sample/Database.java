@@ -1,6 +1,6 @@
 package sample;
 
-//import com.sun.rowset.CachedRowSetImpl;
+import com.sun.rowset.CachedRowSetImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
@@ -86,7 +86,6 @@ public class Database {
 //        Connection con = null;
 //        PreparedStatement stat = null;
 //        CachedRowSet rowSet = new CachedRowSetImpl();
-//        removeEmptyItem(choice);
 //
 //        if(choice.contains("SH"))
 //        {
@@ -378,48 +377,6 @@ public class Database {
         return deletedItem;
     }
 
-
-    public void removeEmptyItem(String shopStorageID) throws SQLException {
-        Connection con = null;
-        PreparedStatement stat = null;
-        Statement selectStat = null;
-        ResultSet rsSelect = null;
-        if(shopStorageID.contains("SH"))
-        {
-            con = DriverManager.getConnection(this.host, this.userName, this.password);
-            PreparedStatement delAllStat = con.prepareStatement("Delete from " + shopStockTable + " where shop_id = ? and shop_stock_quantity = ?");
-            delAllStat.setString(1, shopStorageID);
-            delAllStat.setInt(2,0);
-
-            Integer statdel = delAllStat.executeUpdate();
-            if(statdel>1)
-            {
-                Alert a = new Alert(Alert.AlertType.INFORMATION);
-                a.setTitle("deleted 0s in shop");
-                a.show();
-            }
-
-        }
-        else
-        {
-            con = DriverManager.getConnection(this.host, this.userName, this.password);
-            PreparedStatement delAllStat = con.prepareStatement("Delete from " + storageStockTable + " where storage_id = ? and storage_stock_quantity = ?");
-            delAllStat.setString(1,shopStorageID);
-            delAllStat.setInt(2,0);
-
-          Integer statdel = delAllStat.executeUpdate();
-            if(statdel>1)
-            {
-                Alert a = new Alert(Alert.AlertType.INFORMATION);
-                a.setTitle("deleted 0s in Storage");
-                a.show();
-            }
-        }
-        try { rsSelect.close(); } catch (Exception e) { /* ignored */ }
-        try { con.close(); } catch (Exception e) { /* ignored */ }
-        try { stat.close(); } catch (Exception e) { /* ignored */ }
-        try { selectStat.close();} catch (Exception e) { /* ignored */ }
-    }
 
 
     public void insertTransaction(Integer itemId, Integer itemQty, Integer totalPrice, Integer transactorId,String buyOrSell){

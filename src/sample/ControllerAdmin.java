@@ -15,14 +15,16 @@ import java.util.ResourceBundle;
 public class ControllerAdmin implements Initializable {
 
     @FXML
-    public Button goStorageButtonST,goShopButtonST,moveButtonST,goShopButtonTT, addButtonTT, saveButtonTT, goStorageButtonBIT, addButtonBIT, saveButtonBIT,deleteButtonTT,deleteButtonBIT,searchButtonCB,refreshButtonCB,searchButtonMD,refreshButtonMD,updateButtonMD,updateButtonCB;
+    public Button goStorageButtonST,goShopButtonST,moveButtonST,goShopButtonTT, addButtonTT, saveButtonTT, goStorageButtonBIT,
+            addButtonBIT, saveButtonBIT,deleteButtonTT,deleteButtonBIT,searchButtonCB,refreshButtonCB,searchButtonMD,refreshButtonMD,
+            updateButtonMD,updateButtonCB, searchButtonCBTransaction, refreshButtonCBTransaction, updateButtonCBTransaction;
     @FXML
-    public TableView storageTableViewST, shopTableViewST,shopStockTableViewTT, currentTransactionTableViewTT, transactionHistoryTableViewTT, storageTableViewBIT, currentTransactionTableViewBIT, transactionHistoryTableViewBIT, contactBookTableView,itemTableViewMD;
+    public TableView storageTableViewST, shopTableViewST,shopStockTableViewTT, currentTransactionTableViewTT, transactionHistoryTableViewTT, storageTableViewBIT, currentTransactionTableViewBIT, transactionHistoryTableViewBIT, contactBookTableView,itemTableViewMD, transactionHistoryTableVIewCB;
     @FXML
     public TextField itemQuantityTextFieldST,customerNameTextField, customerAddressTextField, customerNumberTextField,
             enterItemIdTextField, enterItemQtyTextField, supplierNameTextFieldBIT, supplierAddressTextFieldBIT, supplierPhoneTextFieldBIT,
             itemIdTextFieldBIT, itemQuantityTextFieldBIT, sellPriceTextFieldBIT, buyPriceTextFieldBIT,itemNameTextFieldBIT,enterColumnBIT,enterColumnTT,
-            enterTransactorIdCB, enterItemIdMD, enterItemNameMD,enterItemSellPriceMD,enterTransactorNameCB,enterTransactorAddressCB,enterTransactorPhoneNumberCB;
+            enterTransactorIdCB, enterItemIdMD, enterItemNameMD,enterItemSellPriceMD,enterTransactorNameCB,enterTransactorAddressCB,enterTransactorPhoneNumberCB, enterTransactionIdCB, enterTransactionQtyCB;
     @FXML
     public ComboBox itemIDComboBoxST, storageComboBoxST, shopComboBoxST, fromComboBox, toComboBox, shopComboBoxTT, storageComboBoxBIT ;
 
@@ -49,11 +51,11 @@ public class ControllerAdmin implements Initializable {
     ObservableList<Integer> storage2ItemIDs = FXCollections.observableArrayList();
     ObservableList<TransactionHistory>transactionHistoryObservableList = FXCollections.observableArrayList();
     ObservableList<TransactionHistory>transactionHistoryObservableListBIT = FXCollections.observableArrayList();
+    ObservableList<TransactionHistory>transactionHistoryObservableListCB = FXCollections.observableArrayList();
     ObservableList<Item> storageItemsObservableListBIT = FXCollections.observableArrayList();
     ObservableList<Item> shopItemsObservableListTT = FXCollections.observableArrayList();
     ObservableList<Transactor> transactorsObservableListCB = FXCollections.observableArrayList();
     ObservableList<Item> itemsObservableListMD = FXCollections.observableArrayList();
-
 
 
 
@@ -99,7 +101,6 @@ public class ControllerAdmin implements Initializable {
 
 
 
-
         try {
             fillTransactor();
         } catch (SQLException throwables) {
@@ -117,8 +118,13 @@ public class ControllerAdmin implements Initializable {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        try {
+            fillTableTransactionHistoryCB();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
-        //Storage Tab
+        //storageTableViewST
         TableColumn itemIdStorage = new TableColumn("Item ID");
         itemIdStorage.setMinWidth(300);
         itemIdStorage.setCellValueFactory(
@@ -138,9 +144,9 @@ public class ControllerAdmin implements Initializable {
                 new PropertyValueFactory<Item, Integer>("itemDesc"));
         storageTableViewST.setItems(storageItems);
 
-        storageTableViewST.getColumns().addAll(itemIdStorage, itemQtyStorage, itemDescStorage);
+        storageTableViewST.getColumns().addAll(itemIdStorage,  itemDescStorage, itemQtyStorage);
 
-//        Storage tab BIT
+//        shopStockTableViewTT
         TableColumn itemIdStorageBIT = new TableColumn("Item ID");
         itemIdStorageBIT.setMinWidth(300);
         itemIdStorageBIT.setCellValueFactory(new PropertyValueFactory<Item,String>("itemId"));
@@ -170,6 +176,8 @@ public class ControllerAdmin implements Initializable {
         shopStockTableViewTT.setItems(shopItemsObservableListTT);
         shopStockTableViewTT.getColumns().addAll(itemIdShopTT,itemDescShopTT,itemQtyShopTT);
 
+
+        //shopTableViewST
         TableColumn itemIdShop = new TableColumn("Item ID");
         itemIdShop.setMinWidth(300);
         itemIdShop.setCellValueFactory(
@@ -190,9 +198,9 @@ public class ControllerAdmin implements Initializable {
 
         shopTableViewST.setItems(shopItems);
 
-        shopTableViewST.getColumns().addAll(itemIdShop, itemQtyShop, itemDescShop);
+        shopTableViewST.getColumns().addAll(itemIdShop, itemDescShop, itemQtyShop);
 
-
+        //transactionHistoryTableViewTT
         TableColumn transactionId = new TableColumn("Transaction ID");
         transactionId.setMinWidth(300);
         transactionId.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("transactionId"));
@@ -235,6 +243,7 @@ public class ControllerAdmin implements Initializable {
 
 
 
+        //transactionHistoryTableViewBIT
         TableColumn transactionIdBIT = new TableColumn("Transaction ID");
         transactionIdBIT.setMinWidth(300);
         transactionIdBIT.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("transactionId"));
@@ -275,6 +284,9 @@ public class ControllerAdmin implements Initializable {
         transactionHistoryTableViewBIT.getColumns().addAll(transactionIdBIT,dateBIT,itemIdBIT,itemQtyBIT,itemDescBIT,totalPriceBIT,customerNameBIT
                 ,customerAddressBIT,customerPhoneNumberBIT);
 
+
+
+        //contactBookTableView
         TableColumn transactorId = new TableColumn("Transactor ID");
         transactorId.setMinWidth(300);
         transactorId.setCellValueFactory(new PropertyValueFactory<Transactor,Integer>("transactorId"));
@@ -293,6 +305,54 @@ public class ControllerAdmin implements Initializable {
         contactBookTableView.setItems(transactorsObservableListCB);
         contactBookTableView.getColumns().addAll(transactorId,transactorName,transactorAddress,transactorPhoneNumber);
 
+
+
+        //transactionHistoryTableVIewCB
+        TableColumn transactionIdCB = new TableColumn("Transaction ID");
+        transactionIdCB.setMinWidth(300);
+        transactionIdCB.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("transactionId"));
+
+        TableColumn dateCB = new TableColumn("Date");
+        dateCB.setMinWidth(300);
+        dateCB.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("date"));
+
+        TableColumn itemIdCB = new TableColumn("Item ID");
+        itemIdCB.setMinWidth(300);
+        itemIdCB.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("itemId"));
+
+        TableColumn itemQtyCB = new TableColumn("Item Qty");
+        itemQtyCB.setMinWidth(300);
+        itemQtyCB.setCellValueFactory(new PropertyValueFactory<TransactionHistory,Integer>("itemQty"));
+
+        TableColumn itemDescCB = new TableColumn("Item Desc");
+        itemDescCB.setMinWidth(300);
+        itemDescCB.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("itemDesc"));
+
+        TableColumn  totalPriceCB = new TableColumn("Total Price");
+        totalPriceCB.setMinWidth(300);
+        totalPriceCB.setCellValueFactory(new PropertyValueFactory<TransactionHistory,Integer>("price"));
+
+        TableColumn customerNameCB = new TableColumn("Supplier Name");
+        customerNameCB.setMinWidth(300);
+        customerNameCB.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("name"));
+
+        TableColumn customerAddressCB = new TableColumn("Address");
+        customerAddressCB.setMinWidth(300);
+        customerAddressCB.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("address"));
+
+        TableColumn customerPhoneNumberCB = new TableColumn("Phone Number");
+        customerPhoneNumberCB.setMinWidth(300);
+        customerPhoneNumberCB.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("phoneNumber"));
+
+        TableColumn customerTransactionTypeCB = new TableColumn("Transaction Type");
+        customerTransactionTypeCB.setMinWidth(300);
+        customerTransactionTypeCB.setCellValueFactory(new PropertyValueFactory<TransactionHistory,String>("transactionType"));
+
+        transactionHistoryTableVIewCB.setItems(transactionHistoryObservableListCB);
+        transactionHistoryTableVIewCB.getColumns().addAll(transactionIdCB,dateCB,itemIdCB,itemQtyCB,itemDescCB,totalPriceCB,customerNameCB
+                ,customerAddressCB,customerPhoneNumberCB, customerTransactionTypeCB);
+
+
         TableColumn itemIdMD = new TableColumn("Item ID");
         itemIdMD.setMinWidth(300);
         itemIdMD.setCellValueFactory(new PropertyValueFactory<Item,String>("itemId"));
@@ -308,19 +368,6 @@ public class ControllerAdmin implements Initializable {
 
         itemTableViewMD.setItems(itemsObservableListMD);
         itemTableViewMD.getColumns().addAll(itemIdMD,itemNameMD,itemSellPriceMD);
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //        setting the observable list for the current transaction Table TT;
 //        The real transaction Id column is the first one
@@ -418,43 +465,13 @@ public class ControllerAdmin implements Initializable {
         }
         else
         {
+            storageItems.clear();
+            String storageId = "ST002";
             if(storageComboBoxST.getValue() == "Storage 1")
             {
-                storageItems.clear();
-                ResultSet storage1 = database.getShopStorageInfo("ST001");
-                ResultSet storage1Items = database.getShopStorageItems("ST001");
-
-                while (storage1.next()) {
-                    storageIdTextST.setText(storage1.getString("storage_id"));
-                    storageAddressTextST.setText(storage1.getString("storage_address"));
-                    storageNumberTextST.setText(storage1.getString("storage_telephone_number"));
-                }
-                while (storage1Items.next())
-                {
-                    storageItems.add(new Item(storage1Items.getString("item_id"), Integer.parseInt(storage1Items.getString("storage_stock_quantity")), storage1Items.getString("item_description")));
-                }
-                storage1.close();
-                storage1Items.close();
+                storageId = "ST001";
             }
-
-            else
-            {
-                storageItems.clear();
-                ResultSet storage2 = database.getShopStorageInfo("ST002");
-                ResultSet storage2Items = database.getShopStorageItems("ST002");
-
-                while (storage2.next()) {
-                    storageIdTextST.setText(storage2.getString("storage_id"));
-                    storageAddressTextST.setText(storage2.getString("storage_address"));
-                    storageNumberTextST.setText(storage2.getString("storage_telephone_number"));
-                }
-                while (storage2Items.next())
-                {
-                    storageItems.add(new Item(storage2Items.getString("item_id"), Integer.parseInt(storage2Items.getString("storage_stock_quantity")),storage2Items.getString("item_description")));
-                }
-                storage2.close();
-                storage2Items.close();
-            }
+            fillStorageTable(storageId, storageItems, storageIdTextST, storageAddressTextST, storageNumberTextST);
         }
     }
 
@@ -471,49 +488,14 @@ public class ControllerAdmin implements Initializable {
         }
         else
         {
+            shopItems.clear();
+            String shopId = "SH002";
             if(shopComboBoxST.getValue() == "Shop 1")
             {
-                shopItems.clear();
-                ResultSet shop1 = database.getShopStorageInfo("SH001");
-                ResultSet shop1Items = database.getShopStorageItems("SH001");
-
-
-                while (shop1.next()) {
-                    shopIdTextST.setText(shop1.getString("shop_id"));
-                    shopAddressTextST.setText(shop1.getString("shop_address"));
-                    shopNumberTextST.setText(shop1.getString("shop_telephone_number"));
-                }
-
-                while(shop1Items.next())
-                {
-                    shopItems.add(new Item(shop1Items.getString("item_id"), Integer.parseInt(shop1Items.getString("shop_stock_quantity")), shop1Items.getString("item_description")));
-                }
-                shop1.close();
-                shop1Items.close();
-
+                shopId = "SH001";
             }
-            else
-            {
-                shopItems.clear();
-                ResultSet shop2 = database.getShopStorageInfo("SH002");
-                ResultSet shop2Items = database.getShopStorageItems("SH002");
-
-                while (shop2.next()) {
-                    shopIdTextST.setText(shop2.getString("shop_id"));
-                    shopAddressTextST.setText(shop2.getString("shop_address"));
-                    shopNumberTextST.setText(shop2.getString("shop_telephone_number"));
-                }
-
-                while (shop2Items.next())
-                {
-                    shopItems.add(new Item(shop2Items.getString("item_id"), Integer.parseInt(shop2Items.getString("shop_stock_quantity")), shop2Items.getString("item_description")));
-                }
-                shop2.close();
-                shop2Items.close();
-            }
-
+            fillShopTable(shopId, shopItems, shopIdTextST, shopAddressTextST, shopNumberTextST);
         }
-
     }
 
 
@@ -525,35 +507,19 @@ public class ControllerAdmin implements Initializable {
         }
 
         if (fromComboBox.getValue().toString() == "Shop 1") {
-            ResultSet rsShopItems = database.getShopStorageItems("SH001");
-            while (rsShopItems.next()) {
-                Integer shop1ItemID = rsShopItems.getInt("item_id");
-                shop1ItemIDs.add(shop1ItemID);
-            }
+            fillComboBoxShopItemId("SH001", shop1ItemIDs);
             itemIDComboBoxST.setItems(shop1ItemIDs);
         }
         else if (fromComboBox.getValue().toString() == "Shop 2") {
-            ResultSet rsShopItems = database.getShopStorageItems("SH002");
-            while (rsShopItems.next()) {
-                Integer shop2ItemID = rsShopItems.getInt("item_id");
-                shop2ItemIDs.add(shop2ItemID);
-            }
+            fillComboBoxShopItemId("SH002", shop2ItemIDs);
             itemIDComboBoxST.setItems(shop2ItemIDs);
         }
         else if (fromComboBox.getValue().toString() == "Storage 1") {
-            ResultSet rsStorageItems = database.getShopStorageItems("ST001");
-            while (rsStorageItems.next()) {
-                Integer storage1ItemID = rsStorageItems.getInt("item_id");
-                storage1ItemIDs.add(storage1ItemID);
-            }
+            fillComboBoxStorageItemId("ST001", storage1ItemIDs);
             itemIDComboBoxST.setItems(storage1ItemIDs);
         }
         else {
-            ResultSet rsStorageItems = database.getShopStorageItems("ST002");
-            while (rsStorageItems.next()) {
-                Integer storage2ItemID = rsStorageItems.getInt("item_id");
-                storage2ItemIDs.add(storage2ItemID);
-            }
+            fillComboBoxStorageItemId("ST002", storage2ItemIDs);
             itemIDComboBoxST.setItems(storage2ItemIDs);
         }
     }
@@ -647,7 +613,7 @@ public class ControllerAdmin implements Initializable {
 
 
         if (fromComboBox.getValue().toString() == "Shop 1" && toComboBox.getValue().toString() == "Storage 1") {
-            if(database.deleteItem("SH001", inputId, inputQty) == true) {
+            if(database.deleteItem("SH001", inputId, inputQty)) {
                 database.insertItem("ST001", inputId, inputQty);
                 this.successMove();
             }
@@ -729,25 +695,6 @@ public class ControllerAdmin implements Initializable {
         }
     }
 
-
-
-
-
-//    public boolean isUnique(TextField itemIdTextField)
-//    {
-//        //For each loop to check every product inside products observable array list.
-//        for(Item item:shopItems)
-//        {
-//            //if the part number inputted by the user exist in the observable list the function returns false
-//            if(item.getItemId().equals(itemIdTextFieldST.getText()))
-//            {
-//                return false;
-//            }
-//        }
-//        //returns true by default
-//        return true;
-//    }
-
     public boolean isInt(TextField input) {
         //Using Exception handling try catch to validate the input of a text field
         try {
@@ -770,7 +717,7 @@ public class ControllerAdmin implements Initializable {
         if (shopComboBoxTT.getValue() == "Shop 1") {
             shopId = "SH001";
         }
-        fillShopTable(shopId);
+        fillShopTable(shopId,shopItemsObservableListTT, shopIdTextTT, shopAddressTextTT, shopNumberTextTT);
     }
 
 
@@ -781,7 +728,7 @@ public class ControllerAdmin implements Initializable {
 
             storageId = "ST001";
         }
-        fillStorageTable(storageId);
+        fillStorageTable(storageId,storageItemsObservableListBIT, storageIdTextBIT, storageAddressTextBIT, storageNumberTextBIT);
 
         System.out.println("done");
     }
@@ -801,7 +748,7 @@ public class ControllerAdmin implements Initializable {
         currentTransactionTableDataTT.remove(column);
         transactionHistoryObservableList.clear();
         shopItemsObservableListTT.clear();
-        fillShopTable(shopId);
+        fillShopTable(shopId, shopItemsObservableListTT, shopIdTextTT, shopAddressTextTT, shopNumberTextTT);
         fillTableTransactionHistoryTT(1);
         totalSalesTodayTT.setText("Rp"+String.valueOf(database.getTotalSales("Sell")));
     }
@@ -817,7 +764,7 @@ public class ControllerAdmin implements Initializable {
         currentTransactionTableDataBIT.remove(column);
         transactionHistoryObservableListBIT.clear();
         storageItemsObservableListBIT.clear();
-        fillStorageTable(storageId);
+        fillStorageTable(storageId, storageItemsObservableListBIT, storageIdTextBIT, storageAddressTextBIT, storageNumberTextBIT);
         fillTableTransactionHistoryBIT();
     }
 
@@ -875,7 +822,7 @@ public class ControllerAdmin implements Initializable {
             grandTotalTT.setText("Rp"+String.valueOf(grandTotalGlobal));
             fillTableTransactionHistoryTT(1);
             shopItemsObservableListTT.clear();
-            fillShopTable(shopIdTextTT.getText());
+            fillShopTable(shopIdTextTT.getText(), shopItemsObservableListTT, shopIdTextTT, shopAddressTextTT, shopNumberTextTT);
             System.out.println("done");
 
         }
@@ -920,72 +867,34 @@ public class ControllerAdmin implements Initializable {
 //
             currentTransactionTableDataBIT.add(new CurrentTransactionTableBIT(itemId, itemName, itemQty, itemBuyPrice, itemSellPrice, itemTotal,transactionId));
             storageItemsObservableListBIT.clear();
-            fillStorageTable(storageIdTextBIT.getText());
+            fillStorageTable(storageIdTextBIT.getText(), storageItemsObservableListBIT, storageIdTextBIT, storageAddressTextBIT, storageNumberTextBIT);
         }
     }
-    public void fillShopTable(String shopId){
-        Connection con = null;
-        PreparedStatement stat = null;
-        ResultSet shop1 = null;
-        ResultSet shop1Items = null;
-        try {
-            con = DriverManager.getConnection(database.host, database.userName, database.password);
-            stat = con.prepareStatement(database.selectAllQuery + database.shopTable + " where shop_id = ?");
 
-            stat.setString(1, shopId);
 
-            shop1 = stat.executeQuery();
-            while (shop1.next()) {
-                shopIdTextTT.setText(shop1.getString("shop_id"));
-                shopAddressTextTT.setText(shop1.getString("shop_address"));
-                shopNumberTextTT.setText(shop1.getString("shop_telephone_number"));
-            }
 
-        } catch(SQLException e)
+
+    public void searchButtonCBClicked () throws SQLException {
+        if(!isInt(enterTransactorIdCB))
         {
-            System.out.println(e.getMessage());
-        }finally {
-            try {shop1.close();}catch (Exception e){}
-            try { stat.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
-        }
-
-        try {
-            con = DriverManager.getConnection(database.host, database.userName, database.password);
-            stat  = con.prepareStatement("select `Shop Stock`.*, Items.item_description \n" +
-                    "from `Shop Stock`\n" +
-                    "inner join Items\n" +
-                    "on `Shop Stock`.item_id = Items.item_id where shop_id = ?");
-
-            stat.setString(1, shopId);
-
-            shop1Items = stat.executeQuery();
-            while (shop1Items.next()){
-                shopItemsObservableListTT.add(new Item(shop1Items.getString("item_id"),Integer.parseInt(shop1Items.getString("shop_stock_quantity")),shop1Items.getString("item_description")));
-            }
-
-        }catch(SQLException e)
-        {
-            System.out.println(e);
-        }finally {
-            try {shop1Items.close();}catch (Exception e){}
-            try { stat.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
-        }
-
-    }
-
-    public void searchButtonClickedCB () throws SQLException {
-        int transactorID = Integer.parseInt(enterTransactorIdCB.getText());
-        if(enterTransactorIdCB.getText().equals("")){
-            Alert a = new Alert(Alert.AlertType.WARNING);
-            a.setTitle("Warning !");
-            a.setContentText("Please input Transactor ID!");
+            Alert a =  new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning!");
+            a.setContentText("Cannot enter characters in Transactor Id Field!");
             a.show();
         }
-        else{
-            transactorsObservableListCB.clear();
-            searchTransactorId(transactorID);
+        else
+        {
+            int transactorID = Integer.parseInt(enterTransactorIdCB.getText());
+            if(enterTransactorIdCB.getText().equals("")){
+                Alert a = new Alert(Alert.AlertType.WARNING);
+                a.setTitle("Warning !");
+                a.setContentText("Please input Transactor ID!");
+                a.show();
+            }
+            else{
+                transactorsObservableListCB.clear();
+                searchTransactorId(transactorID);
+            }
         }
     }
 
@@ -1006,6 +915,52 @@ public class ControllerAdmin implements Initializable {
             searchTransactorId(transactorId);
         }
     }
+//HERE FOR UPDATE YAH
+    public void updateQuantityCBClicked() throws SQLException {
+        Alert a = new Alert(Alert.AlertType.WARNING);
+        if (enterTransactionQtyCB.getText().equals("")){
+            a.setTitle("Warning !");
+            a.setContentText("Please input Transaction Item Quantity!");
+            a.show();
+        }
+        else if(!isInt(enterTransactionQtyCB))
+        {
+            a.setTitle("Warning !");
+            a.setContentText("Please input numbers only in Transaction Item Quantity!");
+            a.show();
+        }
+
+        else{
+            int transactionId = Integer.parseInt(enterTransactionIdCB.getText());
+            Integer quantityReturned = Integer.parseInt(enterTransactionQtyCB.getText());
+            transactorsObservableListCB.clear();
+//            updateQuantitySql(quantityReturned);
+            searchTransactorId(transactionId);
+        }
+    }
+
+    public void searchButtonTransactionCBClicked() throws SQLException {
+        Alert a =  new Alert(Alert.AlertType.WARNING);
+        if(enterTransactionIdCB.getText().equals(""))
+        {
+            a.setTitle("Warning!");
+            a.setContentText("Please input in order to search!");
+            a.show();
+        }
+        if(!isInt(enterTransactionIdCB))
+        {
+            a.setTitle("Warning!");
+            a.setContentText("Cannot enter characters in Transaction Id Field!");
+            a.show();
+        }
+        else
+        {
+            int transactionID = Integer.parseInt(enterTransactionIdCB.getText());
+                transactionHistoryObservableListCB.clear();
+                searchTransactionId(transactionID);
+        }
+    }
+
 
     public void searchButtonClickedMD() throws SQLException {
         int itemId = Integer.parseInt(enterItemIdMD.getText());
@@ -1037,10 +992,13 @@ public class ControllerAdmin implements Initializable {
         transactorsObservableListCB.clear();
         fillTransactor();
     }
-
+    public void refreshButtonTransactionClickedCB() throws SQLException{
+        transactionHistoryObservableListCB.clear();
+        fillTableTransactionHistoryCB();
+    }
 
 //    Database queries Function
-    public void fillStorageTable(String storageId){
+    public void fillStorageTable(String storageId, ObservableList storageItems, Text storageIdText, Text storageAddressText, Text storageNumberText){
         Connection con = null;
         PreparedStatement stat = null;
         ResultSet storage1 = null;
@@ -1053,9 +1011,9 @@ public class ControllerAdmin implements Initializable {
 
             storage1 = stat.executeQuery();
             while (storage1.next()) {
-                storageIdTextBIT.setText(storage1.getString("storage_id"));
-                storageAddressTextBIT.setText(storage1.getString("storage_address"));
-                storageNumberTextBIT.setText(storage1.getString("storage_telephone_number"));
+                storageIdText.setText(storage1.getString("storage_id"));
+                storageAddressText.setText(storage1.getString("storage_address"));
+                storageNumberText.setText(storage1.getString("storage_telephone_number"));
             }
 
         } catch(SQLException e)
@@ -1079,7 +1037,7 @@ public class ControllerAdmin implements Initializable {
             storage1Items = stat.executeQuery();
             while (storage1Items.next())
             {
-                storageItemsObservableListBIT.add(new Item(storage1Items.getString("item_id"), Integer.parseInt(storage1Items.getString("storage_stock_quantity")), storage1Items.getString("item_description")));
+                storageItems.add(new Item(storage1Items.getString("item_id"), Integer.parseInt(storage1Items.getString("storage_stock_quantity")), storage1Items.getString("item_description")));
             }
 
         }catch(SQLException e)
@@ -1091,6 +1049,118 @@ public class ControllerAdmin implements Initializable {
             try { con.close(); } catch (Exception e) { /* ignored */ }
         }
     }
+
+
+    public void fillComboBoxStorageItemId(String storageId, ObservableList storageItemIds){
+        Connection con = null;
+        PreparedStatement stat = null;
+        ResultSet storageItems = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat  = con.prepareStatement("select `Storage Stock`.*, Items.item_description \n" +
+                    "from `Storage Stock`\n" +
+                    "inner join Items\n" +
+                    "on `Storage Stock`.item_id = Items.item_id where storage_id = ?");
+
+            stat.setString(1, storageId);
+
+            storageItems = stat.executeQuery();
+            while (storageItems.next()){
+                Integer shopItemId = storageItems.getInt("item_id");
+                storageItemIds.add(shopItemId);
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            try {storageItems.close();}catch (Exception e){}
+            try { stat.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+    }
+
+    public void fillComboBoxShopItemId(String shopId, ObservableList shopItemIds){
+        Connection con = null;
+        PreparedStatement stat = null;
+        ResultSet shopItems = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat  = con.prepareStatement("select `Shop Stock`.*, Items.item_description \n" +
+                    "from `Shop Stock`\n" +
+                    "inner join Items\n" +
+                    "on `Shop Stock`.item_id = Items.item_id where shop_id = ?");
+
+            stat.setString(1, shopId);
+
+            shopItems = stat.executeQuery();
+            while (shopItems.next()){
+                Integer shopItemId = shopItems.getInt("item_id");
+                shopItemIds.add(shopItemId);
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            try {shopItems.close();}catch (Exception e){}
+            try { stat.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+    }
+
+    public void fillShopTable(String shopId, ObservableList shopItems, Text shopIdText, Text shopAddressText, Text shopNumberText){
+        Connection con = null;
+        PreparedStatement stat = null;
+        ResultSet shop1 = null;
+        ResultSet shop1Items = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat = con.prepareStatement(database.selectAllQuery + database.shopTable + " where shop_id = ?");
+
+            stat.setString(1, shopId);
+
+            shop1 = stat.executeQuery();
+            while (shop1.next()) {
+                shopIdText.setText(shop1.getString("shop_id"));
+                shopAddressText.setText(shop1.getString("shop_address"));
+                shopNumberText.setText(shop1.getString("shop_telephone_number"));
+            }
+
+        } catch(SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }finally {
+            try {shop1.close();}catch (Exception e){}
+            try { stat.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat  = con.prepareStatement("select `Shop Stock`.*, Items.item_description \n" +
+                    "from `Shop Stock`\n" +
+                    "inner join Items\n" +
+                    "on `Shop Stock`.item_id = Items.item_id where shop_id = ?");
+
+            stat.setString(1, shopId);
+
+            shop1Items = stat.executeQuery();
+            while (shop1Items.next()){
+                shopItems.add(new Item(shop1Items.getString("item_id"),Integer.parseInt(shop1Items.getString("shop_stock_quantity")),shop1Items.getString("item_description")));
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            try {shop1Items.close();}catch (Exception e){}
+            try { stat.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+    }
+
+
     public void fillTableTransactionHistoryBIT() throws SQLException {
         ResultSet rsTransactionHistory = null;
         Connection con = null;
@@ -1135,7 +1205,7 @@ public class ControllerAdmin implements Initializable {
             stat.setInt(1,transactorId);
             rs = stat.executeQuery();
             while (rs.next()){
-                transactorsObservableListCB.add(new Transactor(rs.getInt("transactor_id"),rs.getString("transactor_name"),rs.getString("transactor_address"),rs.getString("transactor_phone_number")));
+                transactorsObservableListCB.add(new Transactor(rs.getInt("transactor_id"),rs.getString("transactor_name"),rs.getString("transactor_address"),rs.getString("transactor_name")));
             }
 
         }catch(SQLException e)
@@ -1147,7 +1217,40 @@ public class ControllerAdmin implements Initializable {
             con.close();
 
         }
-}
+    }
+
+    public void searchTransactionId(int transactionId) throws SQLException {
+        ResultSet rs = null;
+        Connection con = null;
+        PreparedStatement stat = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+
+            stat = con.prepareStatement("select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\n" +
+                                        "from Transaction tn\n" +
+                                        "inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
+                                        "inner join Items i on tn.item_id  = i.item_id\n" +
+                                        "where tn.transaction_id= ?");
+
+            stat.setInt(1,transactionId);
+            rs = stat.executeQuery();
+            while (rs.next()){
+                transactionHistoryObservableListCB.add(new TransactionHistory(rs.getString("transaction_id"),rs.getDate("transaction_date").toString(),rs.getString("item_id")
+                        ,rs.getInt("transaction_item_quantity"),rs.getString("item_description"),rs.getString("transactor_name"),rs.getString("transactor_address"),
+                        rs.getString("transactor_phone_number"),rs.getInt("transaction_price"), rs.getString("transaction_buy/sell")));
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            rs.close();
+            stat.close();
+            con.close();
+
+        }
+    }
+
 
     public void fillTransactor() throws SQLException {
         ResultSet rs = null;
@@ -1242,6 +1345,29 @@ public class ControllerAdmin implements Initializable {
         }
     }
 
+//    public void updateQuantitySql(int quantityReturned) throws SQLException {
+//        ResultSet rs = null;
+//        Connection con = null;
+//        PreparedStatement stat = null;
+//        try {
+//            con = DriverManager.getConnection(database.host, database.userName, database.password);
+//            stat = con.prepareStatement("update Transactor set transactor_name = ? , transactor_address=?, transactor_phone_number=? where transactor_id =?");
+//            stat.setString(1,name);
+//            stat.setString(2,address);
+//            stat.setString(3,phoneNumber);
+//            stat.setInt(4,transactorId);
+//            stat.execute();
+//
+//        }catch(SQLException e)
+//        {
+//            System.out.println(e);
+//        }finally {
+//            stat.close();
+//            con.close();
+//
+//        }
+//    }
+
     public void searchItem(int itemId) throws SQLException {
         ResultSet rs = null;
         Connection con = null;
@@ -1266,60 +1392,35 @@ public class ControllerAdmin implements Initializable {
         }
     }
 
-    public void searchTransaction(int transactionId) throws SQLException {
-        ResultSet rs = null;
+
+    public void fillTableTransactionHistoryCB() throws SQLException {
+        ResultSet rsTransactionHistory = null;
         Connection con = null;
         PreparedStatement stat = null;
         try {
             con = DriverManager.getConnection(database.host, database.userName, database.password);
-            stat = con.prepareStatement("\"select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\\n\" +\n" +
-                    "                    \"from Transaction tn\\n\" +\n" +
-                    "                    \"    inner join Transactor tr on tn.transactor_id = tr.transactor_id\\n\" +\n" +
-                    "                    \"    inner join Items i on tn.item_id  = i.item_id\\n\" +\n" +
-                    "                    \"    where tn.transaction_id=? \"");
-            stat.setInt(1,transactionId);
-            rs = stat.executeQuery();
-            while (rs.next()){
-//                put the content
+            stat = con.prepareStatement("select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\n" +
+                    "from Transaction tn\n" +
+                    "    inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
+                    "    inner join Items i on tn.item_id  = i.item_id\n");
+
+            rsTransactionHistory = stat.executeQuery();
+            while (rsTransactionHistory.next()){
+                transactionHistoryObservableListCB.add(new TransactionHistory(rsTransactionHistory.getString("transaction_id"),rsTransactionHistory.getDate("transaction_date").toString(),rsTransactionHistory.getString("item_id")
+                        ,rsTransactionHistory.getInt("transaction_item_quantity"),rsTransactionHistory.getString("item_description"),rsTransactionHistory.getString("transactor_name"),rsTransactionHistory.getString("transactor_address"),
+                        rsTransactionHistory.getString("transactor_phone_number"),rsTransactionHistory.getInt("transaction_price"), rsTransactionHistory.getString("transaction_buy/sell")));
             }
 
         }catch(SQLException e)
         {
             System.out.println(e);
         }finally {
-            rs.close();
+            rsTransactionHistory.close();
             stat.close();
             con.close();
 
         }
     }
-    public void fillTransactionTable() throws SQLException {
-        ResultSet rs = null;
-        Connection con = null;
-        PreparedStatement stat = null;
-        try {
-            con = DriverManager.getConnection(database.host, database.userName, database.password);
-            stat = con.prepareStatement("\"select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\\n\" +\n" +
-                    "                    \"from Transaction tn\\n\" +\n" +
-                    "                    \"    inner join Transactor tr on tn.transactor_id = tr.transactor_id\\n\" +\n" +
-                    "                    \"    inner join Items i on tn.item_id  = i.item_id");
-            rs = stat.executeQuery();
-            while (rs.next()){
-//                put the content
-            }
-
-        }catch(SQLException e)
-        {
-            System.out.println(e);
-        }finally {
-            rs.close();
-            stat.close();
-            con.close();
-
-        }
-    }
-
-
 
 }
 
