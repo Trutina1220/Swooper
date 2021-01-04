@@ -1135,7 +1135,7 @@ public class ControllerAdmin implements Initializable {
             stat.setInt(1,transactorId);
             rs = stat.executeQuery();
             while (rs.next()){
-                transactorsObservableListCB.add(new Transactor(rs.getInt("transactor_id"),rs.getString("transactor_name"),rs.getString("transactor_address"),rs.getString("transactor_name")));
+                transactorsObservableListCB.add(new Transactor(rs.getInt("transactor_id"),rs.getString("transactor_name"),rs.getString("transactor_address"),rs.getString("transactor_phone_number")));
             }
 
         }catch(SQLException e)
@@ -1265,6 +1265,36 @@ public class ControllerAdmin implements Initializable {
 
         }
     }
+
+    public void searchTransaction(int transactionId) throws SQLException {
+        ResultSet rs = null;
+        Connection con = null;
+        PreparedStatement stat = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat = con.prepareStatement("\"select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\\n\" +\n" +
+                    "                    \"from Transaction tn\\n\" +\n" +
+                    "                    \"    inner join Transactor tr on tn.transactor_id = tr.transactor_id\\n\" +\n" +
+                    "                    \"    inner join Items i on tn.item_id  = i.item_id\\n\" +\n" +
+                    "                    \"    where tn.transaction_id=? \"");
+            stat.setInt(1,transactionId);
+            rs = stat.executeQuery();
+            while (rs.next()){
+//                put the content
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            rs.close();
+            stat.close();
+            con.close();
+
+        }
+    }
+
+
 
 }
 

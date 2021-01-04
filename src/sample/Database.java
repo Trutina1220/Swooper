@@ -450,6 +450,24 @@ public class Database {
 
     }
 
+    public void updateTransaction(int transactionId, int qty){
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            con = DriverManager.getConnection(host,userName,password);
+            preparedStatement = con.prepareStatement("update `Transaction` set  transaction_item_quantity = ? where transaction_id = ?");
+            preparedStatement.setInt(1,qty);
+            preparedStatement.setInt(2,transactionId);
+            preparedStatement.execute();
+            con.close();
+        }catch (SQLException err){
+            System.out.println(err.getMessage());
+        }finally {
+            try { preparedStatement.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+    }
+
     public void updateShopStock(int itemQty, int itemId, String shop_id){
         Connection con = null;
         PreparedStatement preparedStatement = null;
