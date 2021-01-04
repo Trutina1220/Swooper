@@ -11,6 +11,7 @@ public class TransactionHistory extends Item {
     private SimpleStringProperty address;
     private SimpleStringProperty phoneNumber;
     private SimpleStringProperty transactionType;
+    private SimpleIntegerProperty transactorId;
 
 
 
@@ -23,7 +24,7 @@ public class TransactionHistory extends Item {
         this.address = new SimpleStringProperty(address);
         this.phoneNumber = new SimpleStringProperty(phoneNumber);
     }
-    public TransactionHistory(String transactionId,String date,String itemId, Integer itemQty, String itemDesc,String name,String address,String phoneNumber,Integer price,String transactionType) {
+    public TransactionHistory(String transactionId,String date,String itemId, Integer itemQty, String itemDesc,String name,String address,String phoneNumber,Integer price,String transactionType,int transactorId) {
         super(itemId, itemQty,itemDesc);
         this.transactionId = new SimpleStringProperty(transactionId);
         this.date = new SimpleStringProperty(date);
@@ -32,6 +33,19 @@ public class TransactionHistory extends Item {
         this.address = new SimpleStringProperty(address);
         this.phoneNumber = new SimpleStringProperty(phoneNumber);
         this.transactionType = new SimpleStringProperty(transactionType);
+        this.transactorId = new SimpleIntegerProperty(transactorId);
+    }
+
+    public int getTransactorId() {
+        return transactorId.get();
+    }
+
+    public SimpleIntegerProperty transactorIdProperty() {
+        return transactorId;
+    }
+
+    public void setTransactorId(int transactorId) {
+        this.transactorId.set(transactorId);
     }
 
     public String getTransactionType() {

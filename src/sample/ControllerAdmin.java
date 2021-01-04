@@ -24,7 +24,8 @@ public class ControllerAdmin implements Initializable {
     public TextField itemQuantityTextFieldST,customerNameTextField, customerAddressTextField, customerNumberTextField,
             enterItemIdTextField, enterItemQtyTextField, supplierNameTextFieldBIT, supplierAddressTextFieldBIT, supplierPhoneTextFieldBIT,
             itemIdTextFieldBIT, itemQuantityTextFieldBIT, sellPriceTextFieldBIT, buyPriceTextFieldBIT,itemNameTextFieldBIT,enterColumnBIT,enterColumnTT,
-            enterTransactorIdCB, enterItemIdMD, enterItemNameMD,enterItemSellPriceMD,enterTransactorNameCB,enterTransactorAddressCB,enterTransactorPhoneNumberCB, enterTransactionIdCB, enterTransactionQtyCB;
+            enterTransactorIdCB, enterItemIdMD, enterItemNameMD,enterItemSellPriceMD,enterTransactorNameCB,enterTransactorAddressCB,enterTransactorPhoneNumberCB, enterTransactionIdCB, enterTransactionQtyCB
+            , enterItemIdCB,enterShopIdCB;
     @FXML
     public ComboBox itemIDComboBoxST, storageComboBoxST, shopComboBoxST, fromComboBox, toComboBox, shopComboBoxTT, storageComboBoxBIT ;
 
@@ -931,20 +932,40 @@ public class ControllerAdmin implements Initializable {
             a.setContentText("Please input numbers only in Transaction Item Quantity!");
             a.show();
         }
+        else if(enterTransactionIdCB.getText().equals("")){
+            a.setTitle("Warning !");
+            a.setContentText("Please Enter Transaction ID!");
+            a.show();
+        }
+        else if(enterShopIdCB.getText().equals("SH001") ||enterShopIdCB.getText().equals("SH002")){
 
-        else{
-            int itemId = Integer.parseInt(transactionHistoryObservableListCB.get(0).getItemId());
-            int itemTransactionQty = transactionHistoryObservableList.get(0).getItemQty();
+            int itemId = Integer.parseInt(enterItemIdCB.getText());
+            int transactionId = Integer.parseInt(enterTransactionIdCB.getText());
+            int itemTransactionQty = database.getTransactionQty(transactionId);
             int pricePcs = transactionHistoryObservableListCB.get(0).getPrice() / itemTransactionQty;
             Integer quantityReturned = Integer.parseInt(enterTransactionQtyCB.getText());
-            int totalPriceNew =  (itemTransactionQty-quantityReturned)*quantityReturned;
-            int transactionId = Integer.parseInt(enterTransactionIdCB.getText());
-            String shopId = null ;
-            ;
-//            int shopStock  = database.getQtyFromShop();
+            int totalPriceNew =  (itemTransactionQty-quantityReturned)*pricePcs;
+            String shopId = enterShopIdCB.getText() ;
+            int shopStock  = database.getQtyFromShop(itemId,shopId);
+            int reduceTransactionQty = itemTransactionQty-quantityReturned;
+            int reduceShopStock = shopStock-quantityReturned;
+            int transactorId = transactionHistoryObservableListCB.get(0).getTransactorId();
+            System.out.println(reduceShopStock);
+
+            database.updateTransaction(transactionId,reduceTransactionQty,totalPriceNew);
+            database.updateShopStock(reduceShopStock,Integer.parseInt(enterItemIdCB.getText()),shopId);
+            database.insertTransaction(Integer.parseInt(enterItemIdCB.getText()),quantityReturned,0,transactorId,"Sell");
             transactorsObservableListCB.clear();
-//            updateQuantitySql(quantityReturned);
-            searchTransactorId(transactionId);
+            transactionHistoryObservableListCB.clear();
+            searchTransactorId(transactorId);
+            searchTransactionId(transactionId);
+            searchTransactionId(database.getNextTransactionId()-1);
+        }
+
+        else{
+            a.setTitle("Warning !");
+            a.setContentText("Please input 'SH001' or 'SH002' in Shop ID!");
+            a.show();
         }
     }
 
@@ -967,6 +988,7 @@ public class ControllerAdmin implements Initializable {
             int transactionID = Integer.parseInt(enterTransactionIdCB.getText());
                 transactionHistoryObservableListCB.clear();
                 searchTransactionId(transactionID);
+            System.out.println(transactionHistoryObservableList.get(0).getItemQty());
         }
     }
 
@@ -1246,7 +1268,7 @@ public class ControllerAdmin implements Initializable {
             while (rs.next()){
                 transactionHistoryObservableListCB.add(new TransactionHistory(rs.getString("transaction_id"),rs.getDate("transaction_date").toString(),rs.getString("item_id")
                         ,rs.getInt("transaction_item_quantity"),rs.getString("item_description"),rs.getString("transactor_name"),rs.getString("transactor_address"),
-                        rs.getString("transactor_phone_number"),rs.getInt("transaction_price"), rs.getString("transaction_buy/sell")));
+                        rs.getString("transactor_phone_number"),rs.getInt("transaction_price"), rs.getString("transaction_buy/sell"),rs.getInt("transactor_id")));
             }
 
         }catch(SQLException e)
@@ -1417,7 +1439,7 @@ public class ControllerAdmin implements Initializable {
             while (rsTransactionHistory.next()){
                 transactionHistoryObservableListCB.add(new TransactionHistory(rsTransactionHistory.getString("transaction_id"),rsTransactionHistory.getDate("transaction_date").toString(),rsTransactionHistory.getString("item_id")
                         ,rsTransactionHistory.getInt("transaction_item_quantity"),rsTransactionHistory.getString("item_description"),rsTransactionHistory.getString("transactor_name"),rsTransactionHistory.getString("transactor_address"),
-                        rsTransactionHistory.getString("transactor_phone_number"),rsTransactionHistory.getInt("transaction_price"), rsTransactionHistory.getString("transaction_buy/sell")));
+                        rsTransactionHistory.getString("transactor_phone_number"),rsTransactionHistory.getInt("transaction_price"), rsTransactionHistory.getString("transaction_buy/sell"),rsTransactionHistory.getInt("transactor_id")));
             }
 
         }catch(SQLException e)

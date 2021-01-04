@@ -407,14 +407,15 @@ public class Database {
 
     }
 
-    public void updateTransaction(int transactionId, int qty){
+    public void updateTransaction(int transactionId, int qty,int price){
         Connection con = null;
         PreparedStatement preparedStatement = null;
         try {
             con = DriverManager.getConnection(host,userName,password);
-            preparedStatement = con.prepareStatement("update `Transaction` set  transaction_item_quantity = ? where transaction_id = ?");
+            preparedStatement = con.prepareStatement("update `Transaction` set  transaction_item_quantity = ? , transaction_price=? where transaction_id = ?");
             preparedStatement.setInt(1,qty);
-            preparedStatement.setInt(2,transactionId);
+            preparedStatement.setInt(2,price);
+            preparedStatement.setInt(3,transactionId);
             preparedStatement.execute();
             con.close();
         }catch (SQLException err){
@@ -443,6 +444,7 @@ public class Database {
             try { con.close(); } catch (Exception e) { /* ignored */ }
         }
     }
+
 
     public void updateStorageStock(int itemQty, int itemId, String storageId){
         Connection con = null;
@@ -604,6 +606,32 @@ public class Database {
             try { preparedStatement.close(); } catch (Exception e) { /* ignored */ }
             try { con.close(); } catch (Exception e) { /* ignored */ }
         }
+    }
+
+    public int getTransactionQty(int transactionId){
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        Connection con = null;
+        int qty = 0;
+        try {
+
+            con = DriverManager.getConnection(host,userName,password);
+            preparedStatement = con.prepareStatement("select transaction_item_quantity from `Transaction` where transaction_id = ?;");
+            preparedStatement.setInt(1,transactionId);
+            rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                qty += rs.getInt("transaction_item_quantity");
+            }
+            con.close();
+
+        }catch (SQLException err){
+            System.out.println(err.getMessage());
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { preparedStatement.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return qty;
     }
 
     public Integer getNextTransactionId(){
