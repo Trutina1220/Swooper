@@ -795,8 +795,10 @@ public class ControllerAdmin implements Initializable {
         int total = currentTransactionTableDataTT.get(column).getTotal();
         grandTotalGlobal -= total;
         grandTotalTT.setText("Rp"+String.valueOf(grandTotalGlobal));
+//        how to get the returned amount quantity
         int qty = currentTransactionTableDataTT.get(column).getItemQty()+shopQty;
         database.updateShopStock(qty,itemId,shopId);
+//        
         database.deleteTransaction(transactionId);
         currentTransactionTableDataTT.remove(column);
         transactionHistoryObservableList.clear();
@@ -1135,7 +1137,7 @@ public class ControllerAdmin implements Initializable {
             stat.setInt(1,transactorId);
             rs = stat.executeQuery();
             while (rs.next()){
-                transactorsObservableListCB.add(new Transactor(rs.getInt("transactor_id"),rs.getString("transactor_name"),rs.getString("transactor_address"),rs.getString("transactor_name")));
+                transactorsObservableListCB.add(new Transactor(rs.getInt("transactor_id"),rs.getString("transactor_name"),rs.getString("transactor_address"),rs.getString("transactor_phone_number")));
             }
 
         }catch(SQLException e)
