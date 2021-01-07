@@ -407,6 +407,7 @@ public class Database {
 
     }
 
+//    Update Transaction Quantity
     public void updateTransaction(int transactionId, int qty,int price){
         Connection con = null;
         PreparedStatement preparedStatement = null;

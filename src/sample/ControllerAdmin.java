@@ -61,7 +61,7 @@ public class ControllerAdmin implements Initializable {
 
 
 
-
+//Initializing Table Column for CurrentTransaction Table Transaction Tab
     public TableColumn<CurrentTransactionTableTT,Integer>ttransactionIdColumnTT;
     public TableColumn<CurrentTransactionTableTT,String>transactionIdColumnTT;
     public TableColumn<CurrentTransactionTableTT,String>transactionItemDescColumnTT;
@@ -79,47 +79,41 @@ public class ControllerAdmin implements Initializable {
     public TableColumn<CurrentTransactionTableBIT,Integer>transactionTotalColumnBIT;
     ObservableList<CurrentTransactionTableBIT> currentTransactionTableDataBIT = FXCollections.observableArrayList();
 
-//    initialize database connection
+//    initialize database class , so can access certain queries from database
     public Database database = new Database();
-
-
-//static int for transactionTable
-    static int transactionId;
-    static int transactorId;
-
-
-
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+//  Initialize the combo box to fill the content
         storageComboBoxST.setItems(storageLists);
         shopComboBoxST.setItems(shopLists);
         shopComboBoxTT.setItems(shopLists);
         storageComboBoxBIT.setItems(storageLists);
         fromComboBox.setItems(shopStorageLists);
 
-
-
+//        Populate all the table with the table from the interface
         try {
+//            fill Transactor Table for the Contact book tab
             fillTransactor();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
         try {
+//            Fill the Item table in Item Modification Table
             fillItem();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         fillTableTransactionHistoryTT(1);
         try {
+//            Fill the transaction History Table on Buy item based on current date
             fillTableTransactionHistoryBIT();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         try {
+//            Fill the table transaction History on the contact book tab
             fillTableTransactionHistoryCB();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -395,67 +389,10 @@ public class ControllerAdmin implements Initializable {
         currentTransactionTableViewBIT.setItems(currentTransactionTableDataBIT);
     }
 
+//   Function That triggers when Button is clicked
 
 
-    public void saveButtonBITClicked() throws SQLException{
-        currentTransactionTableDataBIT.clear();
-        transactionHistoryObservableListBIT.clear();
-        fillTableTransactionHistoryBIT();
-
-        System.out.println("run");
-    }
-
-
-
-    public void saveButtonTTClicked() throws SQLException{
-        fillTableTransactionHistoryTT(0);
-        grandTotalGlobal = 0;
-
-        grandTotalTT.setText("Rp"+String.valueOf(grandTotalGlobal));
-    }
-
-    public void fillTableTransactionHistoryTT(int num){
-        long today = System.currentTimeMillis();
-        java.sql.Date currentDay = new java.sql.Date(today);
-        if (num ==0){
-            currentTransactionTableDataTT.clear();
-        }
-
-
-        transactionHistoryObservableList.clear();
-        Connection con = null;
-        PreparedStatement stat = null;
-        ResultSet sqlData = null;
-        try {
-            con = DriverManager.getConnection(database.host, database.userName, database.password);
-            stat = con.prepareStatement("select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\n" +
-                    "from Transaction tn\n" +
-                    "    inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
-                    "    inner join Items i on tn.item_id  = i.item_id\n" +
-                    "    where tn.`transaction_buy/sell` = \"Sell\" and tn.transaction_date=?;");
-
-            stat.setDate(1,currentDay);
-            sqlData= stat.executeQuery();
-            while(sqlData.next()){
-                transactionHistoryObservableList.add(new TransactionHistory(sqlData.getString("transaction_id"),sqlData.getDate("transaction_date").toString(),sqlData.getString("item_id")
-                        ,sqlData.getInt("transaction_item_quantity"),sqlData.getString("item_description"),sqlData.getString("transactor_name"),sqlData.getString("transactor_address"),
-                        sqlData.getString("transactor_phone_number"),sqlData.getInt("transaction_price")));
-            }
-
-        }catch(SQLException e)
-        {
-            System.out.println(e);
-        }{
-            try {sqlData.close();}catch (Exception e){}
-            try { stat.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
-        }
-    }
-
-
-
-
-
+//Storing Center Tab
     public void goStorageButtonSTClicked() throws SQLException {
         if(storageComboBoxST.getSelectionModel().isEmpty())
         {
@@ -548,9 +485,6 @@ public class ControllerAdmin implements Initializable {
         a.setContentText("Recheck quantity input and try again!");
         a.show();
     }
-
-
-
 
     public void MoveButtonSTClicked() throws SQLException {
 
@@ -708,10 +642,11 @@ public class ControllerAdmin implements Initializable {
             return false;
         }
     }
+//    Storing Center Tab
 
 
 
-
+//    Transaction Tab
     public void goShopButtonTTClicked() throws SQLException {
         shopItemsObservableListTT.clear();
         String shopId = "SH002";
@@ -722,16 +657,49 @@ public class ControllerAdmin implements Initializable {
     }
 
 
-    public void goStorageButtonBITClicked() throws SQLException{
-        storageItemsObservableListBIT.clear();
-        String storageId = "ST002";
-        if (storageComboBoxBIT.getValue() == "Storage 1") {
+    public void saveButtonTTClicked() throws SQLException{
+        fillTableTransactionHistoryTT(0);
+        grandTotalGlobal = 0;
 
-            storageId = "ST001";
+        grandTotalTT.setText("Rp"+String.valueOf(grandTotalGlobal));
+    }
+
+    public void fillTableTransactionHistoryTT(int num){
+        long today = System.currentTimeMillis();
+        java.sql.Date currentDay = new java.sql.Date(today);
+        if (num ==0){
+            currentTransactionTableDataTT.clear();
         }
-        fillStorageTable(storageId,storageItemsObservableListBIT, storageIdTextBIT, storageAddressTextBIT, storageNumberTextBIT);
 
-        System.out.println("done");
+
+        transactionHistoryObservableList.clear();
+        Connection con = null;
+        PreparedStatement stat = null;
+        ResultSet sqlData = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat = con.prepareStatement("select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\n" +
+                    "from Transaction tn\n" +
+                    "    inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
+                    "    inner join Items i on tn.item_id  = i.item_id\n" +
+                    "    where tn.`transaction_buy/sell` = \"Sell\" and tn.transaction_date=?;");
+
+            stat.setDate(1,currentDay);
+            sqlData= stat.executeQuery();
+            while(sqlData.next()){
+                transactionHistoryObservableList.add(new TransactionHistory(sqlData.getString("transaction_id"),sqlData.getDate("transaction_date").toString(),sqlData.getString("item_id")
+                        ,sqlData.getInt("transaction_item_quantity"),sqlData.getString("item_description"),sqlData.getString("transactor_name"),sqlData.getString("transactor_address"),
+                        sqlData.getString("transactor_phone_number"),sqlData.getInt("transaction_price")));
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }{
+            try {sqlData.close();}catch (Exception e){}
+            try { stat.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
     }
 
     public void deleteButtonClickedTT(){
@@ -746,7 +714,7 @@ public class ControllerAdmin implements Initializable {
 //        how to get the returned amount quantity
         int qty = currentTransactionTableDataTT.get(column).getItemQty()+shopQty;
         database.updateShopStock(qty,itemId,shopId);
-//        
+//
         database.deleteTransaction(transactionId);
         currentTransactionTableDataTT.remove(column);
         transactionHistoryObservableList.clear();
@@ -755,6 +723,33 @@ public class ControllerAdmin implements Initializable {
         fillTableTransactionHistoryTT(1);
         totalSalesTodayTT.setText("Rp"+String.valueOf(database.getTotalSales("Sell")));
     }
+
+
+    public void saveButtonBITClicked() throws SQLException{
+        currentTransactionTableDataBIT.clear();
+        transactionHistoryObservableListBIT.clear();
+        fillTableTransactionHistoryBIT();
+
+        System.out.println("run");
+    }
+//    Transaction Tab
+
+
+
+//    Buy Items Tab
+    public void goStorageButtonBITClicked() throws SQLException{
+        storageItemsObservableListBIT.clear();
+        String storageId = "ST002";
+        if (storageComboBoxBIT.getValue() == "Storage 1") {
+
+            storageId = "ST001";
+        }
+        fillStorageTable(storageId,storageItemsObservableListBIT, storageIdTextBIT, storageAddressTextBIT, storageNumberTextBIT);
+
+        System.out.println("done");
+    }
+
+
     public void deleteButtonClickedBIT() throws SQLException {
         int column = Integer.parseInt(enterColumnBIT.getText())-1;
         int transactionId = currentTransactionTableDataBIT.get(column).getTransactionId();
@@ -821,7 +816,6 @@ public class ControllerAdmin implements Initializable {
 
             }
 
-
             grandTotalTT.setText("Rp"+String.valueOf(grandTotalGlobal));
             fillTableTransactionHistoryTT(1);
             shopItemsObservableListTT.clear();
@@ -874,9 +868,11 @@ public class ControllerAdmin implements Initializable {
         }
     }
 
+//    Buy Items Tab
 
 
 
+// Contact Book and Trouble Center Tab
     public void searchButtonCBClicked () throws SQLException {
         if(!isInt(enterTransactorIdCB))
         {
@@ -918,7 +914,7 @@ public class ControllerAdmin implements Initializable {
             searchTransactorId(transactorId);
         }
     }
-//HERE FOR UPDATE YAH
+
     public void updateQuantityCBClicked() throws SQLException {
         Alert a = new Alert(Alert.AlertType.WARNING);
         if (enterTransactionQtyCB.getText().equals("")){
@@ -991,8 +987,10 @@ public class ControllerAdmin implements Initializable {
             System.out.println(transactionHistoryObservableList.get(0).getItemQty());
         }
     }
+// Contact Book and Trouble Center
 
 
+//Item Modification Tab
     public void searchButtonClickedMD() throws SQLException {
         int itemId = Integer.parseInt(enterItemIdMD.getText());
         itemsObservableListMD.clear();
@@ -1027,8 +1025,12 @@ public class ControllerAdmin implements Initializable {
         transactionHistoryObservableListCB.clear();
         fillTableTransactionHistoryCB();
     }
+//    Item Modification Tab
 
 //    Database queries Function
+
+
+//    Getting the Table from Sql and insert it into the Interface
     public void fillStorageTable(String storageId, ObservableList storageItems, Text storageIdText, Text storageAddressText, Text storageNumberText){
         Connection con = null;
         PreparedStatement stat = null;
@@ -1226,63 +1228,6 @@ public class ControllerAdmin implements Initializable {
         }
     }
 
-    public void searchTransactorId(int transactorId) throws SQLException {
-        ResultSet rs = null;
-        Connection con = null;
-        PreparedStatement stat = null;
-        try {
-            con = DriverManager.getConnection(database.host, database.userName, database.password);
-            stat = con.prepareStatement("select * from Transactor where transactor_id =?");
-            stat.setInt(1,transactorId);
-            rs = stat.executeQuery();
-            while (rs.next()){
-                transactorsObservableListCB.add(new Transactor(rs.getInt("transactor_id"),rs.getString("transactor_name"),rs.getString("transactor_address"),rs.getString("transactor_phone_number")));
-            }
-
-        }catch(SQLException e)
-        {
-            System.out.println(e);
-        }finally {
-            rs.close();
-            stat.close();
-            con.close();
-
-        }
-    }
-
-    public void searchTransactionId(int transactionId) throws SQLException {
-        ResultSet rs = null;
-        Connection con = null;
-        PreparedStatement stat = null;
-        try {
-            con = DriverManager.getConnection(database.host, database.userName, database.password);
-
-            stat = con.prepareStatement("select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\n" +
-                                        "from Transaction tn\n" +
-                                        "inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
-                                        "inner join Items i on tn.item_id  = i.item_id\n" +
-                                        "where tn.transaction_id= ?");
-
-            stat.setInt(1,transactionId);
-            rs = stat.executeQuery();
-            while (rs.next()){
-                transactionHistoryObservableListCB.add(new TransactionHistory(rs.getString("transaction_id"),rs.getDate("transaction_date").toString(),rs.getString("item_id")
-                        ,rs.getInt("transaction_item_quantity"),rs.getString("item_description"),rs.getString("transactor_name"),rs.getString("transactor_address"),
-                        rs.getString("transactor_phone_number"),rs.getInt("transaction_price"), rs.getString("transaction_buy/sell"),rs.getInt("transactor_id")));
-            }
-
-        }catch(SQLException e)
-        {
-            System.out.println(e);
-        }finally {
-            rs.close();
-            stat.close();
-            con.close();
-
-        }
-    }
-
-
     public void fillTransactor() throws SQLException {
         ResultSet rs = null;
         Connection con = null;
@@ -1330,6 +1275,122 @@ public class ControllerAdmin implements Initializable {
         }
     }
 
+    public void fillTableTransactionHistoryCB() throws SQLException {
+        ResultSet rsTransactionHistory = null;
+        Connection con = null;
+        PreparedStatement stat = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat = con.prepareStatement("select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\n" +
+                    "from Transaction tn\n" +
+                    "    inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
+                    "    inner join Items i on tn.item_id  = i.item_id\n");
+
+            rsTransactionHistory = stat.executeQuery();
+            while (rsTransactionHistory.next()){
+                transactionHistoryObservableListCB.add(new TransactionHistory(rsTransactionHistory.getString("transaction_id"),rsTransactionHistory.getDate("transaction_date").toString(),rsTransactionHistory.getString("item_id")
+                        ,rsTransactionHistory.getInt("transaction_item_quantity"),rsTransactionHistory.getString("item_description"),rsTransactionHistory.getString("transactor_name"),rsTransactionHistory.getString("transactor_address"),
+                        rsTransactionHistory.getString("transactor_phone_number"),rsTransactionHistory.getInt("transaction_price"), rsTransactionHistory.getString("transaction_buy/sell"),rsTransactionHistory.getInt("transactor_id")));
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            rsTransactionHistory.close();
+            stat.close();
+            con.close();
+
+        }
+    }
+    //    Getting the Table from Sql and insert it into the Interface
+
+
+//    Getting the Search data from the Sql and put it into the the Interface Table
+    public void searchTransactorId(int transactorId) throws SQLException {
+        ResultSet rs = null;
+        Connection con = null;
+        PreparedStatement stat = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat = con.prepareStatement("select * from Transactor where transactor_id =?");
+            stat.setInt(1,transactorId);
+            rs = stat.executeQuery();
+            while (rs.next()){
+                transactorsObservableListCB.add(new Transactor(rs.getInt("transactor_id"),rs.getString("transactor_name"),rs.getString("transactor_address"),rs.getString("transactor_phone_number")));
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            rs.close();
+            stat.close();
+            con.close();
+
+        }
+    }
+
+
+    public void searchItem(int itemId) throws SQLException {
+        ResultSet rs = null;
+        Connection con = null;
+        PreparedStatement stat = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat = con.prepareStatement("select * from Items where item_id =?");
+            stat.setInt(1,itemId);
+            rs = stat.executeQuery();
+            while (rs.next()){
+                itemsObservableListMD.add(new Item(String.valueOf(rs.getInt("item_id")),rs.getInt("item_sell_price"),rs.getString("item_description")));
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            rs.close();
+            stat.close();
+            con.close();
+
+        }
+    }
+
+    public void searchTransactionId(int transactionId) throws SQLException {
+        ResultSet rs = null;
+        Connection con = null;
+        PreparedStatement stat = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+
+            stat = con.prepareStatement("select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\n" +
+                                        "from Transaction tn\n" +
+                                        "inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
+                                        "inner join Items i on tn.item_id  = i.item_id\n" +
+                                        "where tn.transaction_id= ?");
+
+            stat.setInt(1,transactionId);
+            rs = stat.executeQuery();
+            while (rs.next()){
+                transactionHistoryObservableListCB.add(new TransactionHistory(rs.getString("transaction_id"),rs.getDate("transaction_date").toString(),rs.getString("item_id")
+                        ,rs.getInt("transaction_item_quantity"),rs.getString("item_description"),rs.getString("transactor_name"),rs.getString("transactor_address"),
+                        rs.getString("transactor_phone_number"),rs.getInt("transaction_price"), rs.getString("transaction_buy/sell"),rs.getInt("transactor_id")));
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }finally {
+            rs.close();
+            stat.close();
+            con.close();
+
+        }
+    }
+//    Getting the Search data from the Sql and put it into the the Interface Table
+
+
+//    By taking a paramerter , Update the corresponding data on mySql Table and update the Table from the Interface
     public void updateItemSql(int itemId,String itemName , Integer itemSellPrice) throws SQLException {
         ResultSet rs = null;
         Connection con = null;
@@ -1375,83 +1436,13 @@ public class ControllerAdmin implements Initializable {
 
         }
     }
-
-//    public void updateQuantitySql(int quantityReturned) throws SQLException {
-//        ResultSet rs = null;
-//        Connection con = null;
-//        PreparedStatement stat = null;
-//        try {
-//            con = DriverManager.getConnection(database.host, database.userName, database.password);
-//            stat = con.prepareStatement("update Transactor set transactor_name = ? , transactor_address=?, transactor_phone_number=? where transactor_id =?");
-//            stat.setString(1,name);
-//            stat.setString(2,address);
-//            stat.setString(3,phoneNumber);
-//            stat.setInt(4,transactorId);
-//            stat.execute();
-//
-//        }catch(SQLException e)
-//        {
-//            System.out.println(e);
-//        }finally {
-//            stat.close();
-//            con.close();
-//
-//        }
-//    }
-
-    public void searchItem(int itemId) throws SQLException {
-        ResultSet rs = null;
-        Connection con = null;
-        PreparedStatement stat = null;
-        try {
-            con = DriverManager.getConnection(database.host, database.userName, database.password);
-            stat = con.prepareStatement("select * from Items where item_id =?");
-            stat.setInt(1,itemId);
-            rs = stat.executeQuery();
-            while (rs.next()){
-                itemsObservableListMD.add(new Item(String.valueOf(rs.getInt("item_id")),rs.getInt("item_sell_price"),rs.getString("item_description")));
-            }
-
-        }catch(SQLException e)
-        {
-            System.out.println(e);
-        }finally {
-            rs.close();
-            stat.close();
-            con.close();
-
-        }
-    }
+//    By taking a paramerter , Update the corresponding data on mySql Table and update the Table from the Interface
 
 
-    public void fillTableTransactionHistoryCB() throws SQLException {
-        ResultSet rsTransactionHistory = null;
-        Connection con = null;
-        PreparedStatement stat = null;
-        try {
-            con = DriverManager.getConnection(database.host, database.userName, database.password);
-            stat = con.prepareStatement("select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\n" +
-                    "from Transaction tn\n" +
-                    "    inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
-                    "    inner join Items i on tn.item_id  = i.item_id\n");
+//    Database Queries Function
 
-            rsTransactionHistory = stat.executeQuery();
-            while (rsTransactionHistory.next()){
-                transactionHistoryObservableListCB.add(new TransactionHistory(rsTransactionHistory.getString("transaction_id"),rsTransactionHistory.getDate("transaction_date").toString(),rsTransactionHistory.getString("item_id")
-                        ,rsTransactionHistory.getInt("transaction_item_quantity"),rsTransactionHistory.getString("item_description"),rsTransactionHistory.getString("transactor_name"),rsTransactionHistory.getString("transactor_address"),
-                        rsTransactionHistory.getString("transactor_phone_number"),rsTransactionHistory.getInt("transaction_price"), rsTransactionHistory.getString("transaction_buy/sell"),rsTransactionHistory.getInt("transactor_id")));
-            }
 
-        }catch(SQLException e)
-        {
-            System.out.println(e);
-        }finally {
-            rsTransactionHistory.close();
-            stat.close();
-            con.close();
 
-        }
-    }
 
 }
 
