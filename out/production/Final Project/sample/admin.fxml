@@ -182,12 +182,17 @@
                         <TableView fx:id="shopTableViewST" prefHeight="87.0" prefWidth="864.0" VBox.vgrow="ALWAYS" />
                         <HBox prefHeight="38.0" prefWidth="864.0">
                            <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="From :">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="15.0" />
+                                 </HBox.margin>
+                              </Text>
                               <ComboBox fx:id="fromComboBox" onAction="#fromComboBoxPicked" prefWidth="150.0" promptText="none">
                                  <HBox.margin>
                                     <Insets left="10.0" top="10.0" />
                                  </HBox.margin>
                               </ComboBox>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="TO">
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="To">
                                  <HBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="15.0" />
                                  </HBox.margin>
@@ -420,17 +425,17 @@
                               </HBox>
                               <HBox layoutX="10.0" layoutY="76.0">
                                  <children>
-                                    <Text layoutX="15.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Column:">
+                                    <Text layoutX="15.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Transaction Column:">
                                        <HBox.margin>
                                           <Insets left="5.0" top="7.0" />
                                        </HBox.margin>
                                     </Text>
-                                    <TextField fx:id="enterColumnButtonTT" layoutX="145.0" layoutY="15.0">
+                                    <TextField fx:id="enterColumnTT" layoutX="145.0" layoutY="15.0">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="2.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </TextField>
-                                    <Button fx:id="deleteButtonTT" layoutX="845.0" layoutY="15.0" mnemonicParsing="false" onAction="#deleteButtonClickedTT" text="Delete">
+                                    <Button fx:id="deleteButtonTT" layoutX="845.0" layoutY="15.0" mnemonicParsing="false" onAction="#deleteButtonClickedTT" text="Delete Transaction">
                                        <HBox.margin>
                                           <Insets left="5.0" top="5.0" />
                                        </HBox.margin>
@@ -444,7 +449,7 @@
                                           <Insets top="5.0" />
                                        </HBox.margin>
                                        <font>
-                                          <Font size="16.0" />
+                                          <Font size="20.0" />
                                        </font>
                                     </Text>
                                     <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
@@ -520,9 +525,10 @@
                                     <Insets top="5.0" />
                                  </HBox.margin>
                                  <font>
-                                    <Font size="16.0" />
+                                    <Font size="20.0" />
                                  </font>
                               </Text>
+                              <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                               <Label layoutX="10.0" layoutY="32.0" text="Total Sales Today:">
                                  <HBox.margin>
                                     <Insets left="10.0" top="4.0" />
@@ -561,6 +567,188 @@
                      </children>
                   </VBox>
                </content></Tab>
+            <Tab text="Contact Book and Trouble Center">
+               <content>
+                  <VBox prefHeight="476.0" prefWidth="831.0">
+                     <children>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Contact Book">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Text>
+                              <HBox prefHeight="39.0" prefWidth="864.0">
+                                 <children>
+                                    <Label text="Enter Transactor ID:" HBox.hgrow="ALWAYS">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <TextField fx:id="enterTransactorIdCB">
+                                       <HBox.margin>
+                                          <Insets left="10.0" top="10.0" />
+                                       </HBox.margin>
+                                    </TextField>
+                                    <Button fx:id="searchButtonCB" mnemonicParsing="false" onAction="#searchButtonCBClicked" text="Search" HBox.hgrow="ALWAYS">
+                                       <HBox.margin>
+                                          <Insets left="10.0" top="10.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                    <Button fx:id="refreshButtonCB" layoutX="320.0" layoutY="20.0" mnemonicParsing="false" onAction="#refreshButtonClickedCB" text="Refresh">
+                                       <HBox.margin>
+                                          <Insets left="10.0" top="10.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <TableView fx:id="contactBookTableView" prefHeight="200.0" prefWidth="864.0" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                        <HBox prefHeight="59.0" prefWidth="864.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Label text="Enter Transactor Name:" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="enterTransactorNameCB" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets left="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Label layoutX="20.0" layoutY="20.0" text="Enter Transactor Address" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="enterTransactorAddressCB" layoutX="185.0" layoutY="20.0" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets left="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Label layoutX="20.0" layoutY="20.0" text="Enter Transactor Phone Number">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="enterTransactorPhoneNumberCB" layoutX="185.0" layoutY="20.0" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets left="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Button fx:id="updateButtonCB" mnemonicParsing="false" onAction="#updateTransactorCB" prefHeight="26.0" prefWidth="116.0" text="Update" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="261.0" prefWidth="864.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <VBox prefHeight="226.0" prefWidth="864.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Transaction History">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Text>
+                                    <HBox prefHeight="39.0" prefWidth="864.0">
+                                       <children>
+                                          <Label text="Enter Transaction ID:" HBox.hgrow="ALWAYS">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                             <HBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </HBox.margin>
+                                          </Label>
+                                          <TextField fx:id="enterTransactionIdCB">
+                                             <HBox.margin>
+                                                <Insets left="10.0" top="10.0" />
+                                             </HBox.margin>
+                                          </TextField>
+                                          <Button fx:id="searchButtonCBTransaction" mnemonicParsing="false" onAction="#searchButtonTransactionCBClicked" text="Search" HBox.hgrow="ALWAYS">
+                                             <HBox.margin>
+                                                <Insets left="10.0" top="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                          <Button fx:id="refreshButtonCBTransaction" layoutX="320.0" layoutY="20.0" mnemonicParsing="false" onAction="#refreshButtonTransactionClickedCB" text="Refresh">
+                                             <HBox.margin>
+                                                <Insets left="10.0" top="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                    <TableView fx:id="transactionHistoryTableVIewCB" prefHeight="218.0" prefWidth="864.0" VBox.vgrow="ALWAYS" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="59.0" prefWidth="864.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Label text="Enter Refund Item Quantity  :" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="enterTransactionQtyCB" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets left="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Label layoutX="20.0" layoutY="20.0" text="Enter Item ID">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="enterItemIdCB" layoutX="220.0" layoutY="20.0" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Label layoutX="379.0" layoutY="20.0" text="Enter Shop ID">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <TextField fx:id="enterShopIdCB" layoutX="480.0" layoutY="20.0" prefHeight="26.0" prefWidth="109.0" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <Button fx:id="updateButtonCBTransaction" mnemonicParsing="false" onAction="#updateQuantityCBClicked" text="Update" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
             <Tab fx:id="buyItemsTab" text="Buy Items">
                <content>
                   <VBox prefHeight="200.0" prefWidth="100.0">
@@ -773,7 +961,7 @@
                               </HBox>
                               <HBox>
                                  <children>
-                                    <Text layoutX="15.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Column:">
+                                    <Text layoutX="15.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Transaction Column:">
                                        <HBox.margin>
                                           <Insets left="5.0" top="7.0" />
                                        </HBox.margin>
@@ -783,7 +971,7 @@
                                           <Insets bottom="5.0" left="2.0" right="5.0" top="5.0" />
                                        </HBox.margin>
                                     </TextField>
-                                    <Button fx:id="deleteButtonBIT" layoutX="845.0" layoutY="15.0" mnemonicParsing="false" onAction="#deleteButtonClickedBIT" text="Delete">
+                                    <Button fx:id="deleteButtonBIT" layoutX="845.0" layoutY="15.0" mnemonicParsing="false" onAction="#deleteButtonClickedBIT" text="Delete Transaction">
                                        <HBox.margin>
                                           <Insets left="5.0" top="5.0" />
                                        </HBox.margin>
@@ -877,188 +1065,6 @@
                            </children>
                         </HBox>
                         <TableView fx:id="transactionHistoryTableViewBIT" prefHeight="140.0" prefWidth="864.0" />
-                     </children>
-                  </VBox>
-               </content>
-            </Tab>
-            <Tab text="Contact Book and Trouble Center">
-               <content>
-                  <VBox prefHeight="476.0" prefWidth="831.0">
-                     <children>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
-                           <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Contact Book">
-                                 <font>
-                                    <Font size="23.0" />
-                                 </font>
-                              </Text>
-                              <HBox prefHeight="39.0" prefWidth="864.0">
-                                 <children>
-                                    <Label text="Enter Transactor ID:" HBox.hgrow="ALWAYS">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <HBox.margin>
-                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                       </HBox.margin>
-                                    </Label>
-                                    <TextField fx:id="enterTransactorIdCB">
-                                       <HBox.margin>
-                                          <Insets left="10.0" top="10.0" />
-                                       </HBox.margin>
-                                    </TextField>
-                                    <Button fx:id="searchButtonCB" mnemonicParsing="false" onAction="#searchButtonCBClicked" text="Search" HBox.hgrow="ALWAYS">
-                                       <HBox.margin>
-                                          <Insets left="10.0" top="10.0" />
-                                       </HBox.margin>
-                                    </Button>
-                                    <Button fx:id="refreshButtonCB" layoutX="320.0" layoutY="20.0" mnemonicParsing="false" onAction="#refreshButtonClickedCB" text="Refresh">
-                                       <HBox.margin>
-                                          <Insets left="10.0" top="10.0" />
-                                       </HBox.margin>
-                                    </Button>
-                                 </children>
-                              </HBox>
-                              <TableView fx:id="contactBookTableView" prefHeight="200.0" prefWidth="200.0" />
-                           </children>
-                        </VBox>
-                        <HBox prefHeight="59.0" prefWidth="864.0">
-                           <children>
-                              <Label text="Enter Transactor Name:" HBox.hgrow="ALWAYS">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="enterTransactorNameCB">
-                                 <HBox.margin>
-                                    <Insets left="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </TextField>
-                              <Label layoutX="20.0" layoutY="20.0" text="Enter Transactor Address" HBox.hgrow="ALWAYS">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="enterTransactorAddressCB" layoutX="185.0" layoutY="20.0">
-                                 <HBox.margin>
-                                    <Insets left="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </TextField>
-                              <Label layoutX="20.0" layoutY="20.0" text="Enter Transactor Phone Number">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="enterTransactorPhoneNumberCB" layoutX="185.0" layoutY="20.0" HBox.hgrow="ALWAYS">
-                                 <HBox.margin>
-                                    <Insets left="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </TextField>
-                              <Button fx:id="updateButtonCB" mnemonicParsing="false" onAction="#updateTransactorCB" prefHeight="26.0" prefWidth="116.0" text="Update" HBox.hgrow="ALWAYS">
-                                 <HBox.margin>
-                                    <Insets left="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </Button>
-                           </children>
-                        </HBox>
-                        <HBox prefHeight="261.0" prefWidth="864.0">
-                           <children>
-                              <VBox prefHeight="226.0" prefWidth="864.0" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Transaction History">
-                                       <font>
-                                          <Font size="23.0" />
-                                       </font>
-                                    </Text>
-                                    <HBox prefHeight="39.0" prefWidth="864.0">
-                                       <children>
-                                          <Label text="Enter Transaction ID:" HBox.hgrow="ALWAYS">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
-                                             <HBox.margin>
-                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                             </HBox.margin>
-                                          </Label>
-                                          <TextField fx:id="enterTransactionIdCB">
-                                             <HBox.margin>
-                                                <Insets left="10.0" top="10.0" />
-                                             </HBox.margin>
-                                          </TextField>
-                                          <Button fx:id="searchButtonCBTransaction" mnemonicParsing="false" onAction="#searchButtonTransactionCBClicked" text="Search" HBox.hgrow="ALWAYS">
-                                             <HBox.margin>
-                                                <Insets left="10.0" top="10.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                          <Button fx:id="refreshButtonCBTransaction" layoutX="320.0" layoutY="20.0" mnemonicParsing="false" onAction="#refreshButtonTransactionClickedCB" text="Refresh">
-                                             <HBox.margin>
-                                                <Insets left="10.0" top="10.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-                                    <TableView fx:id="transactionHistoryTableVIewCB" prefHeight="218.0" prefWidth="864.0" VBox.vgrow="ALWAYS" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <HBox prefHeight="59.0" prefWidth="864.0">
-                           <children>
-                              <Label text="Enter Refund Item Quantity  :" HBox.hgrow="ALWAYS">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="enterTransactionQtyCB">
-                                 <HBox.margin>
-                                    <Insets left="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </TextField>
-                              <Label layoutX="20.0" layoutY="20.0" text="Enter Item ID">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="enterItemIdCB" layoutX="220.0" layoutY="20.0">
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </TextField>
-                              <Label layoutX="379.0" layoutY="20.0" text="Enter Shop ID">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="enterShopIdCB" layoutX="480.0" layoutY="20.0">
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </TextField>
-                              <Button fx:id="updateButtonCBTransaction" mnemonicParsing="false" onAction="#updateQuantityCBClicked" text="Update" HBox.hgrow="ALWAYS">
-                                 <HBox.margin>
-                                    <Insets left="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </Button>
-                           </children>
-                        </HBox>
                      </children>
                   </VBox>
                </content>

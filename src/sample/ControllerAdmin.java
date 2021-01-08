@@ -666,79 +666,72 @@ public class ControllerAdmin implements Initializable {
 
 
     public void saveButtonTTClicked() throws SQLException{
-        fillTableTransactionHistoryTT(0);
-        grandTotalGlobal = 0;
-
-        grandTotalTT.setText("Rp"+String.valueOf(grandTotalGlobal));
-    }
-
-    public void fillTableTransactionHistoryTT(int num){
-        long today = System.currentTimeMillis();
-        java.sql.Date currentDay = new java.sql.Date(today);
-        if (num ==0){
-            currentTransactionTableDataTT.clear();
+        if(currentTransactionTableDataTT.size()==0){
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("Please input a Transaction");
+            a.show();
         }
-
-
-        transactionHistoryObservableList.clear();
-        Connection con = null;
-        PreparedStatement stat = null;
-        ResultSet sqlData = null;
-        try {
-            con = DriverManager.getConnection(database.host, database.userName, database.password);
-            stat = con.prepareStatement("select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\n" +
-                    "from Transaction tn\n" +
-                    "    inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
-                    "    inner join Items i on tn.item_id  = i.item_id\n" +
-                    "    where tn.`transaction_buy/sell` = \"Sell\" and tn.transaction_date=?;");
-
-            stat.setDate(1,currentDay);
-            sqlData= stat.executeQuery();
-            while(sqlData.next()){
-                transactionHistoryObservableList.add(new TransactionHistory(sqlData.getString("transaction_id"),sqlData.getDate("transaction_date").toString(),sqlData.getString("item_id")
-                        ,sqlData.getInt("transaction_item_quantity"),sqlData.getString("item_description"),sqlData.getString("transactor_name"),sqlData.getString("transactor_address"),
-                        sqlData.getString("transactor_phone_number"),sqlData.getInt("transaction_price")));
-            }
-
-        }catch(SQLException e)
-        {
-            System.out.println(e);
-        }{
-            try {sqlData.close();}catch (Exception e){}
-            try { stat.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        else {
+            fillTableTransactionHistoryTT(0);
+            grandTotalGlobal = 0;
+            grandTotalTT.setText("Rp" + String.valueOf(grandTotalGlobal));
         }
     }
+
+
 
     public void deleteButtonClickedTT(){
-        int column = Integer.parseInt(enterColumnTT.getText())-1;
-        int transactionId = currentTransactionTableDataTT.get(column).getTransactionId();
-        int itemId = Integer.parseInt(currentTransactionTableDataTT.get(column).getItemId());
-        String shopId = shopIdTextTT.getText();
-        int shopQty = database.getQtyFromShop(itemId,shopId);
-        int total = currentTransactionTableDataTT.get(column).getTotal();
-        grandTotalGlobal -= total;
-        grandTotalTT.setText("Rp"+String.valueOf(grandTotalGlobal));
+        if(enterColumnTT.getText().equals("")){
+
+                Alert a = new Alert(Alert.AlertType.WARNING);
+                a.setTitle("Warning !");
+                a.setContentText("Please Fill the Column of the Transaction You want to delete from the Table!");
+                a.show();
+
+        }
+
+        else if(intOnly(enterColumnTT.getText(),"Column Transaction TextField!")==0){
+
+        }
+
+        else{
+            int column = Integer.parseInt(enterColumnTT.getText())-1;
+            int transactionId = currentTransactionTableDataTT.get(column).getTransactionId();
+            int itemId = Integer.parseInt(currentTransactionTableDataTT.get(column).getItemId());
+            String shopId = shopIdTextTT.getText();
+            int shopQty = database.getQtyFromShop(itemId,shopId);
+            int total = currentTransactionTableDataTT.get(column).getTotal();
+            grandTotalGlobal -= total;
+            grandTotalTT.setText("Rp"+String.valueOf(grandTotalGlobal));
 //        how to get the returned amount quantity
-        int qty = currentTransactionTableDataTT.get(column).getItemQty()+shopQty;
-        database.updateShopStock(qty,itemId,shopId);
+            int qty = currentTransactionTableDataTT.get(column).getItemQty()+shopQty;
+            database.updateShopStock(qty,itemId,shopId);
 //
-        database.deleteTransaction(transactionId);
-        currentTransactionTableDataTT.remove(column);
-        transactionHistoryObservableList.clear();
-        shopItemsObservableListTT.clear();
-        fillShopTable(shopId, shopItemsObservableListTT, shopIdTextTT, shopAddressTextTT, shopNumberTextTT);
-        fillTableTransactionHistoryTT(1);
-        totalSalesTodayTT.setText("Rp"+String.valueOf(database.getTotalSales("Sell")));
+            database.deleteTransaction(transactionId);
+            currentTransactionTableDataTT.remove(column);
+            transactionHistoryObservableList.clear();
+            shopItemsObservableListTT.clear();
+            fillShopTable(shopId, shopItemsObservableListTT, shopIdTextTT, shopAddressTextTT, shopNumberTextTT);
+            fillTableTransactionHistoryTT(1);
+            totalSalesTodayTT.setText("Rp"+String.valueOf(database.getTotalSales("Sell")));
+        }
+
     }
 
 
-    public void saveButtonBITClicked() throws SQLException{
-        currentTransactionTableDataBIT.clear();
-        transactionHistoryObservableListBIT.clear();
-        fillTableTransactionHistoryBIT();
+    public void saveButtonBITClicked() throws SQLException {
+        if (currentTransactionTableDataBIT.size() == 0) {
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("Please Input a Trasaction!");
+            a.show();
+        } else {
+            currentTransactionTableDataBIT.clear();
+            transactionHistoryObservableListBIT.clear();
+            fillTableTransactionHistoryBIT();
 
-        System.out.println("run");
+        }
     }
 //    Transaction Tab
 
@@ -759,19 +752,31 @@ public class ControllerAdmin implements Initializable {
 
 
     public void deleteButtonClickedBIT() throws SQLException {
-        int column = Integer.parseInt(enterColumnBIT.getText())-1;
-        int transactionId = currentTransactionTableDataBIT.get(column).getTransactionId();
-        int itemId = Integer.parseInt(currentTransactionTableDataBIT.get(column).getItemId());
-        String storageId = storageIdTextBIT.getText();
-        int storageQty = database.getQtyFromStorage(itemId,storageId);
-        int qty = storageQty-currentTransactionTableDataBIT.get(column).getItemQty();
-        database.supplierToStorage(storageId,itemId,qty);
-        database.deleteTransaction(transactionId);
-        currentTransactionTableDataBIT.remove(column);
-        transactionHistoryObservableListBIT.clear();
-        storageItemsObservableListBIT.clear();
-        fillStorageTable(storageId, storageItemsObservableListBIT, storageIdTextBIT, storageAddressTextBIT, storageNumberTextBIT);
-        fillTableTransactionHistoryBIT();
+        if (enterColumnBIT.getText().isEmpty()){
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("Please Input Column Transaction TextField!");
+            a.show();
+        }
+        else if(intOnly(enterColumnBIT.getText(),"Column Transaction!")==0){
+
+        }
+        else{
+            int column = Integer.parseInt(enterColumnBIT.getText())-1;
+            int transactionId = currentTransactionTableDataBIT.get(column).getTransactionId();
+            int itemId = Integer.parseInt(currentTransactionTableDataBIT.get(column).getItemId());
+            String storageId = storageIdTextBIT.getText();
+            int storageQty = database.getQtyFromStorage(itemId,storageId);
+            int qty = storageQty-currentTransactionTableDataBIT.get(column).getItemQty();
+            database.supplierToStorage(storageId,itemId,qty);
+            database.deleteTransaction(transactionId);
+            currentTransactionTableDataBIT.remove(column);
+            transactionHistoryObservableListBIT.clear();
+            storageItemsObservableListBIT.clear();
+            fillStorageTable(storageId, storageItemsObservableListBIT, storageIdTextBIT, storageAddressTextBIT, storageNumberTextBIT);
+            fillTableTransactionHistoryBIT();
+        }
+
     }
 
     static String customerNameGlobal ="";
@@ -785,6 +790,21 @@ public class ControllerAdmin implements Initializable {
             a.setContentText("Please select Shop first to load info!");
             a.show();
         }
+        else if(customerNameTextField.getText().equals("")||customerAddressTextField.getText().equals("")||customerNumberTextField.getText().equals("")||enterItemIdTextField.getText().equals("")||enterItemQtyTextField.getText().equals(""))
+        {
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("Please Fill Customer Name , Customer Address , Customer Phone Number , Item ID , and Item Quantity !");
+            a.show();
+        }
+        else if(intOnly(customerNumberTextField.getText(),"Customer Phone Number TextField!")==0){
+
+        }
+
+        else if(intOnly(enterItemIdTextField.getText(),"Item ID TextField!")==0||intOnly(enterItemQtyTextField.getText(),"Item Quantity TextField!")==0){
+
+        }
+
         else {
             System.out.println(shopIdTextTT.getText());
             String customerName = customerNameTextField.getText();
@@ -837,24 +857,36 @@ public class ControllerAdmin implements Initializable {
     static String supplierNameGlobal = "";
     public void addButtonClickedBIT(javafx.event.ActionEvent event) throws SQLException {
         currentTransactionTableDataBIT.clear();
+        String supplierName = supplierNameTextFieldBIT.getText();
+        String supplierAddress = supplierAddressTextFieldBIT.getText();
+        String supplierPhoneNumber = supplierPhoneTextFieldBIT.getText();
+        String itemId = itemIdTextFieldBIT.getText();
+        String itemName = itemNameTextFieldBIT.getText();
+
         if (storageIdTextBIT.getText().equals("None")) {
             Alert a = new Alert(Alert.AlertType.WARNING);
             a.setTitle("Warning !");
             a.setContentText("Please select storage first to load info!");
             a.show();
-        } else {
-            String supplierName = supplierNameTextFieldBIT.getText();
-            String supplierAddress = supplierAddressTextFieldBIT.getText();
-            String supplierPhoneNumber = supplierPhoneTextFieldBIT.getText();
-            String itemId = itemIdTextFieldBIT.getText();
-            String itemName = itemNameTextFieldBIT.getText();
+        }
+
+        else if (supplierName.isEmpty()||supplierAddress.isEmpty()||supplierPhoneNumber.isEmpty()||itemId.isEmpty()||itemName.isEmpty()||itemQuantityTextFieldBIT.getText().isEmpty()||sellPriceTextFieldBIT.getText().isEmpty()||buyPriceTextFieldBIT.getText().isEmpty()){
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("Please Input Supplier Name , Supplier Address, Supplier Phone Number, Item ID, Item Name, Item Quantity, Sell Price, Buy Price!");
+            a.show();
+        }
+
+        else if(intOnly(itemId,"Item ID TextField!")==0||intOnly(itemQuantityTextFieldBIT.getText(),"Item Quantity TextField!")==0||intOnly(sellPriceTextFieldBIT.getText(),"Sell Price TextField")==0||intOnly(buyPriceTextFieldBIT.getText(),"Buy Price TextField")==0||intOnly(supplierPhoneNumber,"Supplier PhoneNumber TextField")==0){
+
+        }
+
+        else {
             int transactionId = database.getNextTransactionId();
             int itemQty = Integer.parseInt(itemQuantityTextFieldBIT.getText());
             int itemSellPrice = Integer.parseInt(sellPriceTextFieldBIT.getText());
             int itemBuyPrice = Integer.parseInt(buyPriceTextFieldBIT.getText());
             int itemTotal = itemBuyPrice * itemQty;
-
-
             supplierNameLabelBIT.setText(supplierName);
             supplierAddressLabelBIT.setText(supplierAddress);
             supplierPhoneLabelBIT.setText(supplierPhoneNumber);
@@ -883,17 +915,15 @@ public class ControllerAdmin implements Initializable {
 // Contact Book and Trouble Center Tab
     public void searchButtonCBClicked () throws SQLException {
         Alert a =  new Alert(Alert.AlertType.WARNING);
-        if(enterTransactionIdCB.getText().isEmpty())
+        if(enterTransactorIdCB.getText().isEmpty())
         {
             a.setTitle("Warning!");
             a.setContentText("Please fill the Transactor Id Field!");
             a.show();
         }
-        else if(!isInt(enterTransactorIdCB))
+        else if(intOnly(enterTransactorIdCB.getText(),"Transactor ID TextField!")==0)
         {
-            a.setTitle("Warning!");
-            a.setContentText("Cannot enter characters in Transactor Id Field!");
-            a.show();
+
         }
         else
         {
@@ -1106,18 +1136,18 @@ public class ControllerAdmin implements Initializable {
             a.setContentText("Please input in order to search!");
             a.show();
         }
-        if(!isInt(enterTransactionIdCB))
-        {
-            a.setTitle("Warning!");
-            a.setContentText("Cannot enter characters in Transaction Id Field!");
-            a.show();
+
+        else if (intOnly(enterTransactionIdCB.getText(),"Transaction ID field!")==0){
+
         }
+
         else
         {
-            int transactionID = Integer.parseInt(enterTransactionIdCB.getText());
+            int transactionID = 0;
+            transactionID = Integer.parseInt(enterTransactionIdCB.getText());
                 transactionHistoryObservableListCB.clear();
                 searchTransactionId(transactionID);
-            System.out.println(transactionHistoryObservableList.get(0).getItemQty());
+
         }
     }
 // Contact Book and Trouble Center
@@ -1125,29 +1155,44 @@ public class ControllerAdmin implements Initializable {
 
 //Item Modification Tab
     public void searchButtonClickedMD() throws SQLException {
-        int itemId = Integer.parseInt(enterItemIdMD.getText());
-        itemsObservableListMD.clear();
-        searchItem(itemId);
+        if (intOnly(enterItemIdMD.getText(),"Item ID TextField!")==0){
+
+        }
+        else{
+            int itemId = Integer.parseInt(enterItemIdMD.getText());
+            itemsObservableListMD.clear();
+            searchItem(itemId);
+        }
+
     }
     public void refreshButtonClickMD() throws SQLException {
         itemsObservableListMD.clear();
         fillItem();
     }
     public void updateButtonClickMD() throws SQLException {
-        int itemId = Integer.parseInt(enterItemIdMD.getText());
-        int itemSellPrice = Integer.parseInt(enterItemSellPriceMD.getText());
-        String itemName = enterItemNameMD.getText();
-        if (enterItemNameMD.getText().equals("") || enterItemSellPriceMD.getText().equals("")||enterItemIdMD.getText().equals("")){
-            Alert a = new Alert(Alert.AlertType.WARNING);
-            a.setTitle("Warning !");
-            a.setContentText("Please input Item ID and Item Sell Price");
-            a.show();
+        if(enterItemIdMD.getText().isEmpty()||enterItemSellPriceMD.getText().isEmpty()){
+
+        }
+        else if(intOnly(enterItemIdMD.getText(),"Item ID TextField!")==0||intOnly(enterItemSellPriceMD.getText(),"Item Sell Price TextField!")==0){
+
         }
         else{
-            itemsObservableListMD.clear();
-            updateItemSql(itemId,itemName,itemSellPrice);
-            searchItem(itemId);
+            int itemId = Integer.parseInt(enterItemIdMD.getText());
+            int itemSellPrice = Integer.parseInt(enterItemSellPriceMD.getText());
+            String itemName = enterItemNameMD.getText();
+            if (enterItemNameMD.getText().equals("") || enterItemSellPriceMD.getText().equals("")||enterItemIdMD.getText().equals("")){
+                Alert a = new Alert(Alert.AlertType.WARNING);
+                a.setTitle("Warning !");
+                a.setContentText("Please input Item ID and Item Sell Price");
+                a.show();
+            }
+            else{
+                itemsObservableListMD.clear();
+                updateItemSql(itemId,itemName,itemSellPrice);
+                searchItem(itemId);
+            }
         }
+
     }
 
     public void refreshButtonClickedCB() throws SQLException {
@@ -1161,6 +1206,45 @@ public class ControllerAdmin implements Initializable {
 //    Item Modification Tab
 
 //    Database queries Function
+
+    public void fillTableTransactionHistoryTT(int num){
+        long today = System.currentTimeMillis();
+        java.sql.Date currentDay = new java.sql.Date(today);
+        if (num ==0){
+            currentTransactionTableDataTT.clear();
+        }
+
+
+        transactionHistoryObservableList.clear();
+        Connection con = null;
+        PreparedStatement stat = null;
+        ResultSet sqlData = null;
+        try {
+            con = DriverManager.getConnection(database.host, database.userName, database.password);
+            stat = con.prepareStatement("select tn.transaction_id, tn.transaction_date, tn.item_id, tn.transaction_item_quantity, tn.`transaction_buy/sell`, tn.transaction_price, tn.transactor_id, tr.transactor_name, tr.transactor_address, tr.transactor_phone_number, tr.transactor_email, i.item_description\n" +
+                    "from Transaction tn\n" +
+                    "    inner join Transactor tr on tn.transactor_id = tr.transactor_id\n" +
+                    "    inner join Items i on tn.item_id  = i.item_id\n" +
+                    "    where tn.`transaction_buy/sell` = \"Sell\" and tn.transaction_date=?;");
+
+            stat.setDate(1,currentDay);
+            sqlData= stat.executeQuery();
+            while(sqlData.next()){
+                transactionHistoryObservableList.add(new TransactionHistory(sqlData.getString("transaction_id"),sqlData.getDate("transaction_date").toString(),sqlData.getString("item_id")
+                        ,sqlData.getInt("transaction_item_quantity"),sqlData.getString("item_description"),sqlData.getString("transactor_name"),sqlData.getString("transactor_address"),
+                        sqlData.getString("transactor_phone_number"),sqlData.getInt("transaction_price")));
+            }
+
+        }catch(SQLException e)
+        {
+            System.out.println(e);
+        }{
+            try {sqlData.close();}catch (Exception e){}
+            try { stat.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+    }
+
 
 
 //    Getting the Table from Sql and insert it into the Interface
@@ -1571,9 +1655,21 @@ public class ControllerAdmin implements Initializable {
     }
 //    By taking a paramerter , Update the corresponding data on mySql Table and update the Table from the Interface
 
-
 //    Database Queries Function
 
+//    Utility Function
+    public int intOnly(String integerOnly , String textField){
+        int x = 0;
+        try{
+            x=Integer.parseInt(integerOnly);
+        }catch (Exception e ){
+            Alert a =  new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning!");
+            a.setContentText("Please enter numbers only in "+textField);
+            a.show();
+        }
+        return x;
+    }
 
 
 
