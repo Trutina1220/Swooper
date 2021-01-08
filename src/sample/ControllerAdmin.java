@@ -487,145 +487,153 @@ public class ControllerAdmin implements Initializable {
     }
 
     public void MoveButtonSTClicked() throws SQLException {
+        Integer inputId;
+        Integer inputQty;
+        Alert a = new Alert(Alert.AlertType.WARNING);
 
-        if (fromComboBox.getSelectionModel().isEmpty() || toComboBox.getSelectionModel().isEmpty()) {
-            Alert a = new Alert(Alert.AlertType.WARNING);
-
+        if (fromComboBox.getSelectionModel().isEmpty() && toComboBox.getSelectionModel().isEmpty() && itemIDComboBoxST.getSelectionModel().isEmpty() && itemQuantityTextFieldST.getText().isEmpty()) {
             a.setTitle("Warning");
-            a.setContentText("Please Pick the from and to box!");
+            a.setContentText("Please pick the From Combo Box, To Combo Box, Item ID Combo Box and fill the Quantity Field!");
             a.show();
+        } else if(fromComboBox.getSelectionModel().isEmpty() || toComboBox.getSelectionModel().isEmpty() || itemIDComboBoxST.getSelectionModel().isEmpty() || itemQuantityTextFieldST.getText().isEmpty()) {
+            if(fromComboBox.getSelectionModel().isEmpty() && itemIDComboBoxST.getSelectionModel().isEmpty() && itemQuantityTextFieldST.getText().isEmpty()) {
+                a.setTitle("Warning");
+                a.setContentText("Please pick the From Combo Box, ID Combo Box and fill the Quantity Field!");
+                a.show();
+            }
+            else if(toComboBox.getSelectionModel().isEmpty() && itemIDComboBoxST.getSelectionModel().isEmpty() && itemQuantityTextFieldST.getText().isEmpty()){
+                a.setTitle("Warning");
+                a.setContentText("Please pick the To Combo Box, Item ID Combo Box and fill the Quantity Field!");
+                a.show();
+            }
+            else if(itemIDComboBoxST.getSelectionModel().isEmpty() && itemQuantityTextFieldST.getText().isEmpty() )
+            {
+                a.setTitle("Warning");
+                a.setContentText("Please pick Item ID Combo Box and fill the Quantity Field!");
+                a.show();
+            }
+            else if(fromComboBox.getSelectionModel().isEmpty())
+            {
+                a.setTitle("Warning");
+                a.setContentText("Please pick the From Combo Box!");
+                a.show();
+            }
+            else if(toComboBox.getSelectionModel().isEmpty())
+            {
+                a.setTitle("Warning");
+                a.setContentText("Please pick the To Combo Box!");
+                a.show();
+            }
 
-        } else if (fromComboBox.getValue().toString() == "Storage 1" && toComboBox.getValue().toString() == "Storage 1") {
-            Alert a = new Alert(Alert.AlertType.WARNING);
+            else if(itemIDComboBoxST.getSelectionModel().isEmpty() || itemQuantityTextFieldST.getText().isEmpty()) {
+                if (itemIDComboBoxST.getSelectionModel().isEmpty()) {
+                    a.setTitle("Warning");
+                    a.setContentText("Please pick the Item ID Combo Box!");
+                    a.show();
+                } else if (itemQuantityTextFieldST.getText().isEmpty()) {
+                    a.setTitle("Warning");
+                    a.setContentText("Please fill the Quantity Field!");
+                    a.show();
+                }
+            }
+        } else if(fromComboBox.getValue().toString() == "Storage 1" && toComboBox.getValue().toString() == "Storage 1") {
             a.setTitle("Warning!");
             a.setContentText("Can't move item to the same place!");
             a.show();
             toComboBox.getSelectionModel().clearSelection();
         } else if (fromComboBox.getValue().toString() == "Storage 2" && toComboBox.getValue().toString() == "Storage 2") {
-            Alert a = new Alert(Alert.AlertType.WARNING);
             a.setTitle("Warning!");
             a.setContentText("Can't move item to the same place!");
             a.show();
             toComboBox.getSelectionModel().clearSelection();
-        } else if (itemIDComboBoxST.getSelectionModel().isEmpty()) {
-            Alert a = new Alert(Alert.AlertType.WARNING);
-
-            a.setTitle("Warning");
-            a.setContentText("Please Pick the item ID in the combo box!");
-            a.show();
-
-        } else if (itemQuantityTextFieldST.getText().isEmpty()) {
-
-            Alert a = new Alert(Alert.AlertType.WARNING);
-
-            a.setTitle("Warning");
-            a.setContentText("Quantity Field is Empty!");
-            a.show();
-        } else if (!itemQuantityTextFieldST.getText().isEmpty()) {
+        }else if (!itemQuantityTextFieldST.getText().isEmpty()) {
             if (!isInt(itemQuantityTextFieldST)) {
-                Alert a = new Alert(Alert.AlertType.WARNING);
-
                 a.setTitle("Warning");
-                a.setContentText("Quantity Field Must be Numbers!");
+                a.setContentText("Quantity Field must be numbers!");
                 itemQuantityTextFieldST.clear();
                 a.show();
-
             }
             else if (Integer.parseInt(itemQuantityTextFieldST.getText()) == 0) {
-                Alert a = new Alert(Alert.AlertType.WARNING);
-
                 a.setTitle("Warning");
                 a.setContentText("Quantity Field more than 0!");
                 itemQuantityTextFieldST.clear();
                 a.show();
-
             }
-
         }
+        else {
+            inputId = (Integer) itemIDComboBoxST.getValue();
+            inputQty = Integer.parseInt(itemQuantityTextFieldST.getText());
 
-        Integer inputId = (Integer) itemIDComboBoxST.getValue();
-        Integer inputQty = Integer.parseInt(itemQuantityTextFieldST.getText());
-
-
-        if (fromComboBox.getValue().toString() == "Shop 1" && toComboBox.getValue().toString() == "Storage 1") {
-            if(database.deleteItem("SH001", inputId, inputQty)) {
-                database.insertItem("ST001", inputId, inputQty);
-                this.successMove();
-            }
-            else {
-                this.failedMove();
-            }
-        } else if (fromComboBox.getValue().toString() == "Shop 2" && toComboBox.getValue().toString() == "Storage 1") {
-            if(database.deleteItem("SH002", inputId, inputQty)) {
-                database.insertItem("ST001", inputId, inputQty);
-                this.successMove();
-            }
-            else {
-                this.failedMove();
-            }
-        } else if (fromComboBox.getValue().toString() == "Shop 1" && toComboBox.getValue().toString() == "Storage 2") {
-            if(database.deleteItem("SH001", inputId, inputQty)) {
-                database.insertItem("ST002", inputId, inputQty);
-                this.successMove();
-            }
-            else {
-                this.failedMove();
-            }
-        } else if (fromComboBox.getValue().toString()== "Shop 2" && toComboBox.getValue().toString() == "Storage 2") {
-            if(database.deleteItem("SH002", inputId, inputQty)) {
-                database.insertItem("ST002", inputId, inputQty);
-                this.successMove();
-            }
-            else {
-                this.failedMove();
-            }
-        } else if (fromComboBox.getValue().toString() == "Storage 1" && toComboBox.getValue().toString() == "Storage 2") {
-            if(database.deleteItem("ST001", inputId, inputQty)) {
-                database.insertItem("ST002", inputId, inputQty);
-                this.successMove();
-            }
-            else {
-                this.failedMove();
-            }
-        } else if (fromComboBox.getValue().toString() == "Storage 2" && toComboBox.getValue().toString() == "Storage 1") {
-            if(database.deleteItem("ST002", inputId, inputQty)) {
-                database.insertItem("ST001", inputId, inputQty);
-                this.successMove();
-            }
-            else {
-                this.failedMove();
-            }
-        } else if (fromComboBox.getValue().toString() == "Storage 1" && toComboBox.getValue().toString() == "Shop 1") {
-            if(database.deleteItem("ST001", inputId, inputQty)) {
-                database.insertItem("SH001", inputId, inputQty);
-                this.successMove();
-            }
-            else {
-                this.failedMove();
-            }
-        } else if (fromComboBox.getValue().toString() == "Storage 1" && toComboBox.getValue().toString() == "Shop 2") {
-            if(database.deleteItem("ST001", inputId, inputQty)) {
-                database.insertItem("SH002", inputId, inputQty);
-                this.successMove();
-            }
-            else {
-                this.failedMove();
-            }
-        } else if (fromComboBox.getValue().toString() == "Storage 2" && toComboBox.getValue().toString() == "Shop 1") {
-            if(database.deleteItem("ST002", inputId, inputQty)) {
-                database.insertItem("SH001", inputId, inputQty);
-                this.successMove();
-            }
-            else {
-                this.failedMove();
-            }
-        } else if (fromComboBox.getValue().toString() == "Storage 2" && toComboBox.getValue().toString() == "Shop 2") {
-            if(database.deleteItem("ST002", inputId, inputQty)) {
-                database.insertItem("SH002", inputId, inputQty);
-                this.successMove();
-            }
-            else {
-                this.failedMove();
+            if (fromComboBox.getValue().toString() == "Shop 1" && toComboBox.getValue().toString() == "Storage 1") {
+                if (database.deleteItem("SH001", inputId, inputQty)) {
+                    database.insertItem("ST001", inputId, inputQty);
+                    this.successMove();
+                } else {
+                    this.failedMove();
+                }
+            } else if (fromComboBox.getValue().toString() == "Shop 2" && toComboBox.getValue().toString() == "Storage 1") {
+                if (database.deleteItem("SH002", inputId, inputQty)) {
+                    database.insertItem("ST001", inputId, inputQty);
+                    this.successMove();
+                } else {
+                    this.failedMove();
+                }
+            } else if (fromComboBox.getValue().toString() == "Shop 1" && toComboBox.getValue().toString() == "Storage 2") {
+                if (database.deleteItem("SH001", inputId, inputQty)) {
+                    database.insertItem("ST002", inputId, inputQty);
+                    this.successMove();
+                } else {
+                    this.failedMove();
+                }
+            } else if (fromComboBox.getValue().toString() == "Shop 2" && toComboBox.getValue().toString() == "Storage 2") {
+                if (database.deleteItem("SH002", inputId, inputQty)) {
+                    database.insertItem("ST002", inputId, inputQty);
+                    this.successMove();
+                } else {
+                    this.failedMove();
+                }
+            } else if (fromComboBox.getValue().toString() == "Storage 1" && toComboBox.getValue().toString() == "Storage 2") {
+                if (database.deleteItem("ST001", inputId, inputQty)) {
+                    database.insertItem("ST002", inputId, inputQty);
+                    this.successMove();
+                } else {
+                    this.failedMove();
+                }
+            } else if (fromComboBox.getValue().toString() == "Storage 2" && toComboBox.getValue().toString() == "Storage 1") {
+                if (database.deleteItem("ST002", inputId, inputQty)) {
+                    database.insertItem("ST001", inputId, inputQty);
+                    this.successMove();
+                } else {
+                    this.failedMove();
+                }
+            } else if (fromComboBox.getValue().toString() == "Storage 1" && toComboBox.getValue().toString() == "Shop 1") {
+                if (database.deleteItem("ST001", inputId, inputQty)) {
+                    database.insertItem("SH001", inputId, inputQty);
+                    this.successMove();
+                } else {
+                    this.failedMove();
+                }
+            } else if (fromComboBox.getValue().toString() == "Storage 1" && toComboBox.getValue().toString() == "Shop 2") {
+                if (database.deleteItem("ST001", inputId, inputQty)) {
+                    database.insertItem("SH002", inputId, inputQty);
+                    this.successMove();
+                } else {
+                    this.failedMove();
+                }
+            } else if (fromComboBox.getValue().toString() == "Storage 2" && toComboBox.getValue().toString() == "Shop 1") {
+                if (database.deleteItem("ST002", inputId, inputQty)) {
+                    database.insertItem("SH001", inputId, inputQty);
+                    this.successMove();
+                } else {
+                    this.failedMove();
+                }
+            } else if (fromComboBox.getValue().toString() == "Storage 2" && toComboBox.getValue().toString() == "Shop 2") {
+                if (database.deleteItem("ST002", inputId, inputQty)) {
+                    database.insertItem("SH002", inputId, inputQty);
+                    this.successMove();
+                } else {
+                    this.failedMove();
+                }
             }
         }
     }
@@ -874,9 +882,15 @@ public class ControllerAdmin implements Initializable {
 
 // Contact Book and Trouble Center Tab
     public void searchButtonCBClicked () throws SQLException {
-        if(!isInt(enterTransactorIdCB))
+        Alert a =  new Alert(Alert.AlertType.WARNING);
+        if(enterTransactionIdCB.getText().isEmpty())
         {
-            Alert a =  new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning!");
+            a.setContentText("Please fill the Transactor Id Field!");
+            a.show();
+        }
+        else if(!isInt(enterTransactorIdCB))
+        {
             a.setTitle("Warning!");
             a.setContentText("Cannot enter characters in Transactor Id Field!");
             a.show();
@@ -885,7 +899,6 @@ public class ControllerAdmin implements Initializable {
         {
             int transactorID = Integer.parseInt(enterTransactorIdCB.getText());
             if(enterTransactorIdCB.getText().equals("")){
-                Alert a = new Alert(Alert.AlertType.WARNING);
                 a.setTitle("Warning !");
                 a.setContentText("Please input Transactor ID!");
                 a.show();
@@ -898,11 +911,72 @@ public class ControllerAdmin implements Initializable {
     }
 
     public void updateTransactorCB() throws SQLException {
-        if (enterTransactorNameCB.getText().equals("") || enterTransactorAddressCB.getText().equals("")||enterTransactorPhoneNumberCB.getText().equals("")||enterTransactorIdCB.getText().equals("")){
-            Alert a = new Alert(Alert.AlertType.WARNING);
+        Alert a = new Alert(Alert.AlertType.WARNING);
+        if(enterTransactorNameCB.getText().equals("") && enterTransactorAddressCB.getText().equals("") && enterTransactorPhoneNumberCB.getText().equals("") && enterTransactorIdCB.getText().equals("") && enterTransactorIdCB.getText().equals(""))
+        {
             a.setTitle("Warning !");
-            a.setContentText("Please input Transactor Name , Transactor Address , and Transactor Phone Number!");
+            a.setContentText("Please input Transactor ID, Transactor Name, Transactor Address, and Transactor Phone Number Fields!");
             a.show();
+        }
+
+        else if (enterTransactorNameCB.getText().equals("") || enterTransactorAddressCB.getText().equals("") || enterTransactorPhoneNumberCB.getText().equals("") || enterTransactorIdCB.getText().equals("") || enterTransactorIdCB.getText().equals("")){
+           if (enterTransactorNameCB.getText().equals("") && enterTransactorAddressCB.getText().equals("") && enterTransactorIdCB.getText().equals("")) {
+               a.setTitle("Warning !");
+               a.setContentText("Please input Transactor ID, Transactor Name and Transactor Address Fields!");
+               a.show();
+           }
+            else if (enterTransactorNameCB.getText().equals("") && enterTransactorPhoneNumberCB.getText().equals("") && enterTransactorIdCB.getText().equals("")) {
+                a.setTitle("Warning !");
+                a.setContentText("Please input Transactor ID, Transactor Name and Transactor Phone Number Fields!");
+                a.show();
+            }
+           else if (enterTransactorAddressCB.getText().equals("") && enterTransactorPhoneNumberCB.getText().equals("") && enterTransactorIdCB.getText().equals("")) {
+               a.setTitle("Warning !");
+               a.setContentText("Please input Transactor ID, Transactor Address and Transactor Phone Number Fields!");
+               a.show();
+           }
+           else if (enterTransactorNameCB.getText().equals("") && enterTransactorAddressCB.getText().equals("")) {
+               a.setTitle("Warning !");
+               a.setContentText("Please input Transactor Name and Transactor Address!");
+               a.show();
+           }
+           else if (enterTransactorNameCB.getText().equals("") && enterTransactorPhoneNumberCB.getText().equals("")) {
+               a.setTitle("Warning !");
+               a.setContentText("Please input Transactor Name and Transactor Phone Number!");
+               a.show();
+           }
+           else if (enterTransactorAddressCB.getText().equals("") && enterTransactorPhoneNumberCB.getText().equals("")) {
+               a.setTitle("Warning !");
+               a.setContentText("Please input Transactor Address and Transactor Phone Number Fields!");
+               a.show();
+           }
+           else if (enterTransactorNameCB.getText().equals("")) {
+               a.setTitle("Warning !");
+               a.setContentText("Please input Transactor Name!");
+               a.show();
+           }
+           else if (enterTransactorAddressCB.getText().equals("")) {
+               a.setTitle("Warning !");
+               a.setContentText("Please input Transactor Address!");
+               a.show();
+           }
+           else if (enterTransactorPhoneNumberCB.getText().equals("")) {
+               a.setTitle("Warning !");
+               a.setContentText("Please input Transactor Phone Number!");
+               a.show();
+           }
+           else if (enterTransactorIdCB.getText().equals("")) {
+               a.setTitle("Warning !");
+               a.setContentText("Please input Transactor ID!");
+               a.show();
+           }
+           else if(!isInt(enterTransactorIdCB))
+           {
+               a.setTitle("Warning !");
+               a.setContentText("Please input numbers only in Transactor ID!");
+               a.show();
+
+           }
         }
         else{
             int transactorId = Integer.parseInt(enterTransactorIdCB.getText());
@@ -917,10 +991,74 @@ public class ControllerAdmin implements Initializable {
 
     public void updateQuantityCBClicked() throws SQLException {
         Alert a = new Alert(Alert.AlertType.WARNING);
-        if (enterTransactionQtyCB.getText().equals("")){
+        if (enterTransactionIdCB.getText().equals("") && enterTransactionQtyCB.getText().equals("") && enterItemIdCB.getText().equals("") &&  enterShopIdCB.getText().equals("")){
             a.setTitle("Warning !");
-            a.setContentText("Please input Transaction Item Quantity!");
+            a.setContentText("Please input Transaction ID, Transaction Item Quantity, Item ID and Shop ID!");
             a.show();
+        }
+        else if(enterTransactionIdCB.getText().equals("") || enterTransactionQtyCB.getText().equals("") || enterItemIdCB.getText().equals("") ||  enterShopIdCB.getText().equals(""))
+        {
+            if(enterTransactionIdCB.getText().equals("") && enterTransactionQtyCB.getText().equals("") && enterItemIdCB.getText().equals("") )
+            {
+                a.setTitle("Warning !");
+                a.setContentText("Please input Transaction ID, Transaction Item Quantity and Item ID!");
+                a.show();
+            }
+            else if(enterTransactionIdCB.getText().equals("") && enterTransactionQtyCB.getText().equals("") && enterShopIdCB.getText().equals(""))
+            {
+                a.setTitle("Warning !");
+                a.setContentText("Please input Transaction ID, Transaction Item Quantity and Shop ID!");
+                a.show();
+            }
+            else if(enterTransactionIdCB.getText().equals("") && enterItemIdCB.getText().equals("") && enterShopIdCB.getText().equals(""))
+            {
+                a.setTitle("Warning !");
+                a.setContentText("Please input Transaction ID, Item ID and Shop ID!");
+                a.show();
+            }
+            else if (enterTransactionQtyCB.getText().equals("") && enterItemIdCB.getText().equals(""))
+            {
+                a.setTitle("Warning !");
+                a.setContentText("Please input Transaction Item Quantity and Item ID!");
+                a.show();
+            }
+            else if (enterTransactionQtyCB.getText().equals("") && enterShopIdCB.getText().equals(""))
+            {
+                a.setTitle("Warning !");
+                a.setContentText("Please input Transaction Item Quantity and Shop ID!");
+                a.show();
+            }
+
+            else if(enterItemIdCB.getText().equals("") && enterShopIdCB.getText().equals(""))
+            {
+                a.setTitle("Warning !");
+                a.setContentText("Please input Item ID and Shop ID!");
+                a.show();
+            }
+            else if(enterTransactionIdCB.getText().equals(""))
+            {
+                a.setTitle("Warning !");
+                a.setContentText("Please input Transaction ID!");
+                a.show();
+            }
+            else if(enterTransactionQtyCB.getText().equals(""))
+            {
+                a.setTitle("Warning !");
+                a.setContentText("Please input Transaction Item Quantity!");
+                a.show();
+            }
+            else if(enterItemIdCB.getText().equals(""))
+            {
+                a.setTitle("Warning !");
+                a.setContentText("Please input Item ID!");
+                a.show();
+            }
+            else if(enterShopIdCB.getText().equals(""))
+            {
+                a.setTitle("Warning !");
+                a.setContentText("Please input Shop ID!");
+                a.show();
+            }
         }
         else if(!isInt(enterTransactionQtyCB))
         {
@@ -928,40 +1066,35 @@ public class ControllerAdmin implements Initializable {
             a.setContentText("Please input numbers only in Transaction Item Quantity!");
             a.show();
         }
-        else if(enterTransactionIdCB.getText().equals("")){
-            a.setTitle("Warning !");
-            a.setContentText("Please Enter Transaction ID!");
-            a.show();
-        }
-        else if(enterShopIdCB.getText().equals("SH001") ||enterShopIdCB.getText().equals("SH002")){
+        else {
+            if (enterShopIdCB.getText().equals("SH001") || enterShopIdCB.getText().equals("SH002")) {
 
-            int itemId = Integer.parseInt(enterItemIdCB.getText());
-            int transactionId = Integer.parseInt(enterTransactionIdCB.getText());
-            int itemTransactionQty = database.getTransactionQty(transactionId);
-            int pricePcs = transactionHistoryObservableListCB.get(0).getPrice() / itemTransactionQty;
-            Integer quantityReturned = Integer.parseInt(enterTransactionQtyCB.getText());
-            int totalPriceNew =  (itemTransactionQty-quantityReturned)*pricePcs;
-            String shopId = enterShopIdCB.getText() ;
-            int shopStock  = database.getQtyFromShop(itemId,shopId);
-            int reduceTransactionQty = itemTransactionQty-quantityReturned;
-            int reduceShopStock = shopStock-quantityReturned;
-            int transactorId = transactionHistoryObservableListCB.get(0).getTransactorId();
-            System.out.println(reduceShopStock);
+                int itemId = Integer.parseInt(enterItemIdCB.getText());
+                int transactionId = Integer.parseInt(enterTransactionIdCB.getText());
+                int itemTransactionQty = database.getTransactionQty(transactionId);
+                int pricePcs = transactionHistoryObservableListCB.get(0).getPrice() / itemTransactionQty;
+                Integer quantityReturned = Integer.parseInt(enterTransactionQtyCB.getText());
+                int totalPriceNew = (itemTransactionQty - quantityReturned) * pricePcs;
+                String shopId = enterShopIdCB.getText();
+                int shopStock = database.getQtyFromShop(itemId, shopId);
+                int reduceTransactionQty = itemTransactionQty - quantityReturned;
+                int reduceShopStock = shopStock - quantityReturned;
+                int transactorId = transactionHistoryObservableListCB.get(0).getTransactorId();
+                System.out.println(reduceShopStock);
 
-            database.updateTransaction(transactionId,reduceTransactionQty,totalPriceNew);
-            database.updateShopStock(reduceShopStock,Integer.parseInt(enterItemIdCB.getText()),shopId);
-            database.insertTransaction(Integer.parseInt(enterItemIdCB.getText()),quantityReturned,0,transactorId,"Sell");
-            transactorsObservableListCB.clear();
-            transactionHistoryObservableListCB.clear();
-            searchTransactorId(transactorId);
-            searchTransactionId(transactionId);
-            searchTransactionId(database.getNextTransactionId()-1);
-        }
-
-        else{
-            a.setTitle("Warning !");
-            a.setContentText("Please input 'SH001' or 'SH002' in Shop ID!");
-            a.show();
+                database.updateTransaction(transactionId, reduceTransactionQty, totalPriceNew);
+                database.updateShopStock(reduceShopStock, Integer.parseInt(enterItemIdCB.getText()), shopId);
+                database.insertTransaction(Integer.parseInt(enterItemIdCB.getText()), quantityReturned, 0, transactorId, "Sell");
+                transactorsObservableListCB.clear();
+                transactionHistoryObservableListCB.clear();
+                searchTransactorId(transactorId);
+                searchTransactionId(transactionId);
+                searchTransactionId(database.getNextTransactionId() - 1);
+            } else {
+                a.setTitle("Warning !");
+                a.setContentText("Please input 'SH001' or 'SH002' in Shop ID!");
+                a.show();
+            }
         }
     }
 

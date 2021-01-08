@@ -35,102 +35,6 @@ public class Database {
     }
 
 
-//    kevin
-
-    public ResultSet getShopStorageInfo(String choice) throws SQLException {
-//        Connection con = null;
-//        PreparedStatement stat = null;
-        ResultSet rsShopStorage = null;
-//        CachedRowSet rowSet = new CachedRowSetImpl();
-//        if (choice.contains("SH"))
-//        {
-//            try {
-//                con = DriverManager.getConnection(this.host, this.userName, this.password);
-//                stat = con.prepareStatement(selectAllQuery + this.shopTable + " where shop_id = ?");
-//
-//                stat.setString(1, choice);
-//
-//                rsShopStorage = stat.executeQuery();
-//                rowSet.populate(rsShopStorage);
-//
-//
-//            } catch(SQLException e)
-//            {
-//                System.out.println(e.getMessage());
-//            }
-//        } else {
-//            try {
-//                con = DriverManager.getConnection(this.host, this.userName, this.password);
-//                stat = con.prepareStatement(selectAllQuery + this.storageTable + " where storage_id = ?");
-//
-//                stat.setString(1, choice);
-//
-//                rsShopStorage = stat.executeQuery();
-//                rowSet.populate(rsShopStorage);
-//
-//            } catch(SQLException e)
-//            {
-//                System.out.println(e.getMessage());
-//            }
-//        }
-//        con.close();
-//        stat.close();
-//        return rowSet;
-        return rsShopStorage;
-    }
-
-
-//    kevin
-    public ResultSet getShopStorageItems(String choice) throws SQLException {
-        ResultSet rsShopStorageItem = null;
-//        Connection con = null;
-//        PreparedStatement stat = null;
-//        CachedRowSet rowSet = new CachedRowSetImpl();
-//
-//        if(choice.contains("SH"))
-//        {
-//            try {
-//                 con = DriverManager.getConnection(this.host, this.userName, this.password);
-//                 stat  = con.prepareStatement("select `Shop Stock`.*, Items.item_description \n" +
-//                        "from `Shop Stock`\n" +
-//                        "inner join Items\n" +
-//                        "on `Shop Stock`.item_id = Items.item_id where shop_id = ?");
-//
-//                stat.setString(1, choice);
-//
-//                rsShopStorageItem = stat.executeQuery();
-//                rowSet.populate(rsShopStorageItem);
-//
-//            }catch(SQLException e)
-//            {
-//                System.out.println(e);
-//            }
-//        } else {
-//            try {
-//                con = DriverManager.getConnection(this.host, this.userName, this.password);
-//                stat = con.prepareStatement("select `Storage Stock`.*, Items.item_description \n" +
-//                        "from `Storage Stock`\n" +
-//                        "inner join Items\n" +
-//                        "on `Storage Stock`.item_id = Items.item_id where storage_id = ?");
-//
-//                stat.setString(1, choice);
-//
-//                rsShopStorageItem = stat.executeQuery();
-//                rowSet.populate(rsShopStorageItem);
-//
-//
-//            }catch(SQLException e)
-//            {
-//                System.out.println(e);
-//            }
-//        }
-//        con.close();
-//        stat.close();
-//        return rowSet;
-        return rsShopStorageItem;
-    }
-
-
     public void insertItem(String toChoice, Integer itemID, Integer itemQuantity)
     {
         Connection con = null;
@@ -158,9 +62,7 @@ public class Database {
 
                     Integer statusUpdate = updateStat.executeUpdate();
                     if (statusUpdate > 0) {
-                        Alert a = new Alert(Alert.AlertType.INFORMATION);
-                        a.setTitle("Success Update!");
-                        a.show();
+                        System.out.println("success update");
                     }
                 }
                 else {
@@ -173,15 +75,11 @@ public class Database {
 
                     Integer statusInsert = insertStat.executeUpdate();
                     if (statusInsert > 0) {
-                        Alert a = new Alert(Alert.AlertType.INFORMATION);
-                        a.setTitle("Success Insert!");
-                        a.show();
+                        System.out.println("success insert");
                     }
                     else
                     {
-                        Alert a = new Alert(Alert.AlertType.INFORMATION);
-                        a.setTitle("Fail Insert!");
-                        a.show();
+                        System.out.println("fail insert");
                     }
                 }
             } catch (SQLException e) {
@@ -224,15 +122,11 @@ public class Database {
 
                     Integer statusInsert = insertStat.executeUpdate();
                     if (statusInsert > 0) {
-                        Alert a = new Alert(Alert.AlertType.INFORMATION);
-                        a.setTitle("Success Insert!");
-                        a.show();
+                        System.out.println("success insert");
                     }
                     else
                     {
-                        Alert a = new Alert(Alert.AlertType.INFORMATION);
-                        a.setTitle("Fail Insert!");
-                        a.show();
+                        System.out.println("fail insert");
                     }
                 }
             }
@@ -311,18 +205,17 @@ public class Database {
                     stat.setString(2, fromChoice);
 
                     Integer statusDelete = stat.executeUpdate();
-                    Alert a = new Alert(Alert.AlertType.INFORMATION);
                     if(statusDelete == 0)
                     {
-                        a.setTitle("Error Delete");
+                        System.out.println("error delete");
                         deletedItem = false;
                     }
                     else
                     {
-                        a.setTitle("Success Delete");
+                        System.out.println("success delete");
                         deletedItem = true;
                     }
-                    a.show();
+
 
                 }
             } catch (SQLException e) {
@@ -354,15 +247,13 @@ public class Database {
                     stat.setString(2, fromChoice);
 
                     Integer statusDelete = stat.executeUpdate();
-                    Alert a = new Alert(Alert.AlertType.INFORMATION);
                     if (statusDelete == 0) {
-                        a.setTitle("Error Delete");
+                        System.out.println("error delete");
                         deletedItem = false;
                     } else {
-                        a.setTitle("Success Delete");
+                        System.out.println("success delete");
                         deletedItem = true;
                     }
-                    a.show();
                 }
             }
             catch (SQLException e) {
