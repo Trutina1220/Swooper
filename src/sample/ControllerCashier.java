@@ -68,6 +68,7 @@ public class ControllerCashier implements Initializable {
             grandTotalGlobal = 0;
             grandTotalTT.setText("Rp" + String.valueOf(grandTotalGlobal));
         }
+        currentTransactionTableDataTT.clear();
     }
 
     static int shopDeleterCounter = 0;

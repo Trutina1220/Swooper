@@ -677,6 +677,7 @@ public class ControllerAdmin implements Initializable {
             grandTotalGlobal = 0;
             grandTotalTT.setText("Rp" + String.valueOf(grandTotalGlobal));
         }
+        currentTransactionTableDataTT.clear();
     }
 
 
@@ -733,6 +734,7 @@ public class ControllerAdmin implements Initializable {
             fillTableTransactionHistoryBIT();
 
         }
+        currentTransactionTableDataBIT.clear();
     }
 //    Transaction Tab
 
