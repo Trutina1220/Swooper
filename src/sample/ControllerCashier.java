@@ -184,9 +184,14 @@ public class ControllerCashier implements Initializable {
                 ,customerAddress,customerPhoneNumber);
 
 
-
-
-
+        ttransactionIdColumnTT.setMinWidth(300);
+        transactionIdColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,String>("itemId"));
+        transactionItemDescColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,String>("itemDesc"));
+        transactionQtyColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,Integer>("itemQty"));
+        transactionPriceColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,Integer>("itemPrice"));
+        transactionTotalColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,Integer>("total"));
+        ttransactionIdColumnTT.setCellValueFactory(new PropertyValueFactory<CurrentTransactionTableTT,Integer>("transactionId"));
+        currentTransactionTableViewTT.setItems(currentTransactionTableDataTT);
 
 
     }
