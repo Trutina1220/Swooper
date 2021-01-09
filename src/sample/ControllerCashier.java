@@ -70,7 +70,7 @@ public class ControllerCashier implements Initializable {
         }
     }
 
-
+    static int shopDeleterCounter = 0;
 
     public void deleteButtonClickedTT(){
         if(enterColumnTT.getText().equals("")){
@@ -98,7 +98,6 @@ public class ControllerCashier implements Initializable {
 //        how to get the returned amount quantity
             int qty = currentTransactionTableDataTT.get(column).getItemQty()+shopQty;
             database.updateShopStock(qty,itemId,shopId);
-//
             database.deleteTransaction(transactionId);
             currentTransactionTableDataTT.remove(column);
             transactionHistoryObservableList.clear();
@@ -106,6 +105,7 @@ public class ControllerCashier implements Initializable {
             fillShopTable(shopId, shopItemsObservableListTT, shopIdTextTT, shopAddressTextTT, shopNumberTextTT);
             fillTableTransactionHistoryTT(1);
             totalSalesTodayTT.setText("Rp"+String.valueOf(database.getTotalSales("Sell")));
+            database.resetAutoIncremenTransaction();
         }
 
     }
@@ -286,9 +286,15 @@ public class ControllerCashier implements Initializable {
     }
     static String customerNameGlobal ="";
     static int grandTotalGlobal= 0;
-    public void addButtonClickedTT(javafx.event.ActionEvent event) throws SQLException {
 
-        currentTransactionTableDataTT.clear();
+    public void addButtonClickedTT(javafx.event.ActionEvent event) throws SQLException {
+        int transactionId = database.getNextTransactionId();
+
+//        if (shopDeleterCounter==1){
+//            transactionId = database.getNextTransactionId()+1;
+//            shopDeleterCounter = 0;
+//            System.out.println(transactionId);
+//        }
         if (shopIdTextTT.getText().equals("None")){
             Alert a = new Alert(Alert.AlertType.WARNING);
             a.setTitle("Warning !");
@@ -310,6 +316,7 @@ public class ControllerCashier implements Initializable {
 
         }
 
+
         else {
             System.out.println(shopIdTextTT.getText());
             String customerName = customerNameTextField.getText();
@@ -317,7 +324,6 @@ public class ControllerCashier implements Initializable {
             String customerPhoneNumber = customerNumberTextField.getText();
             String itemId = enterItemIdTextField.getText();
             String itemDesc = database.getItemDescription(Integer.parseInt(itemId));
-            int transactionId = database.getNextTransactionId();
             int itemQty = Integer.parseInt(enterItemQtyTextField.getText());
             int itemPrice = database.getItemSellPrice(Integer.parseInt(itemId));
             int itemTotal = itemPrice * itemQty;
@@ -354,6 +360,7 @@ public class ControllerCashier implements Initializable {
             shopItemsObservableListTT.clear();
             fillShopTable(shopIdTextTT.getText(), shopItemsObservableListTT, shopIdTextTT, shopAddressTextTT, shopNumberTextTT);
             System.out.println("done");
+
 
         }
     }

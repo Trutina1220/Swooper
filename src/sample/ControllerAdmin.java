@@ -715,6 +715,7 @@ public class ControllerAdmin implements Initializable {
             fillShopTable(shopId, shopItemsObservableListTT, shopIdTextTT, shopAddressTextTT, shopNumberTextTT);
             fillTableTransactionHistoryTT(1);
             totalSalesTodayTT.setText("Rp"+String.valueOf(database.getTotalSales("Sell")));
+            database.resetAutoIncremenTransaction();
         }
 
     }
@@ -775,6 +776,7 @@ public class ControllerAdmin implements Initializable {
             storageItemsObservableListBIT.clear();
             fillStorageTable(storageId, storageItemsObservableListBIT, storageIdTextBIT, storageAddressTextBIT, storageNumberTextBIT);
             fillTableTransactionHistoryBIT();
+            database.resetAutoIncremenTransaction();
         }
 
     }
@@ -783,7 +785,7 @@ public class ControllerAdmin implements Initializable {
     static int grandTotalGlobal= 0;
     public void addButtonClickedTT(javafx.event.ActionEvent event) throws SQLException {
 
-        currentTransactionTableDataTT.clear();
+
         if (shopIdTextTT.getText().equals("None")){
             Alert a = new Alert(Alert.AlertType.WARNING);
             a.setTitle("Warning !");
@@ -856,7 +858,6 @@ public class ControllerAdmin implements Initializable {
 
     static String supplierNameGlobal = "";
     public void addButtonClickedBIT(javafx.event.ActionEvent event) throws SQLException {
-        currentTransactionTableDataBIT.clear();
         String supplierName = supplierNameTextFieldBIT.getText();
         String supplierAddress = supplierAddressTextFieldBIT.getText();
         String supplierPhoneNumber = supplierPhoneTextFieldBIT.getText();

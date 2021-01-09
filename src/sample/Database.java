@@ -34,6 +34,28 @@ public class Database {
         return connection;
     }
 
+    public void resetAutoIncremenTransaction(){
+        int transactionId = getNextTransactionId();
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        try {
+
+            con = DriverManager.getConnection(host,userName,password);
+            preparedStatement = con.prepareStatement("ALTER TABLE `Transaction` AUTO_INCREMENT = ?;");
+            preparedStatement.setInt(1,transactionId);
+            preparedStatement.execute();
+
+            con.close();
+
+
+        }catch (SQLException err){
+            System.out.println(err.getMessage());
+
+        }finally {
+            try { preparedStatement.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+    }
 
     public void insertItem(String toChoice, Integer itemID, Integer itemQuantity)
     {
