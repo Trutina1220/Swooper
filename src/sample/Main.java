@@ -13,16 +13,14 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
+import java.sql.*;
 
 public class Main extends Application {
     Stage window;
-    String userName = "1";
-    String password = "1";
+    static String userNameLoggedIn;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
 
         window = primaryStage;
         window.setTitle("Swooper");
@@ -103,60 +101,72 @@ public class Main extends Application {
                 //Show the alert box
                 a.show();
             }
-            //This conditional statement here is to validate whether The username Input and the password field is correct or not
-            //If not, the program will show an alert box saying that the username and password are not valid.
-            //If yes, the program will continue tot he else block below.
-            else if(!userNameInput.getText().isEmpty() || !passInput.getText().isEmpty()) {
-                //Conditional statement to validate the input is correct or not
-                if (!userNameInput.getText().equals(userName) || !passInput.getText().equals(password)) {
-                    //Declare an alert box to inform the user that they input the wrong username and password
-                    Alert a = new Alert(Alert.AlertType.WARNING);
-                    //Set the title of the alert box
-                    a.setTitle("Warning !");
-                    //Set the message of the alert
-                    a.setContentText("Username and Password are invalid!");
-                    // Get the Stage.
-                    Stage stage = (Stage) a.getDialogPane().getScene().getWindow();
-                    //Set the username Input and Password Input to empty, if the inputs are not correct.
-                    userNameInput.clear();
-                    passInput.clear();
-                    //Show the Alert Message
-                    a.show();
-                }
-                //Conditonal Statement to load the Inventory program-+
-                else
-                {
-                    //Use try catch (Exception handling) to check are there any exception while loading the fxml file
-                    Parent root = null;
-                    try {
-                        //Declare root from Parent Class (Node) and load the fxml as root.
-                        root = FXMLLoader.load(getClass().getResource("admin.fxml"));
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            //Conditional Statement to load the FXML
+            else
+            {
+                String databaseURL = "jdbc:mysql://remotemysql.com:3306/fvLuF0YWF7";
+                String connectionUsername = "fvLuF0YWF7";
+                String connectionPassword = "FH81vMRjVU";
+                Parent root = null;
+
+                try {
+                    Connection connection = DriverManager.getConnection(databaseURL, connectionUsername, connectionPassword);
+
+                    String query = "SELECT username, AES_DECRYPT(password, 'secret') AS pswd FROM Users";
+
+                    PreparedStatement statement = connection.prepareStatement(query);
+                    ResultSet resultSet = statement.executeQuery();
+
+                    while (resultSet.next()) {
+                        if (resultSet.getString("username").equals(userNameInput.getText()) && resultSet.getString("pswd").equals(passInput.getText())) {
+                            if(userNameInput.getText().contains("Admin")) {
+                                try {
+                                    //Declare root from Parent Class (Node) and load the fxml as root.
+                                    root = FXMLLoader.load(getClass().getResource("admin.fxml"));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            } else if(userNameInput.getText().contains("Cashier")){
+                                userNameLoggedIn = userNameInput.getText();
+                                try {
+                                    //Declare root from Parent Class (Node) and load the fxml as root.
+                                    root = FXMLLoader.load(getClass().getResource("cashier.fxml"));
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            connection.close();
+                            window.setTitle("Swooper");
+                            Scene inventoryScene = new Scene(root, 1800, 1200);
+                            window.setScene(inventoryScene);
+                            window.show();
+                            return;
+                        }
                     }
-                    //Set the title of the window as mentioned below.
-                    window.setTitle("Swooper");
+                    Alert a = new Alert(Alert.AlertType.WARNING);
+                    a.setTitle("Warning");
+                    a.setContentText("Invalid username and/or password!");
+                    a.show();
+                    connection.close();
 
 
-                    //In this part i assign a function if the window is closed by the user using the x red button that all app has on the top left.
-                    //I use lambda expression so it means that every event which refers to the x red button is clicked will apply the method inside the lambda
-                    window.setOnCloseRequest(event1 ->
-                    {
-                        //These function are the same as i mentioned above, the difference is this is for the Fxml
-                        event1.consume();
-                        closeProgram();
-                    });
-                    //Declare A new Scene and set the width along with height for the fxml
-                    Scene inventoryScene = new Scene(root, 1800, 1200);
-                    window.setScene(inventoryScene);
-                    window.show();
-
+                }catch (SQLException e)
+                {
+                    e.printStackTrace();
                 }
 
-            }
-
-        });
-    }
+                //In this part i assign a function if the window is closed by the user using the x red button that all app has on the top left.
+                //I use lambda expression so it means that every event which refers to the x red button is clicked will apply the method inside the lambda
+                window.setOnCloseRequest(event1 ->
+                {
+                    //These function are the same as i mentioned above, the difference is this is for the Fxml
+                    event1.consume();
+                    closeProgram();
+                });
+        }
+    });
+}
 
 
     public static void main(String[] args) {

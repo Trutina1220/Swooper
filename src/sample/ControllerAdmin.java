@@ -22,8 +22,8 @@ public class ControllerAdmin implements Initializable {
     public TableView storageTableViewST, shopTableViewST,shopStockTableViewTT, currentTransactionTableViewTT, transactionHistoryTableViewTT, storageTableViewBIT, currentTransactionTableViewBIT, transactionHistoryTableViewBIT, contactBookTableView,itemTableViewMD, transactionHistoryTableVIewCB;
     @FXML
     public TextField itemQuantityTextFieldST,customerNameTextField, customerAddressTextField, customerNumberTextField,
-            enterItemIdTextField, enterItemQtyTextField, supplierNameTextFieldBIT, supplierAddressTextFieldBIT, supplierPhoneTextFieldBIT,
-            itemIdTextFieldBIT, itemQuantityTextFieldBIT, sellPriceTextFieldBIT, buyPriceTextFieldBIT,itemNameTextFieldBIT,enterColumnBIT,enterColumnTT,
+            enterItemIdTextField, enterItemQtyTextField, enterColumnTT, supplierNameTextFieldBIT, supplierAddressTextFieldBIT, supplierPhoneTextFieldBIT,
+            itemIdTextFieldBIT, itemQuantityTextFieldBIT, sellPriceTextFieldBIT, buyPriceTextFieldBIT,itemNameTextFieldBIT,enterColumnBIT,
             enterTransactorIdCB, enterItemIdMD, enterItemNameMD,enterItemSellPriceMD,enterTransactorNameCB,enterTransactorAddressCB,enterTransactorPhoneNumberCB, enterTransactionIdCB, enterTransactionQtyCB
             , enterItemIdCB,enterShopIdCB;
     @FXML
@@ -942,6 +942,7 @@ public class ControllerAdmin implements Initializable {
 
     public void updateTransactorCB() throws SQLException {
         Alert a = new Alert(Alert.AlertType.WARNING);
+        //Block of Conditions to check all field to get info is filled or not in Update Button Transactor Contact Book Tab
         if(enterTransactorNameCB.getText().equals("") && enterTransactorAddressCB.getText().equals("") && enterTransactorPhoneNumberCB.getText().equals("") && enterTransactorIdCB.getText().equals("") && enterTransactorIdCB.getText().equals(""))
         {
             a.setTitle("Warning !");
