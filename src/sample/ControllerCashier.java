@@ -23,7 +23,7 @@ public class ControllerCashier implements Initializable {
     public ComboBox shopComboBoxTT;
 
     public Text shopIdTextTT, shopAddressTextTT, shopNumberTextTT, customerNameLabelTT,customerAddressLabelTT,
-            customerPhoneLabelTT, totalSalesTodayTT,grandTotalTT, userNameTextTT;
+            customerPhoneLabelTT,grandTotalTT, userNameTextTT;
 
     public Database database = new Database();
     //Initializing Table Column for CurrentTransaction Table Transaction Tab
@@ -73,43 +73,6 @@ public class ControllerCashier implements Initializable {
 
     static int shopDeleterCounter = 0;
 
-    public void deleteButtonClickedTT(){
-        if(enterColumnTT.getText().equals("")){
-
-            Alert a = new Alert(Alert.AlertType.WARNING);
-            a.setTitle("Warning !");
-            a.setContentText("Please Fill the Column of the Transaction You want to delete from the Table!");
-            a.show();
-
-        }
-
-        else if(intOnly(enterColumnTT.getText(),"Column Transaction TextField!")==0){
-
-        }
-
-        else{
-            int column = Integer.parseInt(enterColumnTT.getText())-1;
-            int transactionId = currentTransactionTableDataTT.get(column).getTransactionId();
-            int itemId = Integer.parseInt(currentTransactionTableDataTT.get(column).getItemId());
-            String shopId = shopIdTextTT.getText();
-            int shopQty = database.getQtyFromShop(itemId,shopId);
-            int total = currentTransactionTableDataTT.get(column).getTotal();
-            grandTotalGlobal -= total;
-            grandTotalTT.setText("Rp"+String.valueOf(grandTotalGlobal));
-//        how to get the returned amount quantity
-            int qty = currentTransactionTableDataTT.get(column).getItemQty()+shopQty;
-            database.updateShopStock(qty,itemId,shopId);
-            database.deleteTransaction(transactionId);
-            currentTransactionTableDataTT.remove(column);
-            transactionHistoryObservableList.clear();
-            shopItemsObservableListTT.clear();
-            fillShopTable(shopId, shopItemsObservableListTT, shopIdTextTT, shopAddressTextTT, shopNumberTextTT);
-            fillTableTransactionHistoryTT(1);
-            totalSalesTodayTT.setText("Rp"+String.valueOf(database.getTotalSales("Sell")));
-            database.resetAutoIncremenTransaction();
-        }
-
-    }
 
 
 
@@ -196,6 +159,51 @@ public class ControllerCashier implements Initializable {
 
 
     }
+
+    public void deleteButtonClickedTT(){
+        if(enterColumnTT.getText().equals("")){
+
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("Please Fill the Column of the Transaction You want to delete from the Table!");
+            a.show();
+
+        }
+        else if (currentTransactionTableDataTT.size()==0){
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("There's No Transaction To Be Deleted!");
+            a.show();
+        }
+
+        else if(intOnly(enterColumnTT.getText(),"Column Transaction TextField!")==0){
+
+        }
+
+        else{
+            int column = Integer.parseInt(enterColumnTT.getText())-1;
+            int transactionId = currentTransactionTableDataTT.get(column).getTransactionId();
+            int itemId = Integer.parseInt(currentTransactionTableDataTT.get(column).getItemId());
+            String shopId = shopIdTextTT.getText();
+            int shopQty = database.getQtyFromShop(itemId,shopId);
+            int total = currentTransactionTableDataTT.get(column).getTotal();
+            grandTotalGlobal -= total;
+            grandTotalTT.setText("Rp"+String.valueOf(grandTotalGlobal));
+//        how to get the returned amount quantity
+            int qty = currentTransactionTableDataTT.get(column).getItemQty()+shopQty;
+            database.updateShopStock(qty,itemId,shopId);
+            database.deleteTransaction(transactionId);
+            currentTransactionTableDataTT.remove(column);
+            transactionHistoryObservableList.clear();
+            shopItemsObservableListTT.clear();
+            fillShopTable(shopId, shopItemsObservableListTT, shopIdTextTT, shopAddressTextTT, shopNumberTextTT);
+            fillTableTransactionHistoryTT(1);
+
+            database.resetAutoIncremenTransaction();
+        }
+
+    }
+
 
     public void fillShopTable(String shopId, ObservableList shopItems, Text shopIdText, Text shopAddressText, Text shopNumberText){
         Connection con = null;
@@ -351,7 +359,7 @@ public class ControllerCashier implements Initializable {
                 int transactorId = database.getTransactorId(customerName);
                 database.insertTransaction(Integer.parseInt(itemId), itemQty, itemTotal, transactorId, "Sell");
                 database.updateShopStock(shopItemQty, Integer.parseInt(itemId), shopIdTextTT.getText());
-                totalSalesTodayTT.setText("Rp"+String.valueOf(database.getTotalSales("Sell")));
+
                 currentTransactionTableDataTT.add(new CurrentTransactionTableTT(itemId, itemDesc, itemQty, itemPrice, itemTotal,transactionId));
 
             }

@@ -695,6 +695,12 @@ public class ControllerAdmin implements Initializable {
         else if(intOnly(enterColumnTT.getText(),"Column Transaction TextField!")==0){
 
         }
+        else if(currentTransactionTableDataTT.size()==0){
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("There's No Transaction To Be Deleted!");
+            a.show();
+        }
 
         else{
             int column = Integer.parseInt(enterColumnTT.getText())-1;
@@ -763,6 +769,13 @@ public class ControllerAdmin implements Initializable {
         }
         else if(intOnly(enterColumnBIT.getText(),"Column Transaction!")==0){
 
+        }
+
+        else if (currentTransactionTableDataBIT.size()==0){
+            Alert a = new Alert(Alert.AlertType.WARNING);
+            a.setTitle("Warning !");
+            a.setContentText("There's No Transaction To Be Deleted!");
+            a.show();
         }
         else{
             int column = Integer.parseInt(enterColumnBIT.getText())-1;
