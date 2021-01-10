@@ -546,7 +546,7 @@ public class ControllerAdmin implements Initializable {
             a.setContentText("Can't move item to the same place!");
             a.show();
             toComboBox.getSelectionModel().clearSelection();
-        }else if (!itemQuantityTextFieldST.getText().isEmpty()) {
+        } else if (!itemQuantityTextFieldST.getText().isEmpty()) {
             if (!isInt(itemQuantityTextFieldST)) {
                 a.setTitle("Warning");
                 a.setContentText("Quantity Field must be numbers!");
@@ -559,83 +559,84 @@ public class ControllerAdmin implements Initializable {
                 itemQuantityTextFieldST.clear();
                 a.show();
             }
-        }
-        else {
-            inputId = (Integer) itemIDComboBoxST.getValue();
-            inputQty = Integer.parseInt(itemQuantityTextFieldST.getText());
+            else {
+                inputId = (Integer) itemIDComboBoxST.getValue();
+                inputQty = Integer.parseInt(itemQuantityTextFieldST.getText());
 
-            if (fromComboBox.getValue().toString() == "Shop 1" && toComboBox.getValue().toString() == "Storage 1") {
-                if (database.deleteItem("SH001", inputId, inputQty)) {
-                    database.insertItem("ST001", inputId, inputQty);
-                    this.successMove();
-                } else {
-                    this.failedMove();
-                }
-            } else if (fromComboBox.getValue().toString() == "Shop 2" && toComboBox.getValue().toString() == "Storage 1") {
-                if (database.deleteItem("SH002", inputId, inputQty)) {
-                    database.insertItem("ST001", inputId, inputQty);
-                    this.successMove();
-                } else {
-                    this.failedMove();
-                }
-            } else if (fromComboBox.getValue().toString() == "Shop 1" && toComboBox.getValue().toString() == "Storage 2") {
-                if (database.deleteItem("SH001", inputId, inputQty)) {
-                    database.insertItem("ST002", inputId, inputQty);
-                    this.successMove();
-                } else {
-                    this.failedMove();
-                }
-            } else if (fromComboBox.getValue().toString() == "Shop 2" && toComboBox.getValue().toString() == "Storage 2") {
-                if (database.deleteItem("SH002", inputId, inputQty)) {
-                    database.insertItem("ST002", inputId, inputQty);
-                    this.successMove();
-                } else {
-                    this.failedMove();
-                }
-            } else if (fromComboBox.getValue().toString() == "Storage 1" && toComboBox.getValue().toString() == "Storage 2") {
-                if (database.deleteItem("ST001", inputId, inputQty)) {
-                    database.insertItem("ST002", inputId, inputQty);
-                    this.successMove();
-                } else {
-                    this.failedMove();
-                }
-            } else if (fromComboBox.getValue().toString() == "Storage 2" && toComboBox.getValue().toString() == "Storage 1") {
-                if (database.deleteItem("ST002", inputId, inputQty)) {
-                    database.insertItem("ST001", inputId, inputQty);
-                    this.successMove();
-                } else {
-                    this.failedMove();
-                }
-            } else if (fromComboBox.getValue().toString() == "Storage 1" && toComboBox.getValue().toString() == "Shop 1") {
-                if (database.deleteItem("ST001", inputId, inputQty)) {
-                    database.insertItem("SH001", inputId, inputQty);
-                    this.successMove();
-                } else {
-                    this.failedMove();
-                }
-            } else if (fromComboBox.getValue().toString() == "Storage 1" && toComboBox.getValue().toString() == "Shop 2") {
-                if (database.deleteItem("ST001", inputId, inputQty)) {
-                    database.insertItem("SH002", inputId, inputQty);
-                    this.successMove();
-                } else {
-                    this.failedMove();
-                }
-            } else if (fromComboBox.getValue().toString() == "Storage 2" && toComboBox.getValue().toString() == "Shop 1") {
-                if (database.deleteItem("ST002", inputId, inputQty)) {
-                    database.insertItem("SH001", inputId, inputQty);
-                    this.successMove();
-                } else {
-                    this.failedMove();
-                }
-            } else if (fromComboBox.getValue().toString() == "Storage 2" && toComboBox.getValue().toString() == "Shop 2") {
-                if (database.deleteItem("ST002", inputId, inputQty)) {
-                    database.insertItem("SH002", inputId, inputQty);
-                    this.successMove();
-                } else {
-                    this.failedMove();
+                if (fromComboBox.getValue().toString() == "Shop 1" && toComboBox.getValue().toString() == "Storage 1") {
+                    if (database.deleteItem("SH001", inputId, inputQty)) {
+                        database.insertItem("ST001", inputId, inputQty);
+                        this.successMove();
+                    } else {
+                        this.failedMove();
+                    }
+                } else if (fromComboBox.getValue().toString() == "Shop 2" && toComboBox.getValue().toString() == "Storage 1") {
+                    if (database.deleteItem("SH002", inputId, inputQty)) {
+                        database.insertItem("ST001", inputId, inputQty);
+                        this.successMove();
+                    } else {
+                        this.failedMove();
+                    }
+                } else if (fromComboBox.getValue().toString() == "Shop 1" && toComboBox.getValue().toString() == "Storage 2") {
+                    if (database.deleteItem("SH001", inputId, inputQty)) {
+                        database.insertItem("ST002", inputId, inputQty);
+                        this.successMove();
+                    } else {
+                        this.failedMove();
+                    }
+                } else if (fromComboBox.getValue().toString() == "Shop 2" && toComboBox.getValue().toString() == "Storage 2") {
+                    if (database.deleteItem("SH002", inputId, inputQty)) {
+                        database.insertItem("ST002", inputId, inputQty);
+                        this.successMove();
+                    } else {
+                        this.failedMove();
+                    }
+                } else if (fromComboBox.getValue().toString() == "Storage 1" && toComboBox.getValue().toString() == "Storage 2") {
+                    if (database.deleteItem("ST001", inputId, inputQty)) {
+                        database.insertItem("ST002", inputId, inputQty);
+                        this.successMove();
+                    } else {
+                        this.failedMove();
+                    }
+                } else if (fromComboBox.getValue().toString() == "Storage 2" && toComboBox.getValue().toString() == "Storage 1") {
+                    if (database.deleteItem("ST002", inputId, inputQty)) {
+                        database.insertItem("ST001", inputId, inputQty);
+                        this.successMove();
+                    } else {
+                        this.failedMove();
+                    }
+                } else if (fromComboBox.getValue().toString() == "Storage 1" && toComboBox.getValue().toString() == "Shop 1") {
+                    if (database.deleteItem("ST001", inputId, inputQty)) {
+                        database.insertItem("SH001", inputId, inputQty);
+                        this.successMove();
+                    } else {
+                        this.failedMove();
+                    }
+                } else if (fromComboBox.getValue().toString() == "Storage 1" && toComboBox.getValue().toString() == "Shop 2") {
+                    if (database.deleteItem("ST001", inputId, inputQty)) {
+                        database.insertItem("SH002", inputId, inputQty);
+                        this.successMove();
+                    } else {
+                        this.failedMove();
+                    }
+                } else if (fromComboBox.getValue().toString() == "Storage 2" && toComboBox.getValue().toString() == "Shop 1") {
+                    if (database.deleteItem("ST002", inputId, inputQty)) {
+                        database.insertItem("SH001", inputId, inputQty);
+                        this.successMove();
+                    } else {
+                        this.failedMove();
+                    }
+                } else if (fromComboBox.getValue().toString() == "Storage 2" && toComboBox.getValue().toString() == "Shop 2") {
+                    if (database.deleteItem("ST002", inputId, inputQty)) {
+                        database.insertItem("SH002", inputId, inputQty);
+                        this.successMove();
+                    } else {
+                        this.failedMove();
+                    }
                 }
             }
         }
+
     }
 
     public boolean isInt(TextField input) {
