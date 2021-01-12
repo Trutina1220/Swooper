@@ -41,7 +41,7 @@ public class Main extends Application {
         gridPane.setHgap(10);
 
         //Subtitle  Welcome Label
-        Label welcomeLabel = new Label("Welcome Boss, Please Login !");
+        Label welcomeLabel = new Label("Welcome, Please Login !");
         GridPane.setConstraints(welcomeLabel,0,0);
 
         //Declare new USERNAME Label also set the position.
